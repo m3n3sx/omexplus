@@ -1,0 +1,113 @@
+{
+  "common": {
+    "welcome": "Ласкаво просимо",
+    "search": "Пошук",
+    "cart": "Кошик",
+    "checkout": "Оформлення",
+    "account": "Обліковий запис",
+    "login": "Увійти",
+    "logout": "Вийти",
+    "register": "Зареєструватися",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "add": "Додати",
+    "back": "Назад",
+    "next": "Далі",
+    "loading": "Завантаження...",
+    "error": "Помилка",
+    "success": "Успіх"
+  },
+  "navigation": {
+    "home": "Головна",
+    "products": "Продукти",
+    "categories": "Категорії",
+    "blog": "Блог",
+    "about": "Про нас",
+    "contact": "Контакти",
+    "faq": "FAQ"
+  },
+  "products": {
+    "title": "Продукти",
+    "addToCart": "Додати до кошика",
+    "outOfStock": "Немає в наявності",
+    "inStock": "В наявності",
+    "price": "Ціна",
+    "description": "Опис",
+    "specifications": "Специфікації",
+    "reviews": "Відгуки",
+    "relatedProducts": "Схожі продукти",
+    "newArrival": "Новинка",
+    "onSale": "Розпродаж"
+  },
+  "cart": {
+    "title": "Кошик",
+    "empty": "Ваш кошик порожній",
+    "subtotal": "Проміжна сума",
+    "total": "Всього",
+    "shipping": "Доставка",
+    "tax": "Податок",
+    "continueShopping": "Продовжити покупки",
+    "proceedToCheckout": "Перейти до оформлення",
+    "removeItem": "Видалити товар",
+    "quantity": "Кількість"
+  },
+  "checkout": {
+    "title": "Оформлення замовлення",
+    "shippingAddress": "Адреса доставки",
+    "billingAddress": "Адреса для рахунку",
+    "shippingMethod": "Спосіб доставки",
+    "paymentMethod": "Спосіб оплати",
+    "orderSummary": "Підсумок замовлення",
+    "placeOrder": "Оформити замовлення",
+    "firstName": "Ім'я",
+    "lastName": "Прізвище",
+    "email": "Email",
+    "phone": "Телефон",
+    "address": "Адреса",
+    "city": "Місто",
+    "postalCode": "Поштовий індекс",
+    "country": "Країна"
+  },
+  "account": {
+    "title": "Мій обліковий запис",
+    "orders": "Замовлення",
+    "addresses": "Адреси",
+    "wishlist": "Список бажань",
+    "loyaltyPoints": "Бали лояльності",
+    "settings": "Налаштування",
+    "orderHistory": "Історія замовлень",
+    "orderNumber": "Номер замовлення",
+    "orderDate": "Дата замовлення",
+    "orderStatus": "Статус",
+    "orderTotal": "Всього"
+  },
+  "footer": {
+    "aboutUs": "Про нас",
+    "customerService": "Обслуговування клієнтів",
+    "information": "Інформація",
+    "followUs": "Слідкуйте за нами",
+    "newsletter": "Розсилка",
+    "newsletterText": "Підпишіться на нашу розсилку та отримуйте найновіші пропозиції",
+    "subscribe": "Підписатися",
+    "copyright": "Всі права захищені"
+  },
+  "validation": {
+    "required": "Це поле обов'язкове",
+    "email": "Невірна адреса email",
+    "minLength": "Мінімальна довжина: {{min}} символів",
+    "maxLength": "Максимальна довжина: {{max}} символів",
+    "passwordMatch": "Паролі повинні співпадати"
+  },
+  "messages": {
+    "addedToCart": "Товар додано до кошика",
+    "removedFromCart": "Товар видалено з кошика",
+    "orderPlaced": "Замовлення оформлено",
+    "loginSuccess": "Успішний вхід",
+    "logoutSuccess": "Успішний вихід",
+    "updateSuccess": "Успішно оновлено",
+    "deleteSuccess": "Успішно видалено",
+    "errorOccurred": "Сталася помилка"
+  }
+}

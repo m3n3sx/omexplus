@@ -1,0 +1,113 @@
+{
+  "common": {
+    "welcome": "Willkommen",
+    "search": "Suchen",
+    "cart": "Warenkorb",
+    "checkout": "Kasse",
+    "account": "Konto",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "register": "Registrieren",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "products": "Produkte",
+    "categories": "Kategorien",
+    "blog": "Blog",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "faq": "FAQ"
+  },
+  "products": {
+    "title": "Produkte",
+    "addToCart": "In den Warenkorb",
+    "outOfStock": "Nicht auf Lager",
+    "inStock": "Auf Lager",
+    "price": "Preis",
+    "description": "Beschreibung",
+    "specifications": "Spezifikationen",
+    "reviews": "Bewertungen",
+    "relatedProducts": "Ähnliche Produkte",
+    "newArrival": "Neuheit",
+    "onSale": "Im Angebot"
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "empty": "Ihr Warenkorb ist leer",
+    "subtotal": "Zwischensumme",
+    "total": "Gesamt",
+    "shipping": "Versand",
+    "tax": "Steuer",
+    "continueShopping": "Weiter einkaufen",
+    "proceedToCheckout": "Zur Kasse",
+    "removeItem": "Artikel entfernen",
+    "quantity": "Menge"
+  },
+  "checkout": {
+    "title": "Kasse",
+    "shippingAddress": "Lieferadresse",
+    "billingAddress": "Rechnungsadresse",
+    "shippingMethod": "Versandart",
+    "paymentMethod": "Zahlungsmethode",
+    "orderSummary": "Bestellübersicht",
+    "placeOrder": "Bestellung aufgeben",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "address": "Adresse",
+    "city": "Stadt",
+    "postalCode": "Postleitzahl",
+    "country": "Land"
+  },
+  "account": {
+    "title": "Mein Konto",
+    "orders": "Bestellungen",
+    "addresses": "Adressen",
+    "wishlist": "Wunschliste",
+    "loyaltyPoints": "Treuepunkte",
+    "settings": "Einstellungen",
+    "orderHistory": "Bestellhistorie",
+    "orderNumber": "Bestellnummer",
+    "orderDate": "Bestelldatum",
+    "orderStatus": "Status",
+    "orderTotal": "Gesamt"
+  },
+  "footer": {
+    "aboutUs": "Über uns",
+    "customerService": "Kundenservice",
+    "information": "Informationen",
+    "followUs": "Folgen Sie uns",
+    "newsletter": "Newsletter",
+    "newsletterText": "Abonnieren Sie unseren Newsletter und erhalten Sie die neuesten Angebote",
+    "subscribe": "Abonnieren",
+    "copyright": "Alle Rechte vorbehalten"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "email": "Ungültige E-Mail-Adresse",
+    "minLength": "Mindestlänge: {{min}} Zeichen",
+    "maxLength": "Maximale Länge: {{max}} Zeichen",
+    "passwordMatch": "Passwörter müssen übereinstimmen"
+  },
+  "messages": {
+    "addedToCart": "Produkt zum Warenkorb hinzugefügt",
+    "removedFromCart": "Produkt aus dem Warenkorb entfernt",
+    "orderPlaced": "Bestellung wurde aufgegeben",
+    "loginSuccess": "Erfolgreich angemeldet",
+    "logoutSuccess": "Erfolgreich abgemeldet",
+    "updateSuccess": "Erfolgreich aktualisiert",
+    "deleteSuccess": "Erfolgreich gelöscht",
+    "errorOccurred": "Ein Fehler ist aufgetreten"
+  }
+}
