@@ -4884,6 +4884,11 @@
   resolved "https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.53.3.tgz"
   integrity sha512-3EhFi1FU6YL8HTUJZ51imGJWEX//ajQPfqWLI3BQq4TlvHy4X0MOr5q3D2Zof/ka0d5FNdPwZXm3Yyib/UEd+w==
 
+"@rollup/rollup-linux-x64-musl@4.53.3":
+  version "4.53.3"
+  resolved "https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.53.3.tgz"
+  integrity sha512-eoROhjcc6HbZCJr+tvVT8X4fW3/5g/WkGvvmwz/88sDtSJzO7r/blvoBDgISDiCjDRZmHpwud7h+6Q9JxFwq1Q==
+
 "@rushstack/node-core-library@5.13.0":
   version "5.13.0"
   resolved "https://registry.npmjs.org/@rushstack/node-core-library/-/node-core-library-5.13.0.tgz"
@@ -5475,6 +5480,11 @@
   version "1.15.3"
   resolved "https://registry.npmjs.org/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.15.3.tgz"
   integrity sha512-aKttAZnz8YB1VJwPQZtyU8Uk0BfMP63iDMkvjhJzRZVgySmqt/apWSdnoIcZlUoGheBrcqbMC17GGUmur7OT5A==
+
+"@swc/core-linux-x64-musl@1.15.3":
+  version "1.15.3"
+  resolved "https://registry.npmjs.org/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.15.3.tgz"
+  integrity sha512-oe8FctPu1gnUsdtGJRO2rvOUIkkIIaHqsO9xxN0bTR7dFTlPTGi2Fhk1tnvXeyAvCPxLIcwD8phzKg6wLv9yug==
 
 "@swc/core@*", "@swc/core@^1.7.28", "@swc/core@>=1.2.50":
   version "1.15.3"
@@ -10600,6 +10610,14 @@ stripe@^15.5.0:
   version "15.12.0"
   resolved "https://registry.npmjs.org/stripe/-/stripe-15.12.0.tgz"
   integrity sha512-slTbYS1WhRJXVB8YXU8fgHizkUrM9KJyrw4Dd8pLEwzKHYyQTIE46EePC2MVbSDZdE24o1GdNtzmJV4PrPpmJA==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.11.0"
+
+stripe@^17.7.0:
+  version "17.7.0"
+  resolved "https://registry.npmjs.org/stripe/-/stripe-17.7.0.tgz"
+  integrity sha512-aT2BU9KkizY9SATf14WhhYVv2uOapBWX0OFWF4xvcj1mPaNotlSc2CsxpS4DS46ZueSppmCF5BX1sNYBtwBvfw==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.11.0"

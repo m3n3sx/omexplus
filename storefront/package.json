@@ -1,33 +1,24 @@
 {
-  "name": "medusa-storefront",
-  "version": "1.0.0",
+  "name": "omex-storefront",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8000",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 8000"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "next": "^14.0.0",
-    "next-intl": "^4.5.7",
-    "next-themes": "^0.4.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@medusajs/medusa-js": "^6.1.0",
-    "zustand": "^4.4.7",
-    "axios": "^1.6.2",
-    "react-hot-toast": "^2.4.1",
-    "clsx": "^2.0.0",
-    "tailwind-merge": "^2.2.0",
-    "class-variance-authority": "^0.7.0"
+    "@stripe/react-stripe-js": "^2.10.0",
+    "@stripe/stripe-js": "^4.11.0",
+    "next": "15.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^5.0.0",
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.32",
-    "autoprefixer": "^10.4.16"
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
   }
 }

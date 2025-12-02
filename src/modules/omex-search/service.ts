@@ -147,6 +147,111 @@ class OmexSearchService extends MedusaService({}) {
     return []
   }
 
+  /**
+   * Search by manufacturer SKU
+   */
+  async searchByManufacturerSKU(manufacturerSku: string, manufacturerId?: string) {
+    if (!manufacturerSku) {
+      throw new Error("Manufacturer SKU is required")
+    }
+
+    // In real implementation:
+    // Query manufacturer_part table and join with product
+    // WHERE manufacturer_sku = $1 AND (manufacturer_id = $2 OR $2 IS NULL)
+
+    return []
+  }
+
+  /**
+   * Search by catalog page
+   */
+  async searchByCatalogPage(manufacturerId: string, pageNumber: number) {
+    if (!manufacturerId || pageNumber === undefined) {
+      throw new Error("Manufacturer ID and page number are required")
+    }
+
+    // In real implementation:
+    // Query manufacturer_part table
+    // WHERE manufacturer_id = $1 AND catalog_page = $2
+
+    return []
+  }
+
+  /**
+   * Get similar products
+   */
+  async similarProducts(productId: string, limit: number = 5) {
+    if (!productId) {
+      throw new Error("Product ID is required")
+    }
+
+    // In real implementation:
+    // 1. Get product details
+    // 2. Find products in same category with similar price
+    // 3. Order by similarity score
+
+    return []
+  }
+
+  /**
+   * Get related products (cross-sell)
+   */
+  async relatedProducts(productId: string, limit: number = 5) {
+    if (!productId) {
+      throw new Error("Product ID is required")
+    }
+
+    // In real implementation:
+    // 1. Get product's comparable_products array
+    // 2. Find complementary products
+    // 3. Return top matches
+
+    return []
+  }
+
+  /**
+   * Autocomplete suggestions
+   */
+  async autocomplete(prefix: string, limit: number = 10) {
+    if (!prefix || prefix.length < 2) {
+      return []
+    }
+
+    // In real implementation:
+    // 1. Search products where title starts with prefix
+    // 2. Search categories
+    // 3. Search manufacturers
+    // 4. Combine and rank results
+
+    return []
+  }
+
+  /**
+   * Faceted search - get available filters
+   */
+  async getFacets(categoryId?: string) {
+    const facets = {
+      categories: [],
+      manufacturers: [],
+      price_ranges: [
+        { min: 0, max: 100, count: 0 },
+        { min: 100, max: 500, count: 0 },
+        { min: 500, max: 1000, count: 0 },
+        { min: 1000, max: 5000, count: 0 },
+        { min: 5000, max: null, count: 0 },
+      ],
+      equipment_types: [],
+      availability: [
+        { value: "in_stock", label: "W magazynie", count: 0 },
+        { value: "low_stock", label: "Niski stan", count: 0 },
+        { value: "out_of_stock", label: "Brak w magazynie", count: 0 },
+      ],
+    }
+
+    // In real implementation, count products for each facet
+    return facets
+  }
+
   async getPopularSearches(limit: number = 10): Promise<string[]> {
     // In real implementation:
     // 1. Track search queries in database

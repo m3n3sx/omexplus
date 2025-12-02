@@ -50,5 +50,30 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/omex-search",
     },
+    {
+      resolve: "./src/modules/omex-manufacturer",
+    },
+    {
+      resolve: "./src/modules/omex-seo",
+    },
+    {
+      resolve: "./src/modules/omex-b2b",
+    },
+    {
+      resolve: "./src/modules/omex-documentation",
+    },
+    {
+      resolve: "./src/modules/omex-bulk-import",
+    },
+  ],
+  plugins: [
+    {
+      resolve: "./src/plugins/stripe",
+      options: {
+        apiKey: process.env.STRIPE_SECRET_KEY,
+        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+        apiVersion: process.env.STRIPE_API_VERSION || '2023-10-16',
+      },
+    },
   ],
 })

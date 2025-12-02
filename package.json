@@ -17,18 +17,28 @@
     "seed": "medusa exec ./src/scripts/seed.ts",
     "seed:categories": "medusa exec ./src/scripts/seed-categories.ts",
     "seed:categories:full": "medusa exec ./src/scripts/seed-full-categories.ts",
+    "seed:products": "medusa exec ./src/scripts/seed-products.ts",
     "create:api-key": "medusa exec ./src/scripts/create-api-key.ts",
+    "test:import": "medusa exec ./src/scripts/test-import.ts",
+    "import:products": "medusa exec ./src/scripts/direct-import.ts",
+    "import:db": "medusa exec ./src/scripts/import-to-database.ts",
     "start": "medusa start",
     "dev": "medusa develop",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
-    "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
+    "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
+    "test:shipping": "medusa exec ./src/scripts/test-shipping.ts",
+    "seed:manufacturers": "medusa exec ./src/scripts/seed-manufacturers.ts",
+    "generate:seo": "medusa exec ./src/scripts/generate-seo.ts"
   },
   "dependencies": {
     "@medusajs/admin-sdk": "2.12.0",
     "@medusajs/cli": "2.12.0",
     "@medusajs/framework": "2.12.0",
-    "@medusajs/medusa": "2.12.0"
+    "@medusajs/medusa": "2.12.0",
+    "csv-parse": "^5.6.0",
+    "pg": "^8.16.3",
+    "stripe": "^17.7.0"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.12.0",
