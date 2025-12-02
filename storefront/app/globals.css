@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  body {
+    @apply bg-white text-gray-900;
+  }
+}
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 195 65% 38%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 33 89% 52%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+}

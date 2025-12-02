@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "cart": "Cart",
+    "account": "Account",
+    "search": "Search",
+    "languages": "Languages",
+    "currencies": "Currencies",
+    "about": "About",
+    "contact": "Contact",
+    "faq": "FAQ"
+  },
+  "products": {
+    "title": "Our Products",
+    "filters": "Filters",
+    "price": "Price",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "addToCart": "Add to Cart",
+    "viewDetails": "View Details",
+    "sku": "SKU",
+    "brand": "Brand",
+    "category": "Category"
+  },
+  "cart": {
+    "empty": "Your cart is empty",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping",
+    "quantity": "Quantity",
+    "remove": "Remove"
+  },
+  "account": {
+    "profile": "Profile",
+    "orders": "My Orders",
+    "addresses": "Addresses",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "checkout": {
+    "billing": "Billing Address",
+    "shipping": "Shipping Address",
+    "payment": "Payment",
+    "review": "Order Review",
+    "placeOrder": "Place Order",
+    "orderConfirmation": "Order Confirmation"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "home": "Головна",
+    "products": "Продукти",
+    "categories": "Категорії",
+    "cart": "Кошик",
+    "account": "Обліковий запис",
+    "search": "Пошук",
+    "languages": "Мови",
+    "currencies": "Валюти",
+    "about": "Про нас",
+    "contact": "Контакти",
+    "faq": "FAQ"
+  },
+  "products": {
+    "title": "Наші продукти",
+    "filters": "Фільтри",
+    "price": "Ціна",
+    "inStock": "В наявності",
+    "outOfStock": "Немає в наявності",
+    "addToCart": "Додати в кошик",
+    "viewDetails": "Деталі",
+    "sku": "SKU",
+    "brand": "Бренд",
+    "category": "Категорія"
+  },
+  "cart": {
+    "empty": "Ваш кошик порожній",
+    "total": "Разом",
+    "checkout": "Оформити замовлення",
+    "continueShopping": "Продовжити покупки",
+    "quantity": "Кількість",
+    "remove": "Видалити"
+  },
+  "account": {
+    "profile": "Профіль",
+    "orders": "Мої замовлення",
+    "addresses": "Адреси",
+    "logout": "Вийти",
+    "login": "Увійти",
+    "register": "Зареєструватися"
+  },
+  "checkout": {
+    "billing": "Адреса для рахунку",
+    "shipping": "Адреса доставки",
+    "payment": "Оплата",
+    "review": "Огляд замовлення",
+    "placeOrder": "Оформити замовлення",
+    "orderConfirmation": "Підтвердження замовлення"
+  },
+  "common": {
+    "loading": "Завантаження...",
+    "error": "Помилка",
+    "success": "Успіх",
+    "cancel": "Скасувати",
+    "save": "Зберегти",
+    "edit": "Редагувати",
+    "delete": "Видалити",
+    "back": "Назад",
+    "next": "Далі"
+  }
+}
