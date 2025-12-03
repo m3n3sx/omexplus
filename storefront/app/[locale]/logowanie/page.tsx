@@ -1,14 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export default function LoginPage() {
-  const t = useTranslations()
   const locale = useLocale()
   const router = useRouter()
 

@@ -1,0 +1,9 @@
+{
+  "name": "medusa-payment-stripe-custom",
+  "version": "1.0.0",
+  "description": "Custom Stripe payment provider for Medusa",
+  "main": "index.ts",
+  "dependencies": {
+    "stripe": "^17.7.0"
+  }
+}

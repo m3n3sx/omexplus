@@ -67,13 +67,14 @@ module.exports = defineConfig({
     },
   ],
   plugins: [
-    {
-      resolve: "./src/plugins/stripe",
-      options: {
-        apiKey: process.env.STRIPE_SECRET_KEY,
-        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-        apiVersion: process.env.STRIPE_API_VERSION || '2023-10-16',
-      },
-    },
+    // Stripe plugin temporarily disabled - uncomment when needed
+    // {
+    //   resolve: "./src/plugins/stripe",
+    //   options: {
+    //     apiKey: process.env.STRIPE_SECRET_KEY,
+    //     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    //     apiVersion: process.env.STRIPE_API_VERSION || '2023-10-16',
+    //   },
+    // },
   ],
 })

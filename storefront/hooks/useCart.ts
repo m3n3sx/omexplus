@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext } from 'react'
-import apiClient from '../lib/api-client'
+import { storeAPI } from '../lib/api-client'
 
 interface CartItem {
   id: string
@@ -33,7 +33,7 @@ export function useCart() {
   const loadCart = async (cartId: string) => {
     try {
       setLoading(true)
-      const data = await apiClient.getCart(cartId)
+      const data = await storeAPI.getCart(cartId)
       setCart(data.cart)
     } catch (error) {
       console.error('Failed to load cart:', error)
@@ -44,7 +44,7 @@ export function useCart() {
 
   const createCart = async () => {
     try {
-      const data = await apiClient.createCart()
+      const data = await storeAPI.createCart()
       setCart(data.cart)
       localStorage.setItem('cart_id', data.cart.id)
       return data.cart
@@ -62,7 +62,7 @@ export function useCart() {
         currentCart = await createCart()
       }
 
-      const data = await apiClient.addToCart(currentCart.id, productId, quantity)
+      const data = await storeAPI.addToCart(currentCart.id, productId, quantity)
       
       // Reload cart to get updated totals
       await loadCart(currentCart.id)
@@ -78,7 +78,7 @@ export function useCart() {
     if (!cart) return
 
     try {
-      await apiClient.updateCartItem(cart.id, itemId, quantity)
+      await storeAPI.updateLineItem(cart.id, itemId, quantity)
       await loadCart(cart.id)
     } catch (error) {
       console.error('Failed to update cart item:', error)
@@ -90,7 +90,7 @@ export function useCart() {
     if (!cart) return
 
     try {
-      await apiClient.removeCartItem(cart.id, itemId)
+      await storeAPI.removeLineItem(cart.id, itemId)
       await loadCart(cart.id)
     } catch (error) {
       console.error('Failed to remove cart item:', error)
