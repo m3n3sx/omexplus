@@ -27,6 +27,9 @@
   "cart": {
     "empty": "Your cart is empty",
     "total": "Total",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
     "checkout": "Proceed to Checkout",
     "continueShopping": "Continue Shopping",
     "quantity": "Quantity",
@@ -41,12 +44,35 @@
     "register": "Register"
   },
   "checkout": {
+    "title": "Cart & Checkout",
+    "shippingAddress": "Shipping Address",
+    "shippingMethod": "Shipping Method",
+    "billingAddress": "Billing Address",
+    "paymentMethod": "Payment Method",
+    "reviewOrder": "Review Order",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "companyName": "Company Name",
+    "taxId": "Tax ID",
+    "sameAsShipping": "Same as shipping address",
+    "purchaseOrderNumber": "Purchase Order Number",
     "billing": "Billing Address",
     "shipping": "Shipping Address",
     "payment": "Payment",
     "review": "Order Review",
     "placeOrder": "Place Order",
-    "orderConfirmation": "Order Confirmation"
+    "orderConfirmation": "Order Confirmation",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shippingCost": "Shipping Cost",
+    "tax": "Tax",
+    "total": "Total"
   },
   "common": {
     "loading": "Loading...",
@@ -57,6 +83,9 @@
     "edit": "Edit",
     "delete": "Delete",
     "back": "Back",
-    "next": "Next"
+    "next": "Next",
+    "home": "Home",
+    "continueShopping": "Continue Shopping",
+    "quantity": "Quantity"
   }
 }

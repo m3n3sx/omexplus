@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { AddToCartButton } from './AddToCartButton'
 
 interface Product {
   id: string
@@ -17,6 +18,7 @@ interface Product {
     manufacturer_sku?: string
   }
   variants: Array<{
+    id?: string
     prices: Array<{
       amount: number
       currency_code: string
@@ -31,36 +33,25 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleAddToCart = async () => {
-    if (!onAddToCart) return
-    setIsLoading(true)
-    try {
-      await onAddToCart(product.id)
-    } catch (error) {
-      console.error('Error adding to cart:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   const stockStatus = getStockStatus(product.inventory_quantity || 0)
-  const price = product.variants[0]?.prices[0]
+  const price = product.variants?.[0]?.prices?.[0]
   const priceAmount = price ? (price.amount / 100).toFixed(2) : '0.00'
-  const currency = price?.currency_code === 'eur' ? '€' : price?.currency_code?.toUpperCase() || 'EUR'
+  const currency = price?.currency_code === 'pln' ? 'PLN' : price?.currency_code?.toUpperCase() || 'PLN'
 
   return (
-    <article 
-      className={`
-        group relative bg-white border rounded-lg overflow-hidden
-        transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary
-        ${stockStatus.borderClass}
-      `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      aria-labelledby={`product-title-${product.id}`}
-    >
+    <Link href={`/pl/products/${product.handle}`}>
+      <article 
+        className={`
+          group relative bg-white border rounded-lg overflow-hidden
+          transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary
+          cursor-pointer
+          ${stockStatus.borderClass}
+        `}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        aria-labelledby={`product-title-${product.id}`}
+      >
       {/* Image Area */}
       <div className="relative h-48 bg-gray-50">
         <Image
@@ -74,11 +65,9 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         {/* Hover Overlay */}
         {isHovered && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-center animate-in fade-in duration-300">
-            <Link href={`/products/${product.handle}`}>
-              <button className="px-6 py-2 bg-white text-primary font-semibold rounded-md hover:bg-gray-100 transition-colors">
-                Podgląd
-              </button>
-            </Link>
+            <button className="px-6 py-2 bg-white text-primary font-semibold rounded-md hover:bg-gray-100 transition-colors">
+              Podgląd
+            </button>
           </div>
         )}
       </div>
@@ -93,14 +82,12 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         </div>
 
         {/* Title */}
-        <Link href={`/products/${product.handle}`}>
-          <h3 
-            id={`product-title-${product.id}`}
-            className="font-semibold text-gray-900 line-clamp-2 hover:text-primary transition-colors cursor-pointer"
-          >
-            {product.title}
-          </h3>
-        </Link>
+        <h3 
+          id={`product-title-${product.id}`}
+          className="font-semibold text-gray-900 line-clamp-2 hover:text-primary transition-colors cursor-pointer"
+        >
+          {product.title}
+        </h3>
 
         {/* SKU */}
         <div className="text-xs font-mono text-gray-600 space-y-1">
@@ -124,30 +111,22 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 pt-2">
-          <button
-            onClick={handleAddToCart}
-            disabled={stockStatus.outOfStock || isLoading}
-            className="flex-1 btn-primary min-h-[44px] flex items-center justify-center gap-2"
-            aria-label="Dodaj do koszyka"
-          >
-            {isLoading ? (
-              <span className="inline-block animate-spin">⟳</span>
-            ) : (
-              <>
-                <span aria-hidden="true">➕</span>
-                <span>Dodaj do koszyka</span>
-              </>
+        <div className="space-y-2 pt-2">
+          <div onClick={(e) => e.preventDefault()}>
+            {product.variants?.[0] && (
+              <AddToCartButton 
+                variantId={product.variants[0].id || product.id}
+                disabled={stockStatus.outOfStock}
+              />
             )}
+          </div>
+          <button className="w-full px-4 py-3 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-all min-h-[44px]">
+            Szczegóły
           </button>
-          <Link href={`/products/${product.handle}`}>
-            <button className="px-4 py-3 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-all min-h-[44px]">
-              Szczegóły
-            </button>
-          </Link>
         </div>
       </div>
     </article>
+    </Link>
   )
 }
 

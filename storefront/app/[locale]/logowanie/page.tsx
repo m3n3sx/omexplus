@@ -4,8 +4,6 @@ import { useState } from 'react'
 import { useLocale } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export default function LoginPage() {
   const locale = useLocale()
@@ -30,9 +28,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <Header />
-
-      <div style={{ maxWidth: '500px', margin: '0 auto', padding: '4rem 2rem' }}>
+<div style={{ maxWidth: '500px', margin: '0 auto', padding: '4rem 2rem' }}>
         {/* Logo/Icon */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔐</div>
@@ -253,8 +249,6 @@ export default function LoginPage() {
           </Link>
         </div>
       </div>
-
-      <Footer />
-    </div>
+</div>
   )
 }

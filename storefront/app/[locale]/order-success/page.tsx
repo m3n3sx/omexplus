@@ -2,8 +2,6 @@
 
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export default function OrderSuccessPage() {
   const t = useTranslations()
@@ -15,9 +13,7 @@ export default function OrderSuccessPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <Header />
-
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '4rem 2rem' }}>
+<div style={{ maxWidth: '800px', margin: '0 auto', padding: '4rem 2rem' }}>
         {/* Success Icon */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{
@@ -223,8 +219,6 @@ export default function OrderSuccessPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
-    </div>
+</div>
   )
 }

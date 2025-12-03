@@ -27,6 +27,9 @@
   "cart": {
     "empty": "Ihr Warenkorb ist leer",
     "total": "Gesamt",
+    "subtotal": "Zwischensumme",
+    "shipping": "Versand",
+    "tax": "MwSt",
     "checkout": "Zur Kasse",
     "continueShopping": "Weiter einkaufen",
     "quantity": "Menge",
@@ -41,12 +44,35 @@
     "register": "Registrieren"
   },
   "checkout": {
+    "title": "Warenkorb & Kasse",
+    "shippingAddress": "Lieferadresse",
+    "shippingMethod": "Versandart",
+    "billingAddress": "Rechnungsadresse",
+    "paymentMethod": "Zahlungsmethode",
+    "reviewOrder": "Bestellung überprüfen",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "address": "Adresse",
+    "city": "Stadt",
+    "postalCode": "Postleitzahl",
+    "country": "Land",
+    "companyName": "Firmenname",
+    "taxId": "Steuernummer",
+    "sameAsShipping": "Gleich wie Lieferadresse",
+    "purchaseOrderNumber": "Bestellnummer",
     "billing": "Rechnungsadresse",
     "shipping": "Lieferadresse",
     "payment": "Zahlung",
     "review": "Bestellübersicht",
     "placeOrder": "Bestellung aufgeben",
-    "orderConfirmation": "Bestellbestätigung"
+    "orderConfirmation": "Bestellbestätigung",
+    "orderSummary": "Bestellübersicht",
+    "subtotal": "Zwischensumme",
+    "shippingCost": "Versandkosten",
+    "tax": "MwSt",
+    "total": "Gesamt"
   },
   "common": {
     "loading": "Laden...",
@@ -57,6 +83,9 @@
     "edit": "Bearbeiten",
     "delete": "Löschen",
     "back": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "home": "Startseite",
+    "continueShopping": "Weiter einkaufen",
+    "quantity": "Menge"
   }
 }

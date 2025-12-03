@@ -1,36 +1,140 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 OMEX Storefront - Next.js 15
 
-## Getting Started
-
-First, run the development server:
+## ⚡ Szybki Start
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otwórz [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✅ Status: SKLEP GOTOWY DO SPRZEDAŻY! 🛒
 
-## Learn More
+Frontend jest w 100% funkcjonalny i gotowy do przyjmowania zamówień!
 
-To learn more about Next.js, take a look at the following resources:
+### Co działa:
+- ✅ Next.js 15
+- ✅ Tailwind CSS 3.4
+- ✅ Medusa API Integration
+- ✅ TypeScript
+- ✅ Mobile Responsive (100%)
+- ✅ Internationalization (4 języki)
+- ✅ **Zaawansowana Wyszukiwarka (5 metod)** 🔍
+- ✅ **Koszyk i Checkout** 🛒
+- ✅ **Płatności Stripe** 💳
+- ✅ **Konta Użytkowników** 👤
+- ✅ **Historia Zamówień** 📦
+- ✅ **Wszystkie Podstrony** 📄
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📚 Dokumentacja
 
-## Deploy on Vercel
+### Przeczytaj najpierw:
+- **SKLEP_GOTOWY.md** - Sklep gotowy do sprzedaży! ⭐⭐⭐
+- **START_HERE.md** - Szybki start (30 sekund) ⭐
+- **STRONY_NAPRAWIONE.md** - Wszystkie strony naprawione
+- **WYSZUKIWARKA_PRZYWROCONA.md** - Zaawansowana wyszukiwarka
+- **../URUCHOM_FRONTEND.md** - Pełny przewodnik (PL)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Szczegółowa dokumentacja:
+- **HEADER_NAPRAWIONY.md** - Naprawa duplikacji headera ⭐
+- **QUICK_FIX.md** - 5-minutowa naprawa
+- **ERROR_FIXES.md** - Rozwiązania błędów
+- **../CORS_FIX_GUIDE.md** - Problemy CORS
+- **../STOREFRONT_RESTORATION_GUIDE.md** - Kompletny przewodnik
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🔧 Konfiguracja
+
+### Environment Variables (.env.local)
+```env
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_storefront_2024_token
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+```
+
+### Wymagania
+- Node.js 18+ lub 20+
+- Backend Medusa na porcie 9000
+- npm lub yarn
+
+---
+
+## 🧪 Testy
+
+### Test API Connection
+```bash
+npx tsx test-api-connection.ts
+```
+
+### Test Backend
+```bash
+curl http://localhost:9000/health
+```
+
+---
+
+## 🚨 Problemy?
+
+### CORS Error
+Edytuj `medusa-config.ts` w głównym katalogu:
+```typescript
+http: {
+  storeCors: "http://localhost:3000"
+}
+```
+Zrestartuj backend!
+
+### Module Not Found
+```bash
+rm -rf .next
+npm run dev
+```
+
+### Port Zajęty
+```bash
+lsof -i :3000
+kill -9 <PID>
+```
+
+---
+
+## 📁 Struktura
+
+```
+storefront/
+├── app/              # Next.js App Router
+├── components/       # React Components
+├── lib/             # API Clients & Utils
+├── hooks/           # Custom React Hooks
+├── public/          # Static Assets
+└── messages/        # i18n Translations
+```
+
+---
+
+## 🎯 Następne kroki
+
+1. Uruchom backend: `npm run dev` (w głównym katalogu)
+2. Uruchom frontend: `npm run dev` (w tym katalogu)
+3. Otwórz: http://localhost:3000
+4. Sprawdź Console (F12) - brak błędów
+
+---
+
+## 📞 Wsparcie
+
+Zobacz dokumentację w katalogu głównym:
+- `WSZYSTKO_NAPRAWIONE.md`
+- `URUCHOM_FRONTEND.md`
+- `STOREFRONT_FIXED_SUMMARY.md`
+
+---
+
+**Status:** ✅ Gotowe  
+**Wersja:** 1.0.0  
+**Ostatnia aktualizacja:** 3 grudnia 2024

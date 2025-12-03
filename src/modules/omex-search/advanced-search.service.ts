@@ -19,6 +19,12 @@ import {
 } from "./types"
 
 class AdvancedSearchService extends MedusaService({}) {
+  private container_: any
+
+  constructor(container: any) {
+    super(...arguments)
+    this.container_ = container.container_ || container
+  }
   // ============================================================================
   // METHOD 1: Machine-Based Search (5-step wizard)
   // ============================================================================
@@ -26,80 +32,90 @@ class AdvancedSearchService extends MedusaService({}) {
   /**
    * Get available brands for step 1
    */
-  async getMachineBrands(): Promise<string[]> {
-    return [
-      'CAT',
-      'Komatsu',
-      'Hitachi',
-      'Volvo',
-      'JCB',
-      'Kobelco',
-      'Hyundai',
-      'Bobcat',
-      'Doosan',
-      'Yuchai',
-      'Atlas',
-      'Liebherr',
-      'Terex',
-      'Case',
-      'New Holland',
-    ]
+  async getMachineBrands(): Promise<Array<{ value: string; label: string; count: number }>> {
+    const knex = this.container_.resolve("__pg_connection__")
+    
+    const sql = `
+      SELECT 
+        metadata->>'machine_brand' as brand,
+        COUNT(DISTINCT p.id) as count
+      FROM product p
+      WHERE 
+        p.deleted_at IS NULL
+        AND metadata->>'machine_brand' IS NOT NULL
+      GROUP BY metadata->>'machine_brand'
+      ORDER BY count DESC, brand ASC
+    `
+    
+    const results = await knex.raw(sql).then(result => result.rows)
+    
+    return results.map(r => ({
+      value: r.brand,
+      label: r.brand,
+      count: parseInt(r.count)
+    }))
   }
 
   /**
    * Get available machine types for step 2
    */
   async getMachineTypes(brand?: string): Promise<Array<{ value: string; label: string; count: number }>> {
-    // In real implementation, query database for available types
-    return [
-      { value: 'excavator', label: 'Koparka', count: 1500 },
-      { value: 'loader', label: 'Ładowarka', count: 800 },
-      { value: 'backhoe', label: 'Koparka-ładowarka', count: 400 },
-      { value: 'dozer', label: 'Spychacz', count: 300 },
-      { value: 'telehandler', label: 'Ładowarka teleskopowa', count: 200 },
-      { value: 'compactor', label: 'Walcarka', count: 150 },
-      { value: 'mini-excavator', label: 'Mini koparka', count: 600 },
-      { value: 'wheel-excavator', label: 'Koparka kołowa', count: 250 },
-    ]
+    const knex = this.container_.resolve("__pg_connection__")
+    
+    const conditions = ['p.deleted_at IS NULL', "metadata->>'machine_type' IS NOT NULL"]
+    const params: any[] = []
+    
+    if (brand) {
+      conditions.push("metadata->>'machine_brand' = ?")
+      params.push(brand)
+    }
+    
+    const sql = `
+      SELECT 
+        metadata->>'machine_type' as type,
+        COUNT(DISTINCT p.id) as count
+      FROM product p
+      WHERE ${conditions.join(' AND ')}
+      GROUP BY metadata->>'machine_type'
+      ORDER BY count DESC, type ASC
+    `
+    
+    const results = await knex.raw(sql, params).then(result => result.rows)
+    
+    return results.map(r => ({
+      value: r.type,
+      label: r.type,
+      count: parseInt(r.count)
+    }))
   }
 
   /**
    * Get available models for step 3
    */
-  async getMachineModels(brand: string, type: string): Promise<MachineDefinition[]> {
-    // In real implementation, query machine database
-    // Example for CAT excavators:
-    if (brand === 'CAT' && type === 'excavator') {
-      return [
-        {
-          id: 'cat-301',
-          brand: 'CAT',
-          type: 'excavator',
-          model: '301.7D',
-          series: 'D',
-          frame: 'small',
-          weight: 1.7,
-          yearFrom: 2015,
-          yearTo: 2024,
-          compatibleParts: [],
-        },
-        {
-          id: 'cat-320',
-          brand: 'CAT',
-          type: 'excavator',
-          model: '320D',
-          series: 'D',
-          frame: 'standard',
-          weight: 20,
-          yearFrom: 2005,
-          yearTo: 2015,
-          compatibleParts: [],
-        },
-        // ... more models
-      ]
-    }
-
-    return []
+  async getMachineModels(brand: string, type: string): Promise<Array<{ value: string; label: string; count: number }>> {
+    const knex = this.container_.resolve("__pg_connection__")
+    
+    const sql = `
+      SELECT 
+        jsonb_array_elements_text(metadata->'machine_models') as model,
+        COUNT(DISTINCT p.id) as count
+      FROM product p
+      WHERE 
+        p.deleted_at IS NULL
+        AND metadata->>'machine_brand' = ?
+        AND metadata->>'machine_type' = ?
+        AND metadata->'machine_models' IS NOT NULL
+      GROUP BY model
+      ORDER BY count DESC, model ASC
+    `
+    
+    const results = await knex.raw(sql, [brand, type]).then(result => result.rows)
+    
+    return results.map(r => ({
+      value: r.model,
+      label: r.model,
+      count: parseInt(r.count)
+    }))
   }
 
   /**
@@ -107,30 +123,64 @@ class AdvancedSearchService extends MedusaService({}) {
    */
   async searchByMachine(params: MachineSearchParams): Promise<SearchResult> {
     const { brand, machineType, model, series, frame, engine } = params
+    
+    // Get database connection
+    const knex = this.container_.resolve("__pg_connection__")
+    
+    // Build search conditions
+    const conditions = ['p.deleted_at IS NULL']
+    const queryParams = []
+    
+    if (brand) {
+      conditions.push(`p.metadata->>'machine_brand' = ?`)
+      queryParams.push(brand)
+    }
+    
+    if (machineType) {
+      conditions.push(`p.metadata->>'machine_type' = ?`)
+      queryParams.push(machineType)
+    }
+    
+    if (model) {
+      conditions.push(`(p.metadata->'machine_models' @> ?::jsonb OR LOWER(p.title) LIKE ?)`)
+      queryParams.push(`["${model}"]`, `%${model.toLowerCase()}%`)
+    }
+    
+    const whereClause = conditions.join(' AND ')
 
-    // Build query to find compatible parts
-    const query = `
-      SELECT DISTINCT p.*
+    const sql = `
+      SELECT 
+        p.id,
+        p.title,
+        p.description,
+        p.handle,
+        p.thumbnail,
+        p.created_at,
+        p.metadata,
+        json_agg(
+          json_build_object(
+            'id', pv.id,
+            'title', pv.title,
+            'sku', pv.sku
+          )
+        ) as variants
       FROM product p
-      JOIN product_compatibility pc ON p.id = pc.product_id
-      JOIN machine_definition md ON pc.machine_id = md.id
-      WHERE md.brand = $1
-        AND md.type = $2
-        AND md.model = $3
-        ${series ? 'AND md.series = $4' : ''}
-        ${frame ? 'AND md.frame = $5' : ''}
-        ${engine ? 'AND md.engine = $6' : ''}
-      ORDER BY p.popularity DESC
+      LEFT JOIN product_variant pv ON p.id = pv.product_id
+      WHERE ${whereClause}
+      GROUP BY p.id, p.title, p.description, p.handle, p.thumbnail, p.created_at, p.metadata
+      ORDER BY p.created_at DESC
+      LIMIT 50
     `
 
-    // In real implementation, execute query and return results
+    const products = await knex.raw(sql, queryParams).then(result => result.rows)
+
     return {
-      products: [],
-      total: 0,
+      products: products || [],
+      total: products?.length || 0,
       page: 1,
       limit: 50,
       hasMore: false,
-      searchTime: 0,
+      searchTime: Date.now(),
     }
   }
 
@@ -143,48 +193,60 @@ class AdvancedSearchService extends MedusaService({}) {
    */
   async searchByPartNumber(params: PartNumberSearchParams): Promise<PartNumberSearchResult> {
     const { partNumber, includeAlternatives = true, exactMatch = false } = params
+    
+    // Get database connection
+    const knex = this.container_.resolve("__pg_connection__")
 
     // Normalize part number (remove spaces, dashes, etc.)
     const normalized = this.normalizePartNumber(partNumber)
+    const searchPattern = exactMatch ? normalized : `%${normalized}%`
 
-    // Search for exact match
-    const exactQuery = `
-      SELECT p.*, 
-        CASE 
-          WHEN p.part_number = $1 THEN 100
-          WHEN p.sku = $1 THEN 90
-          WHEN p.ean = $1 THEN 80
-          ELSE 0
-        END as match_score
+    // Raw SQL query to search by SKU and metadata
+    const sql = `
+      SELECT 
+        p.id,
+        p.title,
+        p.description,
+        p.handle,
+        p.thumbnail,
+        p.created_at,
+        p.metadata,
+        json_agg(
+          json_build_object(
+            'id', pv.id,
+            'title', pv.title,
+            'sku', pv.sku
+          )
+        ) as variants,
+        MIN(CASE 
+          WHEN pv.sku = ? THEN 1
+          WHEN p.metadata->>'part_number' = ? THEN 2
+          ELSE 3
+        END) as match_rank
       FROM product p
-      WHERE p.part_number = $1 
-         OR p.sku = $1 
-         OR p.ean = $1
-      ORDER BY match_score DESC
-      LIMIT 1
+      LEFT JOIN product_variant pv ON p.id = pv.product_id
+      WHERE 
+        p.deleted_at IS NULL
+        AND (
+          ${exactMatch ? 'pv.sku = ?' : 'pv.sku ILIKE ?'}
+          OR ${exactMatch ? "p.metadata->>'part_number' = ?" : "p.metadata->>'part_number' ILIKE ?"}
+          OR ${exactMatch ? 'p.title = ?' : 'p.title ILIKE ?'}
+        )
+      GROUP BY p.id, p.title, p.description, p.handle, p.thumbnail, p.created_at, p.metadata
+      ORDER BY match_rank
+      LIMIT 20
     `
 
-    // Search for alternatives if requested
-    let alternatives = []
-    if (includeAlternatives) {
-      const altQuery = `
-        SELECT p.*, pa.compatibility_score
-        FROM product p
-        JOIN product_alternative pa ON p.id = pa.alternative_id
-        WHERE pa.original_part_number = $1
-        ORDER BY pa.compatibility_score DESC, p.price ASC
-        LIMIT 10
-      `
-      // Execute query
-    }
+    const queryParams = exactMatch 
+      ? [normalized, normalized, normalized, normalized, normalized]
+      : [normalized, normalized, searchPattern, searchPattern, searchPattern]
 
-    // Get similar part numbers for suggestions
-    const suggestions = await this.getSimilarPartNumbers(normalized)
+    const products = await knex.raw(sql, queryParams).then(result => result.rows)
 
     return {
-      exact: undefined, // Would be populated from query
-      alternatives: [],
-      suggestions,
+      exact: products?.[0],
+      alternatives: products || [],
+      suggestions: [],
     }
   }
 
@@ -194,7 +256,7 @@ class AdvancedSearchService extends MedusaService({}) {
   private normalizePartNumber(partNumber: string): string {
     return partNumber
       .toUpperCase()
-      .replace(/[\s\-_]/g, '')
+      .replace(/[\s_]/g, '')  // Remove spaces and underscores, but keep dashes
       .trim()
   }
 
@@ -408,37 +470,66 @@ class AdvancedSearchService extends MedusaService({}) {
    * Full-text search implementation
    */
   private async fullTextSearch(query: string, parsed: ParsedQuery, fuzzy: boolean): Promise<SearchResult> {
-    const searchTerms = query.trim().split(/\s+/).join(fuzzy ? ' | ' : ' & ')
+    // Get database connection
+    const knex = this.container_.resolve("__pg_connection__")
+    
+    // Search in title, description, SKU, and metadata
+    const searchPattern = `%${query.toLowerCase()}%`
     
     const sql = `
-      SELECT p.*,
-        ts_rank(
-          to_tsvector('simple', 
-            COALESCE(p.title, '') || ' ' || 
-            COALESCE(p.description, '') || ' ' ||
-            COALESCE(p.part_number, '') || ' ' ||
-            COALESCE(p.sku, '')
-          ),
-          to_tsquery('simple', $1)
-        ) as rank
+      SELECT 
+        p.id,
+        p.title,
+        p.description,
+        p.handle,
+        p.thumbnail,
+        p.created_at,
+        p.metadata,
+        json_agg(
+          json_build_object(
+            'id', pv.id,
+            'title', pv.title,
+            'sku', pv.sku
+          )
+        ) as variants,
+        MIN(CASE 
+          WHEN LOWER(p.title) LIKE ? THEN 1
+          WHEN LOWER(pv.sku) LIKE ? THEN 2
+          WHEN LOWER(p.metadata->>'part_number') LIKE ? THEN 3
+          ELSE 4
+        END) as match_rank
       FROM product p
-      WHERE to_tsvector('simple', 
-        COALESCE(p.title, '') || ' ' || 
-        COALESCE(p.description, '') || ' ' ||
-        COALESCE(p.part_number, '') || ' ' ||
-        COALESCE(p.sku, '')
-      ) @@ to_tsquery('simple', $1)
-      ORDER BY rank DESC
+      LEFT JOIN product_variant pv ON p.id = pv.product_id
+      WHERE 
+        p.deleted_at IS NULL
+        AND (
+          LOWER(p.title) LIKE ?
+          OR LOWER(p.description) LIKE ?
+          OR LOWER(pv.sku) LIKE ?
+          OR LOWER(pv.title) LIKE ?
+          OR LOWER(p.metadata->>'machine_brand') LIKE ?
+          OR LOWER(p.metadata->>'machine_model') LIKE ?
+          OR LOWER(p.metadata->>'part_number') LIKE ?
+        )
+      GROUP BY p.id, p.title, p.description, p.handle, p.thumbnail, p.created_at, p.metadata
+      ORDER BY match_rank, p.created_at DESC
       LIMIT 50
     `
 
+    const products = await knex.raw(sql, [
+      searchPattern, searchPattern, searchPattern, // for match_rank
+      searchPattern, searchPattern, searchPattern, searchPattern,
+      searchPattern, searchPattern, searchPattern
+    ]).then(result => result.rows)
+
     return {
-      products: [],
-      total: 0,
+      products: products || [],
+      total: products?.length || 0,
       page: 1,
       limit: 50,
       hasMore: false,
       parsedQuery: parsed,
+      searchTime: Date.now(),
     }
   }
 

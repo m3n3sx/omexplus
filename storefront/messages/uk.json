@@ -27,6 +27,9 @@
   "cart": {
     "empty": "Ваш кошик порожній",
     "total": "Разом",
+    "subtotal": "Проміжна сума",
+    "shipping": "Доставка",
+    "tax": "ПДВ",
     "checkout": "Оформити замовлення",
     "continueShopping": "Продовжити покупки",
     "quantity": "Кількість",
@@ -41,12 +44,35 @@
     "register": "Зареєструватися"
   },
   "checkout": {
+    "title": "Кошик і Оформлення",
+    "shippingAddress": "Адреса доставки",
+    "shippingMethod": "Спосіб доставки",
+    "billingAddress": "Адреса для рахунку",
+    "paymentMethod": "Спосіб оплати",
+    "reviewOrder": "Перегляд замовлення",
+    "firstName": "Ім'я",
+    "lastName": "Прізвище",
+    "email": "Email",
+    "phone": "Телефон",
+    "address": "Адреса",
+    "city": "Місто",
+    "postalCode": "Поштовий індекс",
+    "country": "Країна",
+    "companyName": "Назва компанії",
+    "taxId": "Податковий номер",
+    "sameAsShipping": "Така ж як адреса доставки",
+    "purchaseOrderNumber": "Номер замовлення",
     "billing": "Адреса для рахунку",
     "shipping": "Адреса доставки",
     "payment": "Оплата",
     "review": "Огляд замовлення",
     "placeOrder": "Оформити замовлення",
-    "orderConfirmation": "Підтвердження замовлення"
+    "orderConfirmation": "Підтвердження замовлення",
+    "orderSummary": "Підсумок замовлення",
+    "subtotal": "Проміжна сума",
+    "shippingCost": "Вартість доставки",
+    "tax": "ПДВ",
+    "total": "Всього"
   },
   "common": {
     "loading": "Завантаження...",
@@ -57,6 +83,9 @@
     "edit": "Редагувати",
     "delete": "Видалити",
     "back": "Назад",
-    "next": "Далі"
+    "next": "Далі",
+    "home": "Головна",
+    "continueShopping": "Продовжити покупки",
+    "quantity": "Кількість"
   }
 }

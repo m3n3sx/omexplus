@@ -25,8 +25,12 @@
     "category": "Kategoria"
   },
   "cart": {
+    "title": "Koszyk",
     "empty": "Koszyk pusty",
     "total": "Razem",
+    "subtotal": "Suma częściowa",
+    "shipping": "Dostawa",
+    "tax": "VAT",
     "checkout": "Przejdź do kasy",
     "continueShopping": "Kontynuuj zakupy",
     "quantity": "Ilość",
@@ -41,12 +45,35 @@
     "register": "Zarejestruj"
   },
   "checkout": {
+    "title": "Koszyk i Checkout",
+    "shippingAddress": "Adres dostawy",
+    "shippingMethod": "Metoda dostawy",
+    "billingAddress": "Adres rozliczeniowy",
+    "paymentMethod": "Metoda płatności",
+    "reviewOrder": "Przegląd zamówienia",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "email": "Email",
+    "phone": "Telefon",
+    "address": "Adres",
+    "city": "Miasto",
+    "postalCode": "Kod pocztowy",
+    "country": "Kraj",
+    "companyName": "Nazwa firmy",
+    "taxId": "NIP",
+    "sameAsShipping": "Taki sam jak adres dostawy",
+    "purchaseOrderNumber": "Numer zamówienia zakupu",
     "billing": "Adres rozliczeniowy",
     "shipping": "Adres dostawy",
     "payment": "Płatność",
     "review": "Podsumowanie",
     "placeOrder": "Złóż zamówienie",
-    "orderConfirmation": "Potwierdzenie zamówienia"
+    "orderConfirmation": "Potwierdzenie zamówienia",
+    "orderSummary": "Podsumowanie zamówienia",
+    "subtotal": "Suma częściowa",
+    "shippingCost": "Koszt dostawy",
+    "tax": "VAT",
+    "total": "Razem do zapłaty"
   },
   "common": {
     "loading": "Ładowanie...",
@@ -57,6 +84,9 @@
     "edit": "Edytuj",
     "delete": "Usuń",
     "back": "Wstecz",
-    "next": "Dalej"
+    "next": "Dalej",
+    "home": "Strona główna",
+    "continueShopping": "Kontynuuj zakupy",
+    "quantity": "Ilość"
   }
 }

@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
 
@@ -91,9 +89,7 @@ export default function OrdersPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <Header />
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+<div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
         {/* Breadcrumb */}
         <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: '#6b7280' }}>
           <Link href={`/${locale}`} style={{ color: '#3b82f6' }}>
@@ -272,8 +268,6 @@ export default function OrdersPage() {
           </div>
         )}
       </div>
-
-      <Footer />
-    </div>
+</div>
   )
 }

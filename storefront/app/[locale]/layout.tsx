@@ -3,8 +3,9 @@ import { Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { notFound } from 'next/navigation'
 import '../globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import { NewHeader } from '@/components/layout/NewHeader'
+import { NewFooter } from '@/components/layout/NewFooter'
+import { Providers } from '@/components/providers/Providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,26 +19,36 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }) {
+  // Next.js 15: await params before accessing properties
+  const { locale } = await params
+  
+  // Validate locale and load messages
+  const validLocales = ['pl', 'en', 'de', 'uk']
+  const validLocale = validLocales.includes(locale) ? locale : 'pl'
+  
   let messages
   try {
-    messages = (await import(`../../messages/${params.locale}.json`)).default
+    messages = (await import(`../../messages/${validLocale}.json`)).default
   } catch (error) {
-    notFound()
+    // Fallback to Polish if messages file not found
+    messages = (await import(`../../messages/pl.json`)).default
   }
 
   return (
-    <html lang={params.locale || 'pl'}>
-      <body className={inter.className}>
-        <NextIntlClientProvider locale={params.locale} messages={messages}>
-          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Header />
-            <main style={{ flex: 1 }}>
-              {children}
-            </main>
-            <Footer />
-          </div>
+    <html lang={locale || 'pl'} suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>
+            <div className="flex flex-col min-h-screen">
+              <NewHeader />
+              <main className="flex-1">
+                {children}
+              </main>
+              <NewFooter />
+            </div>
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

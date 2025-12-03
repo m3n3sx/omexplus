@@ -6,6 +6,7 @@
  */
 
 import { useState } from 'react'
+import { ProductCard } from '@/components/product/ProductCard'
 
 interface SearchResultsProps {
   products: any[]
@@ -65,7 +66,7 @@ export default function SearchResults({
 
   const totalPages = Math.ceil(total / limit)
 
-  const ProductCard = ({ product }: { product: any }) => (
+  const OldProductCard = ({ product }: { product: any }) => (
     <div style={{
       border: '1px solid #e5e7eb',
       borderRadius: '8px',
@@ -451,9 +452,7 @@ export default function SearchResults({
       {/* Products Grid/List */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: viewMode === 'grid' 
-          ? 'repeat(auto-fill, minmax(280px, 1fr))' 
-          : '1fr',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
         gap: '1.5rem',
         marginBottom: '2rem',
       }}>

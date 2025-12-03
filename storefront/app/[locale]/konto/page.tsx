@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export default function AccountPage() {
   const t = useTranslations()
@@ -50,8 +48,6 @@ export default function AccountPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <Header />
-
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
         {/* Breadcrumb */}
         <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: '#6b7280' }}>
@@ -508,8 +504,6 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   )
 }

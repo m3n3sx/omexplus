@@ -4,8 +4,6 @@ import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export default function RegisterPage() {
   const t = useTranslations()
@@ -56,9 +54,7 @@ export default function RegisterPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <Header />
-
-      <div style={{ maxWidth: '700px', margin: '0 auto', padding: '4rem 2rem' }}>
+<div style={{ maxWidth: '700px', margin: '0 auto', padding: '4rem 2rem' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📝</div>
@@ -401,8 +397,6 @@ export default function RegisterPage() {
           </form>
         </div>
       </div>
-
-      <Footer />
-    </div>
+</div>
   )
 }

@@ -1,0 +1,8 @@
+✅ Połączono z bazą danych
+
+📊 Aktualnie w bazie: 120 produktów
+
+
+📦 Kategoria: Hydraulika
+   📁 Pompy hydrauliczne
+❌ Błąd: kolumna "inventory_quantity" relacji "product_variant" nie istnieje

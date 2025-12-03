@@ -4,12 +4,13 @@
  */
 
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import AdvancedSearchService from "../../../../modules/omex-search/advanced-search.service"
 
 export async function GET(
   req: MedusaRequest,
   res: MedusaResponse
 ): Promise<void> {
-  const advancedSearchService = req.scope.resolve("advancedSearchService")
+  const advancedSearchService = new AdvancedSearchService({ container_: req.scope } as any)
 
   try {
     const { 

@@ -90,73 +90,155 @@ export function useSearch() {
     setError(null)
 
     try {
-      let response: Response
       const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+      const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      }
+      
+      if (publishableKey) {
+        headers['x-publishable-api-key'] = publishableKey
+      }
+
+      let url = `${backendUrl}/store/products?`
+      let queryParams: string[] = []
 
       switch (method) {
-        case 'machine':
-          response = await fetch(`${backendUrl}/store/omex-search/machine`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(params),
-          })
+        case 'text':
+          const textParams = params as TextSearchParams
+          // Use custom text search endpoint
+          url = `${backendUrl}/store/omex-search/text?`
+          queryParams.push(`q=${encodeURIComponent(textParams.query)}`)
+          if (textParams.language) queryParams.push(`language=${textParams.language}`)
+          if (textParams.fuzzy !== undefined) queryParams.push(`fuzzy=${textParams.fuzzy}`)
           break
 
         case 'part-number':
           const pnParams = params as PartNumberSearchParams
-          response = await fetch(`${backendUrl}/store/omex-search/part-number`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pnParams),
-          })
+          // Use custom part number search endpoint
+          url = `${backendUrl}/store/omex-search/part-number?`
+          queryParams.push(`partNumber=${encodeURIComponent(pnParams.partNumber)}`)
+          if (pnParams.includeAlternatives !== undefined) {
+            queryParams.push(`includeAlternatives=${pnParams.includeAlternatives}`)
+          }
+          if (pnParams.exactMatch !== undefined) {
+            queryParams.push(`exactMatch=${pnParams.exactMatch}`)
+          }
           break
 
-        case 'visual':
-          response = await fetch(`${backendUrl}/store/omex-search/visual`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(params),
-          })
-          break
-
-        case 'text':
-          response = await fetch(`${backendUrl}/store/omex-search/text`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(params),
-          })
+        case 'machine':
+          const machineParams = params as MachineSearchParams
+          // Use main omex-search endpoint for machine search
+          url = `${backendUrl}/store/omex-search?`
+          queryParams.push(`brand=${encodeURIComponent(machineParams.brand)}`)
+          queryParams.push(`machineType=${encodeURIComponent(machineParams.machineType)}`)
+          queryParams.push(`model=${encodeURIComponent(machineParams.model)}`)
+          if (machineParams.series) queryParams.push(`series=${encodeURIComponent(machineParams.series)}`)
+          if (machineParams.frame) queryParams.push(`frame=${encodeURIComponent(machineParams.frame)}`)
+          if (machineParams.engine) queryParams.push(`engine=${encodeURIComponent(machineParams.engine)}`)
           break
 
         case 'filters':
-          response = await fetch(`${backendUrl}/store/omex-search/filters`, {
+          const filterParams = params as FilterSearchParams
+          // Use filters endpoint
+          url = `${backendUrl}/store/omex-search/filters`
+          // POST request for filters
+          const filterResponse = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(params),
+            headers,
+            body: JSON.stringify(filterParams)
           })
-          break
+          
+          if (!filterResponse.ok) {
+            throw new Error(`Filter search failed: ${filterResponse.statusText}`)
+          }
+          
+          const filterData = await filterResponse.json()
+          const filterResult: SearchResult = {
+            products: filterData.products || [],
+            total: filterData.total || 0,
+            page: filterData.page || 1,
+            limit: filterData.limit || 50,
+            hasMore: filterData.hasMore || false,
+            searchTime: filterData.searchTime || 0
+          }
+          
+          setResults(filterResult.products)
+          setSearchInfo({
+            total: filterResult.total,
+            page: filterResult.page,
+            limit: filterResult.limit,
+            hasMore: filterResult.hasMore,
+          })
+          
+          return filterResult
+
+        case 'visual':
+          // Visual search nie jest jeszcze wspierany
+          return {
+            products: [],
+            total: 0,
+            page: 1,
+            limit: 12,
+            hasMore: false
+          }
 
         default:
-          throw new Error(`Unknown search method: ${method}`)
+          // Fallback to standard search
+          url = `${backendUrl}/store/products?`
+          queryParams.push('limit=50')
       }
+
+      url += queryParams.join('&')
+      
+      const response = await fetch(url, { headers })
 
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`)
       }
 
-      const data: SearchResult = await response.json()
+      const data = await response.json()
+
+      // Przekształć odpowiedź na SearchResult
+      let searchResult: SearchResult
+
+      if (method === 'part-number') {
+        // Part number search returns { exact, alternatives, suggestions }
+        searchResult = {
+          exact: data.exact,
+          alternatives: data.alternatives || [],
+          products: data.alternatives || [],
+          suggestions: data.suggestions || [],
+          total: (data.alternatives || []).length,
+          page: 1,
+          limit: 20,
+          hasMore: false,
+          searchTime: 0
+        }
+      } else {
+        // Other searches return { products, total, page, limit, hasMore }
+        searchResult = {
+          products: data.products || [],
+          total: data.total || data.count || 0,
+          page: data.page || 1,
+          limit: data.limit || 50,
+          hasMore: data.hasMore || false,
+          parsedQuery: data.parsedQuery,
+          searchTime: data.searchTime || 0
+        }
+      }
 
       // Update state
-      setResults(data.products || data.similarParts || [])
+      setResults(searchResult.products)
       setSearchInfo({
-        total: data.total || 0,
-        page: data.page || 1,
-        limit: data.limit || 12,
-        hasMore: data.hasMore || false,
-        parsedQuery: data.parsedQuery,
-        searchTime: data.searchTime,
+        total: searchResult.total,
+        page: searchResult.page,
+        limit: searchResult.limit,
+        hasMore: searchResult.hasMore,
       })
 
-      return data
+      return searchResult
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Search failed'
       setError(errorMessage)
@@ -189,8 +271,16 @@ export function useAutocomplete() {
     setLoading(true)
     try {
       const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+      const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+      
+      // Szukaj produktów przez standardowe API Medusa
       const response = await fetch(
-        `${backendUrl}/store/omex-search/autocomplete?q=${encodeURIComponent(query)}&limit=${limit}`
+        `${backendUrl}/store/products?q=${encodeURIComponent(query)}&limit=${limit}`,
+        {
+          headers: publishableKey ? {
+            'x-publishable-api-key': publishableKey
+          } : {}
+        }
       )
 
       if (!response.ok) {
@@ -198,7 +288,16 @@ export function useAutocomplete() {
       }
 
       const data = await response.json()
-      setSuggestions(data.suggestions || [])
+      
+      // Przekształć produkty na sugestie
+      const productSuggestions = (data.products || []).map((product: any) => ({
+        text: product.title,
+        type: 'product',
+        count: 1,
+        id: product.id
+      }))
+      
+      setSuggestions(productSuggestions)
     } catch (err) {
       console.error('Autocomplete error:', err)
       setSuggestions([])

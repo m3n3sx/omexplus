@@ -10,12 +10,14 @@ const nextConfig = {
   experimental: {
     turbo: false,
   },
+  // Disable instrumentation to avoid OpenTelemetry issues
+  instrumentationHook: false,
   trailingSlash: false,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
 }
 

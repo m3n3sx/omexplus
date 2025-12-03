@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import { storeAPI } from '@/lib/api-client'
 
 export default function ProductsPage() {
@@ -38,9 +36,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-
-      <main className="flex-1">
+<main className="flex-1">
         <div className="container mx-auto px-4 py-8">
           {/* Breadcrumb */}
           <div className="text-sm text-gray-600 mb-6">
@@ -115,8 +111,6 @@ export default function ProductsPage() {
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
+</div>
   )
 }

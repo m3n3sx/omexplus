@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   pending: { bg: '#fef3c7', text: '#92400e' },
@@ -94,21 +92,17 @@ export default function OrderDetailPage() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-        <Header />
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 2rem', textAlign: 'center' }}>
+<div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 2rem', textAlign: 'center' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
           <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>{t('common.loading')}</p>
         </div>
-        <Footer />
-      </div>
+</div>
     )
   }
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <Header />
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+<div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
         {/* Breadcrumb */}
         <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: '#6b7280' }}>
           <Link href={`/${locale}`} style={{ color: '#3b82f6' }}>
@@ -374,8 +368,6 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
-    </div>
+</div>
   )
 }
