@@ -1,5 +1,5 @@
 {
-  "name": "my-medusa-store",
+  "name": "medusa-starter-default",
   "version": "0.0.1",
   "description": "A starter for Medusa projects.",
   "author": "Medusa (https://medusajs.com)",
@@ -13,50 +13,34 @@
     "medusa"
   ],
   "scripts": {
-    "build": "medusa build",
-    "seed": "medusa exec ./src/scripts/seed.ts",
-    "seed:categories": "medusa exec ./src/scripts/seed-categories.ts",
-    "seed:categories:full": "medusa exec ./src/scripts/seed-full-categories.ts",
-    "seed:products": "medusa exec ./src/scripts/seed-products.ts",
-    "create:api-key": "medusa exec ./src/scripts/create-api-key.ts",
-    "test:import": "medusa exec ./src/scripts/test-import.ts",
-    "import:products": "medusa exec ./src/scripts/direct-import.ts",
-    "import:db": "medusa exec ./src/scripts/import-to-database.ts",
-    "start": "medusa start",
     "dev": "medusa develop",
-    "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
-    "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
-    "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
-    "test:shipping": "medusa exec ./src/scripts/test-shipping.ts",
-    "seed:manufacturers": "medusa exec ./src/scripts/seed-manufacturers.ts",
-    "generate:seo": "medusa exec ./src/scripts/generate-seo.ts"
+    "build": "medusa build",
+    "start": "medusa start",
+    "seed": "medusa exec ./src/scripts/seed.ts",
+    "init-cms": "node init-cms-db.js",
+    "test-cms": "node test-cms.js"
   },
   "dependencies": {
-    "@medusajs/admin-sdk": "2.12.0",
-    "@medusajs/cli": "2.12.0",
-    "@medusajs/framework": "2.12.0",
-    "@medusajs/medusa": "2.12.0",
-    "axios": "^1.13.2",
-    "csv-parse": "^5.6.0",
-    "pg": "^8.16.3",
-    "stripe": "^17.7.0"
+    "@medusajs/framework": "rc",
+    "@medusajs/medusa": "rc",
+    "@medusajs/medusa-cli": "rc",
+    "awilix": "^8.0.1",
+    "pg": "^8.13.1",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "2.12.0",
+    "@medusajs/medusa-cli": "rc",
     "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
-    "@types/node": "^20.12.11",
-    "@types/react": "^18.3.2",
-    "@types/react-dom": "^18.2.25",
+    "@types/node": "^22.7.5",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
     "jest": "^29.7.0",
-    "prop-types": "^15.8.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "medusa-test-utils": "rc",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
-    "vite": "^5.4.14",
-    "yalc": "^1.0.0-pre.53"
+    "vite": "^5.4.8"
   },
   "engines": {
     "node": ">=20"

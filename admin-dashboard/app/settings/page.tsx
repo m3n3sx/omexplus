@@ -1,0 +1,228 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import DashboardLayout from "@/components/layout/DashboardLayout"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
+import Input from "@/components/ui/Input"
+import Button from "@/components/ui/Button"
+import { isAuthenticated } from "@/lib/auth"
+import { Store, CreditCard, Truck, DollarSign, Mail } from "lucide-react"
+
+export default function SettingsPage() {
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState("store")
+  const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push("/login")
+      return
+    }
+  }, [router])
+
+  const tabs = [
+    { id: "store", label: "Store Settings", icon: Store },
+    { id: "payment", label: "Payment", icon: CreditCard },
+    { id: "shipping", label: "Shipping", icon: Truck },
+    { id: "tax", label: "Tax", icon: DollarSign },
+    { id: "email", label: "Email", icon: Mail },
+  ]
+
+  const handleSave = async () => {
+    setSaving(true)
+    // Simulate save
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    setSaving(false)
+    alert("Settings saved successfully!")
+  }
+
+  return (
+    <DashboardLayout>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+          <p className="text-gray-600 mt-1">Manage your store configuration</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <Card>
+              <CardContent className="p-2">
+                <nav className="space-y-1">
+                  {tabs.map((tab) => {
+                    const Icon = tab.icon
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                          activeTab === tab.id
+                            ? "bg-primary-50 text-primary-700"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <Icon className="w-5 h-5 mr-3" />
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </nav>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Content */}
+          <div className="lg:col-span-3 space-y-6">
+            {activeTab === "store" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Store Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Input label="Store Name" defaultValue="OMEX Store" />
+                  <Input label="Store URL" defaultValue="https://omex-store.com" />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Store Description
+                    </label>
+                    <textarea
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      defaultValue="Your one-stop shop for quality products"
+                    />
+                  </div>
+                  <Input label="Contact Email" type="email" defaultValue="contact@omex-store.com" />
+                  <Input label="Support Phone" type="tel" defaultValue="+1 (555) 123-4567" />
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === "payment" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Payment Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" defaultChecked className="rounded" />
+                      <span className="text-sm font-medium">Enable Stripe</span>
+                    </label>
+                  </div>
+                  <Input label="Stripe Publishable Key" placeholder="pk_test_..." />
+                  <Input label="Stripe Secret Key" type="password" placeholder="sk_test_..." />
+                  
+                  <div className="pt-4 border-t">
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded" />
+                      <span className="text-sm font-medium">Enable PayPal</span>
+                    </label>
+                  </div>
+                  <Input label="PayPal Client ID" placeholder="Your PayPal client ID" />
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === "shipping" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Shipping Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Input label="Default Shipping Rate" type="number" step="0.01" defaultValue="5.00" />
+                  <Input label="Free Shipping Threshold" type="number" step="0.01" defaultValue="50.00" />
+                  <Input label="Processing Time (days)" type="number" defaultValue="2" />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Shipping Zones
+                    </label>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-sm">United States - $5.00</span>
+                        <Button size="sm" variant="ghost">Edit</Button>
+                      </div>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-sm">International - $15.00</span>
+                        <Button size="sm" variant="ghost">Edit</Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === "tax" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Tax Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" defaultChecked className="rounded" />
+                      <span className="text-sm font-medium">Enable automatic tax calculation</span>
+                    </label>
+                  </div>
+                  <Input label="Default Tax Rate (%)" type="number" step="0.01" defaultValue="8.5" />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Tax Regions
+                    </label>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-sm">California - 8.5%</span>
+                        <Button size="sm" variant="ghost">Edit</Button>
+                      </div>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-sm">New York - 7.0%</span>
+                        <Button size="sm" variant="ghost">Edit</Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === "email" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Email Templates</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Input label="From Email" type="email" defaultValue="noreply@omex-store.com" />
+                  <Input label="From Name" defaultValue="OMEX Store" />
+                  
+                  <div className="pt-4 border-t">
+                    <h4 className="font-medium text-gray-900 mb-3">Email Templates</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-sm">Order Confirmation</span>
+                        <Button size="sm" variant="ghost">Edit</Button>
+                      </div>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-sm">Shipping Notification</span>
+                        <Button size="sm" variant="ghost">Edit</Button>
+                      </div>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-sm">Refund Confirmation</span>
+                        <Button size="sm" variant="ghost">Edit</Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <div className="flex justify-end">
+              <Button onClick={handleSave} isLoading={saving}>
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
+  )
+}

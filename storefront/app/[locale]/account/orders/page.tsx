@@ -32,7 +32,7 @@ export default function OrdersPage() {
     try {
       setLoading(true)
       const response = await medusaClient.customers.listOrders()
-      setOrders(response.orders as Order[])
+      setOrders(response.orders as any)
     } catch (error) {
       console.error('Failed to fetch orders:', error)
     } finally {

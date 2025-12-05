@@ -1,12 +1,12 @@
 'use client'
 
 /**
- * MachineSelector Component - 4-step wizard for machine-based search
+ * MachineSelector Component - Progressive search with results after each step
  * METODA 1: WYSZUKIWANIE PO MASZYNIE (NAJBARDZIEJ ZAAWANSOWANA)
- * Używa custom API endpoints z real-time danymi z bazy
  */
 
 import { useState, useEffect } from 'react'
+import { useSearch } from '@/hooks/useSearch'
 
 interface MachineSelectorProps {
   onComplete: (params: MachineSearchParams) => void
@@ -22,151 +22,153 @@ export interface MachineSearchParams {
   engine?: string
 }
 
-interface BrandOption {
-  value: string
-  label: string
-  count: number
+const MACHINE_BRANDS = [
+  { id: 'cat', name: 'CAT (Caterpillar)', code: 'CAT', models: 150 },
+  { id: 'komatsu', name: 'Komatsu', code: 'KOM', models: 120 },
+  { id: 'hitachi', name: 'Hitachi', code: 'HIT', models: 100 },
+  { id: 'volvo', name: 'Volvo', code: 'VOL', models: 90 },
+  { id: 'jcb', name: 'JCB', code: 'JCB', models: 80 },
+  { id: 'kobelco', name: 'Kobelco', code: 'KOB', models: 70 },
+  { id: 'hyundai', name: 'Hyundai', code: 'HYU', models: 60 },
+  { id: 'bobcat', name: 'Bobcat', code: 'BOB', models: 50 },
+  { id: 'doosan', name: 'Doosan', code: 'DOO', models: 55 },
+  { id: 'case', name: 'Case', code: 'CAS', models: 45 },
+]
+
+const MACHINE_TYPES = [
+  { id: 'Koparka', name: 'Koparka', code: 'EXC' },
+  { id: 'Ładowarka', name: 'Ładowarka', code: 'LDR' },
+  { id: 'Koparka-ładowarka', name: 'Koparka-ładowarka', code: 'BHL' },
+  { id: 'Spychacz', name: 'Spychacz', code: 'DOZ' },
+  { id: 'Ładowarka teleskopowa', name: 'Ładowarka teleskopowa', code: 'TEL' },
+  { id: 'Walcarka', name: 'Walcarka', code: 'CMP' },
+  { id: 'Mini koparka', name: 'Mini koparka', code: 'MIN' },
+  { id: 'Koparka kołowa', name: 'Koparka kołowa', code: 'WHL' },
+]
+
+// Mock data - w produkcji z API
+const MODELS_BY_BRAND: Record<string, any[]> = {
+  cat: [
+    { id: '320', name: '320', size: '20T', years: '2005-2024', sn: 'ABC-XYZ' },
+    { id: '330', name: '330', size: '30T', years: '2008-2024', sn: 'DEF-UVW' },
+    { id: '340', name: '340', size: '40T', years: '2010-2024', sn: 'GHI-RST' },
+  ],
+  komatsu: [
+    { id: 'pc200', name: 'PC200', size: '20T', years: '2005-2024', sn: 'K200-K299' },
+    { id: 'pc220', name: 'PC220', size: '22T', years: '2008-2024', sn: 'K220-K299' },
+  ],
 }
 
-interface TypeOption {
-  value: string
-  label: string
-  count: number
-}
+const SERIES_OPTIONS = [
+  { id: 'small', name: 'Small frame (301, 305, 308)' },
+  { id: 'standard', name: 'Standard (320, 325, 330)' },
+  { id: 'large', name: 'Large frame (390, 395)' },
+  { id: 'f-series', name: 'F-Series (Generacja F)' },
+  { id: 'g-series', name: 'G-Series (Generacja G)' },
+]
 
-interface ModelOption {
-  value: string
-  label: string
-  count: number
-}
+const ENGINE_OPTIONS = [
+  { id: 'perkins', name: 'Perkins' },
+  { id: 'caterpillar', name: 'Caterpillar' },
+  { id: 'yanmar', name: 'Yanmar' },
+  { id: 'mitsubishi', name: 'Mitsubishi' },
+  { id: 'custom', name: 'Inny / Custom' },
+]
 
 export default function MachineSelector({ onComplete, onCancel }: MachineSelectorProps) {
   const [step, setStep] = useState(1)
   const [selectedBrand, setSelectedBrand] = useState('')
   const [selectedType, setSelectedType] = useState('')
   const [selectedModel, setSelectedModel] = useState('')
+  const [selectedSeries, setSelectedSeries] = useState('')
+  const [selectedEngine, setSelectedEngine] = useState('')
   const [modelSearch, setModelSearch] = useState('')
   
-  // API data
-  const [brands, setBrands] = useState<BrandOption[]>([])
-  const [types, setTypes] = useState<TypeOption[]>([])
-  const [models, setModels] = useState<ModelOption[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { search, results, loading } = useSearch()
+  const [showResults, setShowResults] = useState(false)
 
-  const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
-  const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-
-  // Fetch brands on mount
+  // Search after each selection
   useEffect(() => {
-    fetchBrands()
-  }, [])
-
-  // Fetch types when brand selected
-  useEffect(() => {
-    if (selectedBrand && step === 2) {
-      fetchTypes()
+    if (selectedBrand && selectedType) {
+      performSearch()
     }
-  }, [selectedBrand, step])
+  }, [selectedBrand, selectedType, selectedModel, selectedSeries, selectedEngine])
 
-  // Fetch models when type selected
-  useEffect(() => {
-    if (selectedBrand && selectedType && step === 3) {
-      fetchModels()
-    }
-  }, [selectedBrand, selectedType, step])
+  const performSearch = async () => {
+    if (!selectedBrand || !selectedType) return
 
-  const fetchBrands = async () => {
-    setLoading(true)
-    setError(null)
     try {
-      const response = await fetch(`${backendUrl}/store/omex-search`, {
-        headers: publishableKey ? {
-          'x-publishable-api-key': publishableKey
-        } : {}
+      await search({
+        method: 'machine',
+        params: {
+          brand: selectedBrand,
+          machineType: selectedType,
+          model: selectedModel || '',
+          series: selectedSeries || undefined,
+          engine: selectedEngine || undefined,
+        }
       })
-      
-      if (!response.ok) throw new Error('Failed to fetch brands')
-      
-      const data = await response.json()
-      setBrands(data.brands || [])
-    } catch (err) {
-      setError('Nie udało się pobrać marek')
-      console.error('Error fetching brands:', err)
-    } finally {
-      setLoading(false)
+      setShowResults(true)
+    } catch (error) {
+      console.error('Search error:', error)
     }
   }
 
-  const fetchTypes = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await fetch(
-        `${backendUrl}/store/omex-search?brand=${encodeURIComponent(selectedBrand)}`,
-        {
-          headers: publishableKey ? {
-            'x-publishable-api-key': publishableKey
-          } : {}
-        }
+  const filteredModels = selectedBrand && MODELS_BY_BRAND[selectedBrand]
+    ? MODELS_BY_BRAND[selectedBrand].filter(m =>
+        m.name.toLowerCase().includes(modelSearch.toLowerCase())
       )
-      
-      if (!response.ok) throw new Error('Failed to fetch types')
-      
-      const data = await response.json()
-      setTypes(data.types || [])
-    } catch (err) {
-      setError('Nie udało się pobrać typów maszyn')
-      console.error('Error fetching types:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const fetchModels = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await fetch(
-        `${backendUrl}/store/omex-search?brand=${encodeURIComponent(selectedBrand)}&machineType=${encodeURIComponent(selectedType)}`,
-        {
-          headers: publishableKey ? {
-            'x-publishable-api-key': publishableKey
-          } : {}
-        }
-      )
-      
-      if (!response.ok) throw new Error('Failed to fetch models')
-      
-      const data = await response.json()
-      setModels(data.models || [])
-    } catch (err) {
-      setError('Nie udało się pobrać modeli')
-      console.error('Error fetching models:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const filteredModels = models.filter(m =>
-    m.value.toLowerCase().includes(modelSearch.toLowerCase())
-  )
+    : []
 
   const handleComplete = () => {
     onComplete({
       brand: selectedBrand,
       machineType: selectedType,
       model: selectedModel,
+      series: selectedSeries || undefined,
+      engine: selectedEngine || undefined,
     })
   }
 
   const canProceed = () => {
-    if (loading) return false
     switch (step) {
       case 1: return selectedBrand !== ''
       case 2: return selectedType !== ''
       case 3: return selectedModel !== ''
+      case 4: return true // Series optional
+      case 5: return true // Engine optional
       default: return false
+    }
+  }
+
+  const handleSelection = (stepNum: number, value: string) => {
+    switch (stepNum) {
+      case 1:
+        setSelectedBrand(value)
+        setStep(2)
+        // Trigger search immediately after brand selection
+        setTimeout(() => performSearch(), 100)
+        break
+      case 2:
+        setSelectedType(value)
+        // Auto-search after type selection
+        setTimeout(() => performSearch(), 100)
+        break
+      case 3:
+        setSelectedModel(value)
+        // Auto-search after model selection
+        setTimeout(() => performSearch(), 100)
+        break
+      case 4:
+        setSelectedSeries(value)
+        // Auto-search after series selection
+        setTimeout(() => performSearch(), 100)
+        break
+      case 5:
+        setSelectedEngine(value)
+        // Auto-search after engine selection
+        setTimeout(() => performSearch(), 100)
+        break
     }
   }
 
@@ -181,14 +183,14 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
         gap: '0.5rem',
         marginBottom: '2rem',
       }}>
-        {[1, 2, 3].map(s => (
+        {[1, 2, 3, 4, 5].map(s => (
           <div
             key={s}
             style={{
               flex: 1,
-              height: '4px',
-              backgroundColor: s <= step ? '#3b82f6' : '#e5e7eb',
-              borderRadius: '2px',
+              height: '6px',
+              backgroundColor: s <= step ? '#1675F2' : '#E8F4FE',
+              borderRadius: '3px',
               transition: 'background-color 0.3s',
             }}
           />
@@ -205,193 +207,536 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
           color: '#6b7280',
           marginBottom: '0.5rem',
         }}>
-          Krok {step} z 3
+          Krok {step} z 5
         </div>
         <h2 style={{
           fontSize: '1.5rem',
           fontWeight: 'bold',
         }}>
           {step === 1 && 'Wybierz markę maszyny'}
-          {step === 2 && `Wybierz typ maszyny (${selectedBrand})`}
-          {step === 3 && `Wybierz model (${selectedBrand} ${selectedType})`}
+          {step === 2 && 'Wybierz typ maszyny'}
+          {step === 3 && 'Wybierz model'}
+          {step === 4 && 'Wybierz serię (opcjonalnie)'}
+          {step === 5 && 'Wybierz silnik (opcjonalnie)'}
         </h2>
       </div>
 
-      {/* Error Message */}
-      {error && (
-        <div style={{
-          padding: '1rem',
-          backgroundColor: '#fee2e2',
-          border: '1px solid #fecaca',
-          borderRadius: '8px',
-          marginBottom: '1rem',
-          color: '#991b1b',
-          fontSize: '0.875rem',
-        }}>
-          {error}
-        </div>
-      )}
-
-      {/* Loading Indicator */}
-      {loading && (
-        <div style={{
-          textAlign: 'center',
-          padding: '2rem',
-          color: '#6b7280',
-        }}>
-          <div style={{
-            display: 'inline-block',
-            width: '40px',
-            height: '40px',
-            border: '4px solid #e5e7eb',
-            borderTopColor: '#3b82f6',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-          }} />
-          <div style={{ marginTop: '1rem' }}>Ładowanie...</div>
-        </div>
-      )}
-
       {/* STEP 1: Brand Selection */}
-      {step === 1 && !loading && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-          gap: '1rem',
-        }}>
-          {brands.map(brand => (
-            <button
-              key={brand.value}
-              onClick={() => setSelectedBrand(brand.value)}
-              style={{
-                padding: '1.5rem',
-                border: `2px solid ${selectedBrand === brand.value ? '#3b82f6' : '#e5e7eb'}`,
-                borderRadius: '12px',
-                backgroundColor: selectedBrand === brand.value ? '#eff6ff' : 'white',
-                cursor: 'pointer',
-                textAlign: 'center',
-                transition: 'all 0.2s',
-              }}
-            >
-              <div style={{
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                marginBottom: '0.5rem',
-              }}>
-                {brand.label}
-              </div>
-              <div style={{
-                fontSize: '0.75rem',
-                color: '#6b7280',
-              }}>
-                {brand.count} produktów
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* STEP 2: Machine Type */}
-      {step === 2 && !loading && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: '1rem',
-        }}>
-          {types.map(type => (
-            <button
-              key={type.value}
-              onClick={() => setSelectedType(type.value)}
-              style={{
-                padding: '1.5rem',
-                border: `2px solid ${selectedType === type.value ? '#3b82f6' : '#e5e7eb'}`,
-                borderRadius: '12px',
-                backgroundColor: selectedType === type.value ? '#eff6ff' : 'white',
-                cursor: 'pointer',
-                textAlign: 'center',
-                transition: 'all 0.2s',
-              }}
-            >
-              <div style={{
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                marginBottom: '0.5rem',
-              }}>
-                {type.label}
-              </div>
-              <div style={{
-                fontSize: '0.75rem',
-                color: '#6b7280',
-              }}>
-                {type.count} produktów
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* STEP 3: Model Selection */}
-      {step === 3 && !loading && (
-        <div>
-          <input
-            type="text"
-            value={modelSearch}
-            onChange={(e) => setModelSearch(e.target.value)}
-            placeholder="Szukaj modelu..."
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '2px solid #e5e7eb',
-              borderRadius: '8px',
-              marginBottom: '1rem',
-              fontSize: '0.875rem',
-            }}
-          />
+      {step === 1 && (
+        <>
           <div style={{
             display: 'grid',
-            gap: '0.75rem',
-            maxHeight: '400px',
-            overflowY: 'auto',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '1rem',
           }}>
-            {filteredModels.map(model => (
+            {MACHINE_BRANDS.map(brand => (
               <button
-                key={model.value}
-                onClick={() => setSelectedModel(model.value)}
+                key={brand.id}
+                onClick={() => handleSelection(1, brand.code)}
                 style={{
-                  padding: '1rem',
-                  border: `2px solid ${selectedModel === model.value ? '#3b82f6' : '#e5e7eb'}`,
-                  borderRadius: '8px',
-                  backgroundColor: selectedModel === model.value ? '#eff6ff' : 'white',
+                  padding: '1.5rem',
+                  border: `2px solid ${selectedBrand === brand.code ? '#1675F2' : '#D4EBFC'}`,
+                  borderRadius: '16px',
+                  backgroundColor: selectedBrand === brand.code ? '#E8F4FE' : 'white',
                   cursor: 'pointer',
-                  textAlign: 'left',
+                  textAlign: 'center',
                   transition: 'all 0.2s',
                 }}
               >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                <div style={{ 
+                  fontSize: '1.25rem', 
+                  marginBottom: '0.5rem',
+                  padding: '0.5rem 1rem',
+                  backgroundColor: selectedBrand === brand.code ? '#1675F2' : '#F2F2F2',
+                  color: selectedBrand === brand.code ? 'white' : '#6b7280',
+                  borderRadius: '8px',
+                  fontFamily: 'monospace',
+                  fontWeight: 'bold',
                 }}>
-                  <div>
-                    <div style={{
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      marginBottom: '0.25rem',
-                    }}>
-                      {model.label}
-                    </div>
-                    <div style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                    }}>
-                      {model.count} produktów
-                    </div>
-                  </div>
+                  {brand.code}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  marginBottom: '0.25rem',
+                }}>
+                  {brand.name}
+                </div>
+                <div style={{
+                  fontSize: '0.75rem',
+                  color: '#6b7280',
+                }}>
+                  {brand.models} modeli
                 </div>
               </button>
             ))}
           </div>
-        </div>
+
+          {/* Show results after brand selection */}
+          {showResults && selectedBrand && (
+            <div style={{
+              marginTop: '2rem',
+              padding: '1.5rem',
+              backgroundColor: '#E8F4FE',
+              borderRadius: '16px',
+              border: '2px solid #1675F2',
+            }}>
+              <h3 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                marginBottom: '1rem',
+                color: '#0554F2',
+              }}>
+                Znalezione części dla {selectedBrand}
+              </h3>
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  Wyszukiwanie...
+                </div>
+              ) : results.length > 0 ? (
+                <div style={{
+                  display: 'grid',
+                  gap: '0.75rem',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                }}>
+                  {results.slice(0, 5).map((product: any) => (
+                    <div
+                      key={product.id}
+                      style={{
+                        padding: '0.75rem',
+                        backgroundColor: 'white',
+                        borderRadius: '12px',
+                        fontSize: '0.875rem',
+                        border: '1px solid #D4EBFC',
+                      }}
+                    >
+                      {product.title}
+                    </div>
+                  ))}
+                  {results.length > 5 && (
+                    <div style={{
+                      padding: '0.75rem',
+                      textAlign: 'center',
+                      color: '#1675F2',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                    }}>
+                      + {results.length - 5} więcej produktów
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '1rem', color: '#6b7280', fontSize: '0.875rem' }}>
+                  Brak wyników
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* STEP 2: Machine Type */}
+      {step === 2 && (
+        <>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '1rem',
+            marginBottom: '2rem',
+          }}>
+            {MACHINE_TYPES.map(type => (
+              <button
+                key={type.id}
+                onClick={() => handleSelection(2, type.name)}
+                style={{
+                  padding: '1.5rem',
+                  border: `2px solid ${selectedType === type.name ? '#1675F2' : '#D4EBFC'}`,
+                  borderRadius: '16px',
+                  backgroundColor: selectedType === type.name ? '#E8F4FE' : 'white',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  transition: 'all 0.2s',
+                }}
+              >
+                <div style={{ 
+                  fontSize: '1rem', 
+                  marginBottom: '0.5rem',
+                  padding: '0.5rem 1rem',
+                  backgroundColor: selectedType === type.name ? '#1675F2' : '#F2F2F2',
+                  color: selectedType === type.name ? 'white' : '#6b7280',
+                  borderRadius: '8px',
+                  fontFamily: 'monospace',
+                  fontWeight: 'bold',
+                }}>
+                  {type.code}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                }}>
+                  {type.name}
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Show results after type selection */}
+          {showResults && selectedType && (
+            <div style={{
+              marginTop: '2rem',
+              padding: '1.5rem',
+              backgroundColor: '#E8F4FE',
+              borderRadius: '16px',
+              border: '2px solid #1675F2',
+            }}>
+              <h3 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                marginBottom: '1rem',
+                color: '#0554F2',
+              }}>
+                Znalezione części dla {selectedBrand} {selectedType}
+              </h3>
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  Wyszukiwanie...
+                </div>
+              ) : results.length > 0 ? (
+                <div style={{
+                  display: 'grid',
+                  gap: '0.75rem',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                }}>
+                  {results.slice(0, 5).map((product: any) => (
+                    <div
+                      key={product.id}
+                      style={{
+                        padding: '0.75rem',
+                        backgroundColor: 'white',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      {product.title}
+                    </div>
+                  ))}
+                  {results.length > 5 && (
+                    <div style={{
+                      padding: '0.75rem',
+                      textAlign: 'center',
+                      color: '#1675F2',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                    }}>
+                      + {results.length - 5} więcej produktów
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '1rem', color: '#6b7280', fontSize: '0.875rem' }}>
+                  Brak wyników
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* STEP 3: Model Selection */}
+      {step === 3 && (
+        <>
+          <div>
+            <input
+              type="text"
+              value={modelSearch}
+              onChange={(e) => setModelSearch(e.target.value)}
+              placeholder="Wpisz model (np. PC200, 320, ZX210)..."
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '2px solid #e5e7eb',
+                borderRadius: '8px',
+                marginBottom: '1rem',
+                fontSize: '0.875rem',
+              }}
+            />
+            
+            {/* Common models as buttons */}
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '0.5rem',
+              marginBottom: '1rem',
+            }}>
+              {['PC200', '320', '330', 'ZX210', 'EC210'].map(model => (
+                <button
+                  key={model}
+                  onClick={() => handleSelection(3, model)}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    border: `2px solid ${selectedModel === model ? '#3b82f6' : '#e5e7eb'}`,
+                    borderRadius: '6px',
+                    backgroundColor: selectedModel === model ? '#eff6ff' : 'white',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                  }}
+                >
+                  {model}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Show results after model selection */}
+          {showResults && selectedModel && (
+            <div style={{
+              marginTop: '2rem',
+              padding: '1.5rem',
+              backgroundColor: '#E8F4FE',
+              borderRadius: '16px',
+              border: '2px solid #1675F2',
+            }}>
+              <h3 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                marginBottom: '1rem',
+                color: '#0554F2',
+              }}>
+                Znalezione części dla {selectedBrand} {selectedType} {selectedModel}
+              </h3>
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  Wyszukiwanie...
+                </div>
+              ) : results.length > 0 ? (
+                <div style={{
+                  display: 'grid',
+                  gap: '0.75rem',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                }}>
+                  {results.slice(0, 8).map((product: any) => (
+                    <div
+                      key={product.id}
+                      style={{
+                        padding: '0.75rem',
+                        backgroundColor: 'white',
+                        borderRadius: '12px',
+                        fontSize: '0.875rem',
+                        border: '1px solid #D4EBFC',
+                      }}
+                    >
+                      {product.title}
+                    </div>
+                  ))}
+                  {results.length > 8 && (
+                    <div style={{
+                      padding: '0.75rem',
+                      textAlign: 'center',
+                      color: '#1675F2',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                    }}>
+                      + {results.length - 8} więcej produktów
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '1rem', color: '#6b7280', fontSize: '0.875rem' }}>
+                  Brak wyników dla tego modelu
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* STEP 4: Series Selection (Optional) */}
+      {step === 4 && (
+        <>
+          <div style={{
+            display: 'grid',
+            gap: '0.75rem',
+          }}>
+            {SERIES_OPTIONS.map(series => (
+              <button
+                key={series.id}
+                onClick={() => setSelectedSeries(series.id)}
+                style={{
+                  padding: '1rem',
+                  border: `2px solid ${selectedSeries === series.id ? '#1675F2' : '#D4EBFC'}`,
+                  borderRadius: '12px',
+                  backgroundColor: selectedSeries === series.id ? '#E8F4FE' : 'white',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {series.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Show results after series selection */}
+          {showResults && selectedSeries && (
+            <div style={{
+              marginTop: '2rem',
+              padding: '1.5rem',
+              backgroundColor: '#E8F4FE',
+              borderRadius: '16px',
+              border: '2px solid #1675F2',
+            }}>
+              <h3 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                marginBottom: '1rem',
+                color: '#0554F2',
+              }}>
+                Znalezione części dla {selectedBrand} {selectedType} {selectedModel} (Seria: {selectedSeries})
+              </h3>
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  Wyszukiwanie...
+                </div>
+              ) : results.length > 0 ? (
+                <div style={{
+                  display: 'grid',
+                  gap: '0.75rem',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                }}>
+                  {results.slice(0, 8).map((product: any) => (
+                    <div
+                      key={product.id}
+                      style={{
+                        padding: '0.75rem',
+                        backgroundColor: 'white',
+                        borderRadius: '12px',
+                        fontSize: '0.875rem',
+                        border: '1px solid #D4EBFC',
+                      }}
+                    >
+                      {product.title}
+                    </div>
+                  ))}
+                  {results.length > 8 && (
+                    <div style={{
+                      padding: '0.75rem',
+                      textAlign: 'center',
+                      color: '#1675F2',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                    }}>
+                      + {results.length - 8} więcej produktów
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '1rem', color: '#6b7280', fontSize: '0.875rem' }}>
+                  Brak wyników
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* STEP 5: Engine Selection (Optional) */}
+      {step === 5 && (
+        <>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: '1rem',
+          }}>
+            {ENGINE_OPTIONS.map(engine => (
+              <button
+                key={engine.id}
+                onClick={() => setSelectedEngine(engine.id)}
+                style={{
+                  padding: '1.5rem',
+                  border: `2px solid ${selectedEngine === engine.id ? '#1675F2' : '#D4EBFC'}`,
+                  borderRadius: '12px',
+                  backgroundColor: selectedEngine === engine.id ? '#E8F4FE' : 'white',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {engine.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Show results after engine selection */}
+          {showResults && selectedEngine && (
+            <div style={{
+              marginTop: '2rem',
+              padding: '1.5rem',
+              backgroundColor: '#E8F4FE',
+              borderRadius: '16px',
+              border: '2px solid #1675F2',
+            }}>
+              <h3 style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                marginBottom: '1rem',
+                color: '#0554F2',
+              }}>
+                Znalezione części dla {selectedBrand} {selectedType} {selectedModel} (Silnik: {selectedEngine})
+              </h3>
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  Wyszukiwanie...
+                </div>
+              ) : results.length > 0 ? (
+                <div style={{
+                  display: 'grid',
+                  gap: '0.75rem',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                }}>
+                  {results.slice(0, 10).map((product: any) => (
+                    <div
+                      key={product.id}
+                      style={{
+                        padding: '0.75rem',
+                        backgroundColor: 'white',
+                        borderRadius: '12px',
+                        fontSize: '0.875rem',
+                        border: '1px solid #D4EBFC',
+                      }}
+                    >
+                      {product.title}
+                    </div>
+                  ))}
+                  {results.length > 10 && (
+                    <div style={{
+                      padding: '0.75rem',
+                      textAlign: 'center',
+                      color: '#1675F2',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                    }}>
+                      + {results.length - 10} więcej produktów
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '1rem', color: '#6b7280', fontSize: '0.875rem' }}>
+                  Brak wyników
+                </div>
+              )}
+            </div>
+          )}
+        </>
       )}
 
       {/* Navigation Buttons */}
@@ -407,6 +752,7 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
               onCancel()
             } else {
               setStep(step - 1)
+              setShowResults(false)
             }
           }}
           style={{
@@ -422,36 +768,100 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
           {step === 1 ? 'Anuluj' : 'Wstecz'}
         </button>
 
-        <button
-          onClick={() => {
-            if (step === 3) {
-              handleComplete()
-            } else {
-              setStep(step + 1)
-            }
-          }}
-          disabled={!canProceed()}
-          style={{
-            padding: '0.75rem 1.5rem',
-            border: 'none',
-            borderRadius: '8px',
-            backgroundColor: canProceed() ? '#3b82f6' : '#e5e7eb',
-            color: canProceed() ? 'white' : '#9ca3af',
-            cursor: canProceed() ? 'pointer' : 'not-allowed',
-            fontSize: '0.875rem',
-            fontWeight: '600',
-          }}
-        >
-          {step === 3 ? 'Szukaj części' : 'Dalej'}
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          {/* Show "View All Results" button if we have results */}
+          {showResults && results.length > 0 && step >= 2 && (
+            <button
+              onClick={handleComplete}
+              style={{
+                padding: '0.75rem 1.5rem',
+                border: '2px solid #1675F2',
+                borderRadius: '12px',
+                backgroundColor: 'white',
+                color: '#1675F2',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+              }}
+            >
+              Zobacz wszystkie ({results.length})
+            </button>
+          )}
+
+          {/* Continue to next step */}
+          {step < 5 && (
+            <button
+              onClick={() => {
+                setStep(step + 1)
+                setShowResults(false)
+              }}
+              disabled={!canProceed()}
+              style={{
+                padding: '0.75rem 1.5rem',
+                border: 'none',
+                borderRadius: '12px',
+                backgroundColor: canProceed() ? '#1675F2' : '#E8F4FE',
+                color: canProceed() ? 'white' : '#9ca3af',
+                cursor: canProceed() ? 'pointer' : 'not-allowed',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+
+              }}
+            >
+              Zawęź wyniki
+            </button>
+          )}
+
+          {step === 5 && (
+            <button
+              onClick={handleComplete}
+              style={{
+                padding: '0.75rem 1.5rem',
+                border: 'none',
+                borderRadius: '12px',
+                backgroundColor: '#1675F2',
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+
+              }}
+            >
+              Szukaj części
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* CSS for loading spinner */}
-      <style jsx>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+      {/* Skip Button for Optional Steps */}
+      {(step === 4 || step === 5) && (
+        <div style={{
+          textAlign: 'center',
+          marginTop: '1rem',
+        }}>
+          <button
+            onClick={() => {
+              if (step === 4) {
+                setSelectedSeries('')
+                setStep(5)
+              } else {
+                setSelectedEngine('')
+                handleComplete()
+              }
+            }}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#6b7280',
+              cursor: 'pointer',
+              fontSize: '0.875rem',
+              textDecoration: 'underline',
+            }}
+          >
+            Pomiń ten krok
+          </button>
+        </div>
+      )}
     </div>
   )
 }

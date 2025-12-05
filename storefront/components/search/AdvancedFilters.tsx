@@ -119,7 +119,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
   const FilterSection = ({ title, section, children }: { title: string; section: string; children: React.ReactNode }) => (
     <div style={{
-      borderBottom: '1px solid #e5e7eb',
+      borderBottom: '2px solid #E8F4FE',
       paddingBottom: '1rem',
       marginBottom: '1rem',
     }}>
@@ -136,10 +136,11 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
           cursor: 'pointer',
           fontSize: '1rem',
           fontWeight: '600',
+          color: '#0554F2',
         }}
       >
         <span>{title}</span>
-        <span style={{ fontSize: '1.25rem' }}>
+        <span style={{ fontSize: '1.25rem', color: '#1675F2' }}>
           {expandedSections[section] ? '−' : '+'}
         </span>
       </button>
@@ -155,10 +156,10 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
     <div style={{
       width: '100%',
       maxWidth: '320px',
-      backgroundColor: 'var(--background)',
-      borderRadius: '8px',
+      backgroundColor: 'white',
+      borderRadius: '16px',
       padding: '1.5rem',
-      border: '1px solid #e5e7eb',
+      border: '2px solid #D4EBFC',
     }}>
       {/* Header */}
       <div style={{
@@ -167,7 +168,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
         alignItems: 'center',
         marginBottom: '1.5rem',
       }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#0554F2' }}>
           Filtry
         </h2>
         {getActiveFiltersCount() > 0 && (
@@ -176,9 +177,9 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
             style={{
               padding: '0.25rem 0.75rem',
               border: 'none',
-              borderRadius: '6px',
-              backgroundColor: '#fee2e2',
-              color: '#991b1b',
+              borderRadius: '8px',
+              backgroundColor: '#A62B0F',
+              color: 'white',
               cursor: 'pointer',
               fontSize: '0.75rem',
               fontWeight: '600',
@@ -311,9 +312,10 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               style={{
                 width: '100%',
                 padding: '0.5rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
+                border: '2px solid #D4EBFC',
+                borderRadius: '8px',
                 fontSize: '0.875rem',
+                outline: 'none',
               }}
             />
           </div>
@@ -329,9 +331,10 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               style={{
                 width: '100%',
                 padding: '0.5rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
+                border: '2px solid #D4EBFC',
+                borderRadius: '8px',
                 fontSize: '0.875rem',
+                outline: 'none',
               }}
             />
           </div>
@@ -345,9 +348,10 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               style={{
                 width: '100%',
                 padding: '0.5rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
+                border: '2px solid #D4EBFC',
+                borderRadius: '8px',
                 fontSize: '0.875rem',
+                outline: 'none',
               }}
             >
               <option value="PLN">PLN</option>
@@ -430,9 +434,10 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               style={{
                 width: '100%',
                 padding: '0.5rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
+                border: '2px solid #D4EBFC',
+                borderRadius: '8px',
                 fontSize: '0.875rem',
+                outline: 'none',
               }}
             >
               <option value="">Wszystkie</option>
@@ -453,9 +458,10 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               style={{
                 width: '100%',
                 padding: '0.5rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
+                border: '2px solid #D4EBFC',
+                borderRadius: '8px',
                 fontSize: '0.875rem',
+                outline: 'none',
               }}
             />
           </div>
@@ -470,9 +476,10 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
           style={{
             width: '100%',
             padding: '0.75rem',
-            border: '1px solid #e5e7eb',
-            borderRadius: '6px',
+            border: '2px solid #D4EBFC',
+            borderRadius: '8px',
             fontSize: '0.875rem',
+            outline: 'none',
           }}
         >
           {filterOptions?.sortBy.map((option) => (
@@ -491,13 +498,14 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
             width: '100%',
             padding: '0.75rem',
             border: 'none',
-            borderRadius: '8px',
-            backgroundColor: '#3b82f6',
+            borderRadius: '12px',
+            backgroundColor: '#1675F2',
             color: 'white',
             cursor: 'pointer',
             fontSize: '1rem',
             fontWeight: '600',
             marginTop: '1rem',
+            boxShadow: '0 4px 12px rgba(22, 117, 242, 0.3)',
           }}
         >
           Zastosuj filtry
@@ -509,10 +517,11 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
         <div style={{
           marginTop: '1rem',
           padding: '0.75rem',
-          backgroundColor: '#eff6ff',
-          borderRadius: '6px',
+          backgroundColor: '#E8F4FE',
+          borderRadius: '12px',
           fontSize: '0.75rem',
-          color: '#1e40af',
+          color: '#0554F2',
+          border: '2px solid #D4EBFC',
         }}>
           Aktywne filtry: <strong>{getActiveFiltersCount()}</strong>
         </div>

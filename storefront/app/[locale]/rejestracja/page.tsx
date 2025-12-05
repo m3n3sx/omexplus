@@ -53,350 +53,274 @@ export default function RegisterPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-<div style={{ maxWidth: '700px', margin: '0 auto', padding: '4rem 2rem' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📝</div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-            Utwórz konto
-          </h1>
-          <p style={{ fontSize: '1rem', color: '#6b7280' }}>
-            Dołącz do nas i zacznij zamawiać części
-          </p>
-        </div>
-
-        {/* Registration Form */}
-        <div style={{ backgroundColor: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-          {/* Account Type Selector */}
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.75rem', color: '#374151' }}>
-              Typ konta
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-              <button
-                type="button"
-                onClick={() => setAccountType('retail')}
-                style={{
-                  padding: '1rem',
-                  backgroundColor: accountType === 'retail' ? '#eff6ff' : 'white',
-                  border: accountType === 'retail' ? '2px solid #3b82f6' : '2px solid #e5e7eb',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>👤</div>
-                <div style={{ fontSize: '1rem', fontWeight: '600', color: accountType === 'retail' ? '#3b82f6' : '#374151' }}>
-                  Konto osobiste
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                  Dla klientów indywidualnych
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setAccountType('b2b')}
-                style={{
-                  padding: '1rem',
-                  backgroundColor: accountType === 'b2b' ? '#eff6ff' : 'white',
-                  border: accountType === 'b2b' ? '2px solid #3b82f6' : '2px solid #e5e7eb',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏢</div>
-                <div style={{ fontSize: '1rem', fontWeight: '600', color: accountType === 'b2b' ? '#3b82f6' : '#374151' }}>
-                  Konto firmowe (B2B)
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                  Dla firm i przedsiębiorstw
-                </div>
-              </button>
-            </div>
+    <div className="min-h-screen bg-neutral-50 py-12 md:py-20">
+      <div className="container mx-auto px-4 md:px-[60px]">
+        <div className="max-w-3xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="text-5xl mb-4">📝</div>
+            <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
+              Utwórz konto
+            </h1>
+            <p className="text-[14px] text-neutral-600">
+              Dołącz do nas i zacznij zamawiać części
+            </p>
           </div>
 
-          <form onSubmit={handleRegister}>
-            {/* Personal Info */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Imię *
-                </label>
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
-                  placeholder="Jan"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.875rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem'
-                  }}
-                />
-              </div>
+          {/* Registration Form */}
+          <div className="bg-white rounded-xl p-6 md:p-8 border border-neutral-200 shadow-sm">
+            {/* Account Type Selector */}
+            <div className="mb-8">
+              <label className="block text-[13px] font-semibold mb-3 text-neutral-900">
+                Typ konta
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setAccountType('retail')}
+                  className={`p-5 rounded-lg border-2 transition-all ${
+                    accountType === 'retail'
+                      ? 'border-neutral-900 bg-neutral-50'
+                      : 'border-neutral-200 bg-white hover:border-neutral-300'
+                  }`}
+                >
+                  <div className="text-3xl mb-2">👤</div>
+                  <div className={`text-[14px] font-semibold mb-1 ${
+                    accountType === 'retail' ? 'text-neutral-900' : 'text-neutral-700'
+                  }`}>
+                    Konto osobiste
+                  </div>
+                  <div className="text-[12px] text-neutral-600">
+                    Dla klientów indywidualnych
+                  </div>
+                </button>
 
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Nazwisko *
-                </label>
-                <input
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
-                  placeholder="Kowalski"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.875rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem'
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Contact Info */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
-                  placeholder="jan.kowalski@example.com"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.875rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Telefon *
-                </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
-                  placeholder="+48 123 456 789"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.875rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem'
-                  }}
-                />
+                <button
+                  type="button"
+                  onClick={() => setAccountType('b2b')}
+                  className={`p-5 rounded-lg border-2 transition-all ${
+                    accountType === 'b2b'
+                      ? 'border-neutral-900 bg-neutral-50'
+                      : 'border-neutral-200 bg-white hover:border-neutral-300'
+                  }`}
+                >
+                  <div className="text-3xl mb-2">🏢</div>
+                  <div className={`text-[14px] font-semibold mb-1 ${
+                    accountType === 'b2b' ? 'text-neutral-900' : 'text-neutral-700'
+                  }`}>
+                    Konto firmowe (B2B)
+                  </div>
+                  <div className="text-[12px] text-neutral-600">
+                    Dla firm i przedsiębiorstw
+                  </div>
+                </button>
               </div>
             </div>
 
-            {/* B2B Fields */}
-            {accountType === 'b2b' && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+            <form onSubmit={handleRegister} className="space-y-5">
+              {/* Personal Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                    Nazwa firmy *
+                  <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                    Imię *
                   </label>
                   <input
                     type="text"
-                    value={formData.company}
-                    onChange={(e) => handleChange('company', e.target.value)}
-                    placeholder="OMEX Sp. z o.o."
-                    required={accountType === 'b2b'}
-                    style={{
-                      width: '100%',
-                      padding: '0.875rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem'
-                    }}
+                    value={formData.firstName}
+                    onChange={(e) => handleChange('firstName', e.target.value)}
+                    placeholder="Jan"
+                    required
+                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                    NIP *
+                  <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                    Nazwisko *
                   </label>
                   <input
                     type="text"
-                    value={formData.taxId}
-                    onChange={(e) => handleChange('taxId', e.target.value)}
-                    placeholder="PL1234567890"
-                    required={accountType === 'b2b'}
-                    style={{
-                      width: '100%',
-                      padding: '0.875rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem'
-                    }}
+                    value={formData.lastName}
+                    onChange={(e) => handleChange('lastName', e.target.value)}
+                    placeholder="Kowalski"
+                    required
+                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                   />
                 </div>
               </div>
-            )}
 
-            {/* Password */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Hasło *
-                </label>
-                <div style={{ position: 'relative' }}>
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="jan.kowalski@example.com"
+                    required
+                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                    Telefon *
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    placeholder="+48 123 456 789"
+                    required
+                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* B2B Fields */}
+              {accountType === 'b2b' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Nazwa firmy *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.company}
+                      onChange={(e) => handleChange('company', e.target.value)}
+                      placeholder="OMEX Sp. z o.o."
+                      required={accountType === 'b2b'}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      NIP *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.taxId}
+                      onChange={(e) => handleChange('taxId', e.target.value)}
+                      placeholder="PL1234567890"
+                      required={accountType === 'b2b'}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Password */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                    Hasło *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={formData.password}
+                      onChange={(e) => handleChange('password', e.target.value)}
+                      placeholder="••••••••"
+                      required
+                      minLength={8}
+                      className="w-full px-4 py-3 pr-12 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-900 transition-colors"
+                    >
+                      {showPassword ? '👁️' : '👁️‍🗨️'}
+                    </button>
+                  </div>
+                  <div className="text-[12px] text-neutral-500 mt-1">
+                    Min. 8 znaków
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                    Potwierdź hasło *
+                  </label>
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={(e) => handleChange('password', e.target.value)}
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleChange('confirmPassword', e.target.value)}
                     placeholder="••••••••"
                     required
-                    minLength={8}
-                    style={{
-                      width: '100%',
-                      padding: '0.875rem',
-                      paddingRight: '3rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem'
-                    }}
+                    className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: 'absolute',
-                      right: '0.75rem',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '1.25rem'
-                    }}
-                  >
-                    {showPassword ? '👁️' : '👁️‍🗨️'}
-                  </button>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                  Min. 8 znaków
                 </div>
               </div>
 
-              <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
-                  Potwierdź hasło *
+              {/* Checkboxes */}
+              <div className="space-y-3 pt-2">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={acceptTerms}
+                    onChange={(e) => setAcceptTerms(e.target.checked)}
+                    required
+                    className="mt-0.5 w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900 cursor-pointer"
+                  />
+                  <span className="text-[13px] text-neutral-700 leading-relaxed">
+                    Akceptuję{' '}
+                    <Link href={`/${locale}/warunki-sprzedazy`} className="text-neutral-900 font-medium hover:text-neutral-700 underline">
+                      regulamin
+                    </Link>
+                    {' '}i{' '}
+                    <Link href={`/${locale}/polityka-prywatnosci`} className="text-neutral-900 font-medium hover:text-neutral-700 underline">
+                      warunki sprzedaży
+                    </Link>
+                    {' *'}
+                  </span>
                 </label>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.875rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem'
-                  }}
-                />
+
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={acceptGdpr}
+                    onChange={(e) => setAcceptGdpr(e.target.checked)}
+                    required
+                    className="mt-0.5 w-4 h-4 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900 cursor-pointer"
+                  />
+                  <span className="text-[13px] text-neutral-700 leading-relaxed">
+                    Wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z{' '}
+                    <Link href={`/${locale}/polityka-prywatnosci`} className="text-neutral-900 font-medium hover:text-neutral-700 underline">
+                      polityką prywatności
+                    </Link>
+                    {' (RODO) *'}
+                  </span>
+                </label>
               </div>
-            </div>
 
-            {/* Checkboxes */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'flex', alignItems: 'start', gap: '0.75rem', marginBottom: '1rem', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={acceptTerms}
-                  onChange={(e) => setAcceptTerms(e.target.checked)}
-                  required
-                  style={{ marginTop: '0.25rem', width: '1rem', height: '1rem', cursor: 'pointer' }}
-                />
-                <span style={{ fontSize: '0.875rem', color: '#374151', lineHeight: '1.5' }}>
-                  Akceptuję{' '}
-                  <Link href={`/${locale}/warunki-sprzedazy`} style={{ color: '#3b82f6', textDecoration: 'underline' }}>
-                    regulamin
-                  </Link>
-                  {' '}i{' '}
-                  <Link href={`/${locale}/polityka-prywatnosci`} style={{ color: '#3b82f6', textDecoration: 'underline' }}>
-                    warunki sprzedaży
-                  </Link>
-                  {' *'}
-                </span>
-              </label>
-
-              <label style={{ display: 'flex', alignItems: 'start', gap: '0.75rem', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={acceptGdpr}
-                  onChange={(e) => setAcceptGdpr(e.target.checked)}
-                  required
-                  style={{ marginTop: '0.25rem', width: '1rem', height: '1rem', cursor: 'pointer' }}
-                />
-                <span style={{ fontSize: '0.875rem', color: '#374151', lineHeight: '1.5' }}>
-                  Wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z{' '}
-                  <Link href={`/${locale}/polityka-prywatnosci`} style={{ color: '#3b82f6', textDecoration: 'underline' }}>
-                    polityką prywatności
-                  </Link>
-                  {' (RODO) *'}
-                </span>
-              </label>
-            </div>
-
-            {/* Register Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '1rem',
-                backgroundColor: loading ? '#9ca3af' : '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '1rem',
-                fontWeight: '600',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                transition: 'background-color 0.2s',
-                marginBottom: '1rem'
-              }}
-              onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.backgroundColor = '#2563eb'
-              }}
-              onMouseLeave={(e) => {
-                if (!loading) e.currentTarget.style.backgroundColor = '#3b82f6'
-              }}
-            >
-              {loading ? 'Tworzenie konta...' : 'Utwórz konto'}
-            </button>
-
-            {/* Login Link */}
-            <div style={{ textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
-              Masz już konto?{' '}
-              <Link
-                href={`/${locale}/logowanie`}
-                style={{ color: '#3b82f6', fontWeight: '600', textDecoration: 'none' }}
+              {/* Register Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full px-6 py-3 bg-neutral-900 text-white rounded-lg text-[14px] font-semibold hover:bg-neutral-800 disabled:bg-neutral-400 disabled:cursor-not-allowed transition-colors mt-6"
               >
-                Zaloguj się
-              </Link>
-            </div>
-          </form>
+                {loading ? 'Tworzenie konta...' : 'Utwórz konto'}
+              </button>
+
+              {/* Login Link */}
+              <div className="text-center text-[13px] text-neutral-600 pt-4">
+                Masz już konto?{' '}
+                <Link
+                  href={`/${locale}/logowanie`}
+                  className="text-neutral-900 font-semibold hover:text-neutral-700 transition-colors"
+                >
+                  Zaloguj się
+                </Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-</div>
+    </div>
   )
 }

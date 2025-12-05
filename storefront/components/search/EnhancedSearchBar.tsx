@@ -54,16 +54,13 @@ export default function EnhancedSearchBar({
         setIsOpen(true)
       } else {
         clear()
-        if (query.length === 0 && (showHistory || showPopular)) {
-          setIsOpen(true)
-        } else {
-          setIsOpen(false)
-        }
+        // Don't auto-open on empty query - only open when user focuses
+        setIsOpen(false)
       }
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [query, getSuggestions, clear, showHistory, showPopular])
+  }, [query, getSuggestions, clear])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -131,7 +128,6 @@ export default function EnhancedSearchBar({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => setIsOpen(true)}
             placeholder={placeholder}
             style={{
               width: '100%',
@@ -143,19 +139,20 @@ export default function EnhancedSearchBar({
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#3b82f6'
+              e.currentTarget.style.borderColor = '#1675F2'
             }}
             onMouseLeave={(e) => {
               if (document.activeElement !== e.currentTarget) {
-                e.currentTarget.style.borderColor = '#e5e7eb'
+                e.currentTarget.style.borderColor = '#D4EBFC'
               }
             }}
             onFocus={(e) => {
-              e.currentTarget.style.borderColor = '#3b82f6'
-              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+              setIsOpen(true)
+              e.currentTarget.style.borderColor = '#1675F2'
+              e.currentTarget.style.boxShadow = '0 0 0 4px rgba(22, 117, 242, 0.1)'
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = '#e5e7eb'
+              e.currentTarget.style.borderColor = '#D4EBFC'
               e.currentTarget.style.boxShadow = 'none'
             }}
           />
@@ -193,12 +190,13 @@ export default function EnhancedSearchBar({
               right: '0.75rem',
               top: '50%',
               transform: 'translateY(-50%)',
-              background: '#3b82f6',
+              background: '#1675F2',
               border: 'none',
-              borderRadius: '8px',
+              borderRadius: '12px',
               cursor: 'pointer',
               padding: '0.5rem 0.75rem',
               color: 'white',
+              boxShadow: '0 4px 12px rgba(22, 117, 242, 0.3)',
             }}
           >
             <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">

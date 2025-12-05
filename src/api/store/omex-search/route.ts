@@ -7,17 +7,12 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import AdvancedSearchService from "../../../modules/omex-search/advanced-search.service"
 
 // ============================================================================
-// METHOD 1: Machine-Based Search (Step-by-step wizard)
+// METHOD 1: Machine-Based Search
 // ============================================================================
 
 /**
  * GET /store/omex-search
- * Multi-step machine search wizard
- * 
- * Step 1: No params → returns brands
- * Step 2: ?brand=CAT → returns types for CAT + products for CAT
- * Step 3: ?brand=CAT&machineType=Koparka → returns models + products
- * Step 4: ?brand=CAT&machineType=Koparka&model=320D → returns products
+ * Search parts by machine using query params
  */
 export async function GET(
   req: MedusaRequest,
@@ -28,59 +23,23 @@ export async function GET(
   try {
     const { brand, machineType, model, series, frame, engine } = req.query
 
-    // STEP 1: No params → return brands list
-    if (!brand) {
+    // If no params, return brands list
+    if (!brand && !machineType && !model) {
       const brands = await advancedSearchService.getMachineBrands()
       return res.json({
-        step: 1,
         brands,
-        nextStep: "Select a brand to see machine types",
+        count: brands.length,
       })
     }
 
-    // STEP 2: Only brand → return types + products for this brand
-    if (brand && !machineType) {
-      const types = await advancedSearchService.getMachineTypes(brand as string)
-      const products = await advancedSearchService.searchByMachine({
-        brand: brand as string,
-        machineType: '',
-        model: '',
-      })
-      
-      return res.json({
-        step: 2,
-        brand,
-        types,
-        products: products.products,
-        total: products.total,
-        nextStep: "Select a machine type to narrow results",
+    // Otherwise search by machine
+    if (!brand || !machineType || !model) {
+      return res.status(400).json({
+        error: "Missing required fields",
+        required: ["brand", "machineType", "model"],
       })
     }
 
-    // STEP 3: Brand + type → return models + products
-    if (brand && machineType && !model) {
-      const models = await advancedSearchService.getMachineModels(
-        brand as string,
-        machineType as string
-      )
-      const products = await advancedSearchService.searchByMachine({
-        brand: brand as string,
-        machineType: machineType as string,
-        model: '',
-      })
-      
-      return res.json({
-        step: 3,
-        brand,
-        machineType,
-        models,
-        products: products.products,
-        total: products.total,
-        nextStep: "Select a model to see specific parts",
-      })
-    }
-
-    // STEP 4: Brand + type + model → return products
     const result = await advancedSearchService.searchByMachine({
       brand: brand as string,
       machineType: machineType as string,
@@ -90,15 +49,7 @@ export async function GET(
       engine: engine as string,
     })
 
-    res.json({
-      step: 4,
-      brand,
-      machineType,
-      model,
-      products: result.products,
-      total: result.total,
-      hasMore: result.hasMore,
-    })
+    res.json(result)
   } catch (error) {
     res.status(500).json({
       error: "Machine search failed",

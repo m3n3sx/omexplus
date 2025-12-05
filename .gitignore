@@ -24,3 +24,5 @@ build
 !.yarn/versions
 
 .medusa
+# Local Netlify folder
+.netlify

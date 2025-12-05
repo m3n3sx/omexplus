@@ -47,11 +47,11 @@ export default function AccountPage() {
   ]
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
+    <div className="min-h-screen bg-gradient-to-br from-[#F2F2F2] via-[#E8F4FE] to-[#D4EBFC] py-8 md:py-12">
+      <div className="container mx-auto px-4 md:px-[60px]">
         {/* Breadcrumb */}
-        <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: '#6b7280' }}>
-          <Link href={`/${locale}`} style={{ color: '#3b82f6' }}>
+        <div className="mb-6 text-[13px] text-neutral-600">
+          <Link href={`/${locale}`} className="hover:text-neutral-900 transition-colors">
             {t('common.home')}
           </Link>
           {' / '}
@@ -59,28 +59,28 @@ export default function AccountPage() {
         </div>
 
         {/* Page Header */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
             Moje Konto
           </h1>
-          <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>
+          <p className="text-[14px] text-neutral-600">
             Zarządzaj swoim kontem, zamówieniami i ustawieniami
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '2rem' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 lg:gap-8">
           {/* Sidebar Navigation */}
-          <div style={{ backgroundColor: 'white', borderRadius: '1rem', padding: '1.5rem', height: 'fit-content' }}>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>
+          <div className="bg-white rounded-2xl p-6 border-2 border-[#D4EBFC] h-fit lg:sticky lg:top-24 shadow-lg">
+            <div className="mb-6 pb-6 border-b border-neutral-200">
+              <div className="text-[16px] font-bold text-neutral-900 mb-1">
                 {user.firstName} {user.lastName}
               </div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+              <div className="text-[13px] text-neutral-600">
                 {user.email}
               </div>
             </div>
 
-            <nav>
+            <nav className="space-y-1">
               {[
                 { id: 'profile', icon: '👤', label: 'Profil' },
                 { id: 'orders', icon: '📦', label: 'Zamówienia' },
@@ -90,59 +90,22 @@ export default function AccountPage() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id as any)}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.875rem 1rem',
-                    marginBottom: '0.5rem',
-                    backgroundColor: activeTab === item.id ? '#eff6ff' : 'transparent',
-                    color: activeTab === item.id ? '#3b82f6' : '#6b7280',
-                    border: 'none',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem',
-                    fontWeight: activeTab === item.id ? '600' : '400',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    textAlign: 'left'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (activeTab !== item.id) {
-                      e.currentTarget.style.backgroundColor = '#f9fafb'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (activeTab !== item.id) {
-                      e.currentTarget.style.backgroundColor = 'transparent'
-                    }
-                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-bold transition-all ${
+                    activeTab === item.id
+                      ? 'bg-[#1675F2] text-white shadow-lg shadow-[#1675F2]/30'
+                      : 'text-neutral-700 hover:bg-[#E8F4FE]'
+                  }`}
                 >
-                  <span style={{ fontSize: '1.25rem' }}>{item.icon}</span>
+                  <span className="text-lg">{item.icon}</span>
                   {item.label}
                 </button>
               ))}
             </nav>
 
-            <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e5e7eb' }}>
-              <button
-                style={{
-                  width: '100%',
-                  padding: '0.875rem 1rem',
-                  backgroundColor: 'transparent',
-                  color: '#ef4444',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s',
-                  textAlign: 'left'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-              >
-                🚪 Wyloguj się
+            <div className="mt-6 pt-6 border-t border-neutral-200">
+              <button className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg text-[14px] font-medium transition-colors">
+                <span className="text-lg">🚪</span>
+                Wyloguj się
               </button>
             </div>
           </div>
@@ -150,154 +113,90 @@ export default function AccountPage() {
           {/* Main Content */}
           <div>
             {activeTab === 'profile' && (
-              <div style={{ backgroundColor: 'white', borderRadius: '1rem', padding: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+              <div className="bg-white rounded-xl p-6 md:p-8 border border-neutral-200">
+                <h2 className="text-[18px] font-bold text-neutral-900 mb-6">
                   Informacje o koncie
                 </h2>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
                       Imię
                     </label>
                     <input
                       type="text"
                       value={user.firstName}
                       readOnly
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '1rem',
-                        backgroundColor: '#f9fafb'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] bg-neutral-50"
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
                       Nazwisko
                     </label>
                     <input
                       type="text"
                       value={user.lastName}
                       readOnly
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '1rem',
-                        backgroundColor: '#f9fafb'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] bg-neutral-50"
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
                       Email
                     </label>
                     <input
                       type="email"
                       value={user.email}
                       readOnly
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '1rem',
-                        backgroundColor: '#f9fafb'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] bg-neutral-50"
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
                       Telefon
                     </label>
                     <input
                       type="tel"
                       value={user.phone}
                       readOnly
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '1rem',
-                        backgroundColor: '#f9fafb'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] bg-neutral-50"
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
                       Firma
                     </label>
                     <input
                       type="text"
                       value={user.company}
                       readOnly
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '1rem',
-                        backgroundColor: '#f9fafb'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] bg-neutral-50"
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
                       NIP
                     </label>
                     <input
                       type="text"
                       value={user.taxId}
                       readOnly
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '1rem',
-                        backgroundColor: '#f9fafb'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] bg-neutral-50"
                     />
                   </div>
                 </div>
 
-                <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-                  <button
-                    style={{
-                      padding: '0.875rem 2rem',
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer'
-                    }}
-                  >
+                <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                  <button className="px-6 py-3 bg-[#1675F2] text-white rounded-2xl text-[14px] font-bold hover:bg-[#0554F2] transition-all shadow-lg shadow-[#1675F2]/30">
                     Edytuj profil
                   </button>
-                  <button
-                    style={{
-                      padding: '0.875rem 2rem',
-                      backgroundColor: 'transparent',
-                      color: '#6b7280',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer'
-                    }}
-                  >
+                  <button className="px-6 py-3 bg-white text-neutral-900 border border-neutral-300 rounded-lg text-[14px] font-semibold hover:bg-neutral-50 transition-colors">
                     Zmień hasło
                   </button>
                 </div>
@@ -305,77 +204,63 @@ export default function AccountPage() {
             )}
 
             {activeTab === 'orders' && (
-              <div style={{ backgroundColor: 'white', borderRadius: '1rem', padding: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+              <div className="bg-white rounded-xl p-6 md:p-8 border border-neutral-200">
+                <h2 className="text-[18px] font-bold text-neutral-900 mb-6">
                   Historia zamówień
                 </h2>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="space-y-4">
                   {orders.map((order) => (
                     <Link
                       key={order.id}
                       href={`/${locale}/orders/${order.id}`}
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: '150px 150px 1fr 150px 100px',
-                        alignItems: 'center',
-                        gap: '1.5rem',
-                        padding: '1.5rem',
-                        backgroundColor: '#f9fafb',
-                        borderRadius: '0.75rem',
-                        textDecoration: 'none',
-                        color: 'inherit',
-                        transition: 'transform 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}
+                      className="block p-5 bg-neutral-50 rounded-lg border border-neutral-200 hover:border-neutral-900 transition-all group"
                     >
-                      <div>
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>
-                          Numer zamówienia
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                          <div className="text-[12px] text-neutral-600 mb-1">
+                            Numer zamówienia
+                          </div>
+                          <div className="text-[14px] font-semibold text-neutral-900">
+                            {order.id}
+                          </div>
                         </div>
-                        <div style={{ fontSize: '1rem', fontWeight: '600' }}>
-                          {order.id}
-                        </div>
-                      </div>
 
-                      <div>
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>
-                          Data
+                        <div>
+                          <div className="text-[12px] text-neutral-600 mb-1">
+                            Data
+                          </div>
+                          <div className="text-[14px] text-neutral-900">
+                            {order.date}
+                          </div>
                         </div>
-                        <div style={{ fontSize: '1rem' }}>
-                          {order.date}
-                        </div>
-                      </div>
 
-                      <div>
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>
-                          Status
+                        <div>
+                          <div className="text-[12px] text-neutral-600 mb-1">
+                            Status
+                          </div>
+                          <span className={`inline-block px-3 py-1 rounded-full text-[12px] font-semibold ${
+                            order.status === 'Dostarczone'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {order.status}
+                          </span>
                         </div>
-                        <div style={{
-                          display: 'inline-block',
-                          padding: '0.25rem 0.75rem',
-                          backgroundColor: order.status === 'Dostarczone' ? '#d1fae5' : '#dbeafe',
-                          color: order.status === 'Dostarczone' ? '#065f46' : '#1e40af',
-                          borderRadius: '0.375rem',
-                          fontSize: '0.875rem',
-                          fontWeight: '600'
-                        }}>
-                          {order.status}
-                        </div>
-                      </div>
 
-                      <div>
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>
-                          Wartość
+                        <div className="flex items-center justify-between md:justify-end">
+                          <div>
+                            <div className="text-[12px] text-neutral-600 mb-1">
+                              Wartość
+                            </div>
+                            <div className="text-[16px] font-bold text-neutral-900">
+                              {order.total.toFixed(2)} PLN
+                            </div>
+                          </div>
+                          <svg className="w-5 h-5 text-neutral-400 group-hover:text-neutral-900 transition-colors ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
                         </div>
-                        <div style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#3b82f6' }}>
-                          {order.total.toFixed(2)} PLN
-                        </div>
-                      </div>
-
-                      <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontSize: '1.5rem' }}>→</span>
                       </div>
                     </Link>
                   ))}
@@ -384,85 +269,48 @@ export default function AccountPage() {
             )}
 
             {activeTab === 'addresses' && (
-              <div style={{ backgroundColor: 'white', borderRadius: '1rem', padding: '2rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+              <div className="bg-white rounded-xl p-6 md:p-8 border border-neutral-200">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                  <h2 className="text-[18px] font-bold text-neutral-900">
                     Zapisane adresy
                   </h2>
-                  <button
-                    style={{
-                      padding: '0.75rem 1.5rem',
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      cursor: 'pointer'
-                    }}
-                  >
+                  <button className="px-5 py-2.5 bg-neutral-900 text-white rounded-lg text-[13px] font-semibold hover:bg-neutral-800 transition-colors">
                     + Dodaj adres
                   </button>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {addresses.map((address) => (
                     <div
                       key={address.id}
-                      style={{
-                        padding: '1.5rem',
-                        backgroundColor: '#f9fafb',
-                        borderRadius: '0.75rem',
-                        border: address.type === 'Główny' ? '2px solid #3b82f6' : '2px solid transparent'
-                      }}
+                      className={`p-5 rounded-lg border-2 ${
+                        address.type === 'Główny'
+                          ? 'border-neutral-900 bg-neutral-50'
+                          : 'border-neutral-200 bg-white'
+                      }`}
                     >
-                      <div style={{
-                        display: 'inline-block',
-                        padding: '0.25rem 0.75rem',
-                        backgroundColor: address.type === 'Główny' ? '#dbeafe' : '#f3f4f6',
-                        color: address.type === 'Główny' ? '#1e40af' : '#6b7280',
-                        borderRadius: '0.375rem',
-                        fontSize: '0.75rem',
-                        fontWeight: '600',
-                        marginBottom: '1rem'
-                      }}>
+                      <span className={`inline-block px-3 py-1 rounded-full text-[11px] font-semibold mb-4 ${
+                        address.type === 'Główny'
+                          ? 'bg-neutral-900 text-white'
+                          : 'bg-neutral-200 text-neutral-700'
+                      }`}>
                         {address.type}
-                      </div>
+                      </span>
 
-                      <div style={{ marginBottom: '0.5rem', fontWeight: '600' }}>
+                      <div className="mb-2 font-semibold text-[14px] text-neutral-900">
                         {address.name}
                       </div>
-                      <div style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.6' }}>
+                      <div className="text-[13px] text-neutral-600 leading-relaxed">
                         {address.street}<br />
                         {address.postal} {address.city}<br />
                         {address.country}
                       </div>
 
-                      <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-                        <button
-                          style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: 'transparent',
-                            color: '#3b82f6',
-                            border: '1px solid #3b82f6',
-                            borderRadius: '0.375rem',
-                            fontSize: '0.875rem',
-                            cursor: 'pointer'
-                          }}
-                        >
+                      <div className="mt-4 flex gap-2">
+                        <button className="px-4 py-2 bg-white text-neutral-900 border border-neutral-300 rounded-lg text-[12px] font-semibold hover:bg-neutral-50 transition-colors">
                           Edytuj
                         </button>
-                        <button
-                          style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: 'transparent',
-                            color: '#ef4444',
-                            border: '1px solid #ef4444',
-                            borderRadius: '0.375rem',
-                            fontSize: '0.875rem',
-                            cursor: 'pointer'
-                          }}
-                        >
+                        <button className="px-4 py-2 bg-white text-red-600 border border-red-300 rounded-lg text-[12px] font-semibold hover:bg-red-50 transition-colors">
                           Usuń
                         </button>
                       </div>
@@ -473,30 +321,24 @@ export default function AccountPage() {
             )}
 
             {activeTab === 'favorites' && (
-              <div style={{ backgroundColor: 'white', borderRadius: '1rem', padding: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+              <div className="bg-white rounded-xl p-6 md:p-8 border border-neutral-200">
+                <h2 className="text-[18px] font-bold text-neutral-900 mb-6">
                   Ulubione produkty
                 </h2>
 
-                <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>❤️</div>
-                  <p style={{ fontSize: '1.125rem', color: '#6b7280', marginBottom: '1rem' }}>
+                <div className="text-center py-16">
+                  <div className="text-6xl mb-4">❤️</div>
+                  <p className="text-[14px] text-neutral-600 mb-6">
                     Nie masz jeszcze ulubionych produktów
                   </p>
                   <Link
                     href={`/${locale}/products`}
-                    style={{
-                      display: 'inline-block',
-                      padding: '0.875rem 2rem',
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      textDecoration: 'none'
-                    }}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-lg text-[14px] font-semibold hover:bg-neutral-800 transition-colors"
                   >
                     Przeglądaj produkty
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </Link>
                 </div>
               </div>

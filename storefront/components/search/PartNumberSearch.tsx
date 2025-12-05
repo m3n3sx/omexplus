@@ -62,9 +62,10 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
           style={{
             flex: 1,
             padding: '0.75rem 1rem',
-            border: '1px solid #e5e7eb',
-            borderRadius: '8px',
+            border: '2px solid #D4EBFC',
+            borderRadius: '12px',
             fontSize: '1rem',
+            outline: 'none',
           }}
         />
         <button
@@ -73,12 +74,13 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
           style={{
             padding: '0.75rem 1.5rem',
             border: 'none',
-            borderRadius: '8px',
-            backgroundColor: loading || !partNumber.trim() ? '#e5e7eb' : '#3b82f6',
-            color: 'white',
+            borderRadius: '12px',
+            backgroundColor: loading || !partNumber.trim() ? '#E8F4FE' : '#1675F2',
+            color: loading || !partNumber.trim() ? '#9ca3af' : 'white',
             cursor: loading || !partNumber.trim() ? 'not-allowed' : 'pointer',
             fontSize: '1rem',
-            fontWeight: '500',
+            fontWeight: '600',
+            boxShadow: loading || !partNumber.trim() ? 'none' : '0 4px 12px rgba(22, 117, 242, 0.3)',
           }}
         >
           {loading ? 'Szukam...' : 'Szukaj'}
@@ -124,9 +126,9 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
           {searchResults.exact && (
             <div style={{
               padding: '1.5rem',
-              backgroundColor: '#f0fdf4',
-              border: '2px solid #86efac',
-              borderRadius: '8px',
+              backgroundColor: '#E8F4FE',
+              border: '2px solid #1675F2',
+              borderRadius: '16px',
               marginBottom: '1.5rem',
             }}>
               <div style={{
@@ -136,7 +138,7 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                 marginBottom: '0.5rem',
               }}>
                 <div>
-                  <div style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: '600', marginBottom: '0.25rem' }}>
+                  <div style={{ fontSize: '0.75rem', color: '#0554F2', fontWeight: '600', marginBottom: '0.25rem' }}>
                     ZNALEZIONO DOKŁADNE DOPASOWANIE
                   </div>
                   <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
@@ -150,12 +152,12 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#16a34a' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#0554F2' }}>
                     {searchResults.exact.price} PLN
                   </div>
                   <div style={{
                     fontSize: '0.75rem',
-                    color: searchResults.exact.availability === 'in-stock' ? '#16a34a' : '#f59e0b',
+                    color: searchResults.exact.availability === 'in-stock' ? '#27ae60' : '#F2B90C',
                     fontWeight: '600',
                     marginTop: '0.25rem',
                   }}>
@@ -168,13 +170,14 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                   marginTop: '1rem',
                   padding: '0.75rem 1.5rem',
                   border: 'none',
-                  borderRadius: '8px',
-                  backgroundColor: '#16a34a',
+                  borderRadius: '12px',
+                  backgroundColor: '#1675F2',
                   color: 'white',
                   cursor: 'pointer',
                   fontSize: '1rem',
-                  fontWeight: '500',
+                  fontWeight: '600',
                   width: '100%',
+                  boxShadow: '0 4px 12px rgba(22, 117, 242, 0.3)',
                 }}
               >
                 Dodaj do koszyka
@@ -185,7 +188,7 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
           {/* Alternatives */}
           {searchResults.alternatives && searchResults.alternatives.length > 0 && (
             <div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#0554F2' }}>
                 Zamienniki ({searchResults.alternatives.length})
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -194,8 +197,8 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                     key={index}
                     style={{
                       padding: '1rem',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
+                      border: '2px solid #D4EBFC',
+                      borderRadius: '16px',
                       backgroundColor: 'white',
                     }}
                   >
@@ -210,9 +213,9 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                         <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
                           Typ: <span style={{
                             padding: '0.125rem 0.5rem',
-                            backgroundColor: alt.type === 'Premium' ? '#dbeafe' : '#fef3c7',
-                            color: alt.type === 'Premium' ? '#1e40af' : '#92400e',
-                            borderRadius: '4px',
+                            backgroundColor: alt.type === 'Premium' ? '#E8F4FE' : '#ACE0FF',
+                            color: alt.type === 'Premium' ? '#0554F2' : '#1675F2',
+                            borderRadius: '6px',
                             fontSize: '0.75rem',
                             fontWeight: '600',
                           }}>
@@ -221,13 +224,14 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                         </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+                        <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#0554F2' }}>
                           {alt.price} PLN
                         </div>
                         <div style={{
                           fontSize: '0.75rem',
-                          color: alt.availability === 'in-stock' ? '#16a34a' : '#f59e0b',
+                          color: alt.availability === 'in-stock' ? '#27ae60' : '#F2B90C',
                           marginTop: '0.25rem',
+                          fontWeight: '600',
                         }}>
                           {alt.availability === 'in-stock' ? 'Na magazynie' : 'Zamówienie'}
                         </div>
@@ -235,13 +239,13 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                           style={{
                             marginTop: '0.5rem',
                             padding: '0.5rem 1rem',
-                            border: '1px solid #3b82f6',
-                            borderRadius: '6px',
+                            border: '2px solid #1675F2',
+                            borderRadius: '8px',
                             backgroundColor: 'white',
-                            color: '#3b82f6',
+                            color: '#1675F2',
                             cursor: 'pointer',
                             fontSize: '0.875rem',
-                            fontWeight: '500',
+                            fontWeight: '600',
                           }}
                         >
                           Dodaj
@@ -257,7 +261,7 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
           {/* Suggestions */}
           {searchResults.suggestions && searchResults.suggestions.length > 0 && (
             <div style={{ marginTop: '1.5rem' }}>
-              <h4 style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+              <h4 style={{ fontSize: '0.875rem', color: '#0554F2', marginBottom: '0.5rem', fontWeight: '600' }}>
                 Podobne numery części:
               </h4>
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -267,11 +271,13 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
                     onClick={() => setPartNumber(suggestion)}
                     style={{
                       padding: '0.5rem 1rem',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '6px',
+                      border: '2px solid #D4EBFC',
+                      borderRadius: '8px',
                       backgroundColor: 'white',
                       cursor: 'pointer',
                       fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#1675F2',
                     }}
                   >
                     {suggestion}

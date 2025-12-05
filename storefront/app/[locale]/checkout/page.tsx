@@ -51,15 +51,14 @@ export default function CheckoutPage() {
   const [purchaseOrderNumber, setPurchaseOrderNumber] = useState('')
 
   const steps = [
-    { number: 1, title: t('checkout.shippingAddress') },
-    { number: 2, title: t('checkout.shippingMethod') },
-    { number: 3, title: t('checkout.billingAddress') },
-    { number: 4, title: t('checkout.paymentMethod') },
-    { number: 5, title: t('checkout.reviewOrder') }
+    { number: 1, title: 'Adres dostawy' },
+    { number: 2, title: 'Dostawa' },
+    { number: 3, title: 'Płatność' },
+    { number: 4, title: 'Podsumowanie' }
   ]
 
   const handleNext = () => {
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1)
     }
   }
@@ -71,8 +70,7 @@ export default function CheckoutPage() {
   }
 
   const handlePlaceOrder = async () => {
-    // TODO: Implement order placement
-    alert('Order placed!')
+    alert('Zamówienie złożone!')
     router.push(`/${locale}/order-success`)
   }
 
@@ -84,87 +82,64 @@ export default function CheckoutPage() {
 
   if (!cart || cart.items.length === 0) {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-<div style={{ maxWidth: '800px', margin: '0 auto', padding: '4rem 2rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🛒</div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-            {t('cart.empty')}
-          </h1>
-          <Link href={`/${locale}/products`}>
-            <button style={{
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              padding: '1rem 2rem',
-              border: 'none',
-              borderRadius: '0.5rem',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}>
+      <div className="min-h-screen bg-neutral-50 py-20">
+        <div className="container mx-auto px-4 md:px-[60px]">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="text-7xl mb-6">🛒</div>
+            <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-3">
+              {t('cart.empty')}
+            </h1>
+            <Link
+              href={`/${locale}/products`}
+              className="inline-flex items-center gap-2 px-8 py-3 bg-neutral-900 text-white rounded-lg text-[14px] font-semibold hover:bg-neutral-800 transition-colors"
+            >
               {t('common.continueShopping')}
-            </button>
-          </Link>
+            </Link>
+          </div>
         </div>
-</div>
+      </div>
     )
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-<div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+    <div className="min-h-screen bg-neutral-50 py-8 md:py-12">
+      <div className="container mx-auto px-4 md:px-[60px]">
         {/* Breadcrumb */}
-        <div style={{ marginBottom: '2rem', fontSize: '0.875rem', color: '#6b7280' }}>
-          <Link href={`/${locale}`} style={{ color: '#3b82f6' }}>
+        <div className="mb-6 text-[13px] text-neutral-600">
+          <Link href={`/${locale}`} className="hover:text-neutral-900 transition-colors">
             {t('common.home')}
           </Link>
           {' / '}
-          <span>{t('checkout.title')}</span>
+          <span>Kasa</span>
         </div>
 
         {/* Progress Steps */}
-        <div style={{ marginBottom: '3rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
+        <div className="mb-10">
+          <div className="flex items-center justify-between relative max-w-3xl mx-auto">
             {/* Progress Line */}
-            <div style={{
-              position: 'absolute',
-              top: '20px',
-              left: '0',
-              right: '0',
-              height: '2px',
-              backgroundColor: '#e5e7eb',
-              zIndex: 0
-            }}>
-              <div style={{
-                height: '100%',
-                backgroundColor: '#3b82f6',
-                width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
-                transition: 'width 0.3s'
-              }} />
+            <div className="absolute top-5 left-0 right-0 h-0.5 bg-neutral-200 -z-10">
+              <div 
+                className="h-full bg-neutral-900 transition-all duration-300"
+                style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+              />
             </div>
 
             {steps.map((step) => (
-              <div key={step.number} style={{ position: 'relative', zIndex: 1, textAlign: 'center', flex: 1 }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  backgroundColor: currentStep >= step.number ? '#3b82f6' : '#e5e7eb',
-                  color: currentStep >= step.number ? 'white' : '#6b7280',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  margin: '0 auto',
-                  transition: 'all 0.3s'
-                }}>
-                  {currentStep > step.number ? '✓' : step.number}
+              <div key={step.number} className="flex flex-col items-center">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[14px] font-semibold transition-all ${
+                  currentStep >= step.number
+                    ? 'bg-neutral-900 text-white'
+                    : 'bg-white border-2 border-neutral-200 text-neutral-400'
+                }`}>
+                  {currentStep > step.number ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : step.number}
                 </div>
-                <div style={{
-                  fontSize: '0.75rem',
-                  marginTop: '0.5rem',
-                  color: currentStep >= step.number ? '#1f2937' : '#6b7280',
-                  fontWeight: currentStep === step.number ? '600' : '400'
-                }}>
+                <div className={`mt-2 text-[12px] font-medium text-center ${
+                  currentStep >= step.number ? 'text-neutral-900' : 'text-neutral-500'
+                }`}>
                   {step.title}
                 </div>
               </div>
@@ -172,139 +147,97 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
-          <div>
+          <div className="lg:col-span-2">
             {/* Step 1: Shipping Address */}
             {currentStep === 1 && (
-              <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '0.75rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-                  {t('checkout.shippingAddress')}
+              <div className="bg-white p-6 md:p-8 rounded-xl border border-neutral-200">
+                <h2 className="text-[18px] font-bold text-neutral-900 mb-6">
+                  Adres dostawy
                 </h2>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.firstName')}
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Imię *
                     </label>
                     <input
                       type="text"
                       value={shippingAddress.firstName}
                       onChange={(e) => setShippingAddress({ ...shippingAddress, firstName: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                       required
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.lastName')}
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Nazwisko *
                     </label>
                     <input
                       type="text"
                       value={shippingAddress.lastName}
                       onChange={(e) => setShippingAddress({ ...shippingAddress, lastName: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                       required
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.email')}
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Email *
                     </label>
                     <input
                       type="email"
                       value={shippingAddress.email}
                       onChange={(e) => setShippingAddress({ ...shippingAddress, email: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                       required
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.phone')}
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Telefon *
                     </label>
                     <input
                       type="tel"
                       value={shippingAddress.phone}
                       onChange={(e) => setShippingAddress({ ...shippingAddress, phone: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                       required
                     />
                   </div>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.address')}
+                  <div className="md:col-span-2">
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Adres *
                     </label>
                     <input
                       type="text"
                       value={shippingAddress.address}
                       onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                       required
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.city')}
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Miasto *
                     </label>
                     <input
                       type="text"
                       value={shippingAddress.city}
                       onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                       required
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.postalCode')}
+                    <label className="block text-[13px] font-semibold mb-2 text-neutral-900">
+                      Kod pocztowy *
                     </label>
                     <input
                       type="text"
                       value={shippingAddress.postalCode}
                       onChange={(e) => setShippingAddress({ ...shippingAddress, postalCode: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem'
-                      }}
+                      className="w-full px-4 py-3 border border-neutral-300 rounded-lg text-[14px] focus:outline-none focus:border-neutral-900 transition-colors"
                       required
                     />
                   </div>
@@ -314,23 +247,19 @@ export default function CheckoutPage() {
 
             {/* Step 2: Shipping Method */}
             {currentStep === 2 && (
-              <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '0.75rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-                  {t('checkout.shippingMethod')}
+              <div className="bg-white p-6 md:p-8 rounded-xl border border-neutral-200">
+                <h2 className="text-[18px] font-bold text-neutral-900 mb-6">
+                  Metoda dostawy
                 </h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="space-y-3">
                   {SHIPPING_METHODS.map((method) => (
                     <label
                       key={method.id}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '1.5rem',
-                        border: selectedShipping === method.id ? '2px solid #3b82f6' : '2px solid #e5e7eb',
-                        borderRadius: '0.5rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                      }}
+                      className={`flex items-center p-5 border-2 rounded-lg cursor-pointer transition-all ${
+                        selectedShipping === method.id
+                          ? 'border-neutral-900 bg-neutral-50'
+                          : 'border-neutral-200 hover:border-neutral-300'
+                      }`}
                     >
                       <input
                         type="radio"
@@ -338,15 +267,15 @@ export default function CheckoutPage() {
                         value={method.id}
                         checked={selectedShipping === method.id}
                         onChange={(e) => setSelectedShipping(e.target.value)}
-                        style={{ marginRight: '1rem' }}
+                        className="w-4 h-4 text-neutral-900 focus:ring-neutral-900"
                       />
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{method.name}</div>
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                      <div className="ml-4 flex-1">
+                        <div className="font-semibold text-[14px] text-neutral-900 mb-1">{method.name}</div>
+                        <div className="text-[13px] text-neutral-600">
                           Dostawa w {method.estimatedDays} dni robocze
                         </div>
                       </div>
-                      <div style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#3b82f6' }}>
+                      <div className="text-[16px] font-bold text-neutral-900">
                         {(method.price / 100).toFixed(2)} PLN
                       </div>
                     </label>
@@ -355,146 +284,60 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Step 3: Billing Address */}
+            {/* Step 3: Payment */}
             {currentStep === 3 && (
-              <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '0.75rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-                  {t('checkout.billingAddress')}
+              <div className="bg-white p-6 md:p-8 rounded-xl border border-neutral-200">
+                <h2 className="text-[18px] font-bold text-neutral-900 mb-6">
+                  Metoda płatności
                 </h2>
-                <label style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem', cursor: 'pointer' }}>
-                  <input
-                    type="checkbox"
-                    checked={billingAddress.sameAsShipping}
-                    onChange={(e) => setBillingAddress({ ...billingAddress, sameAsShipping: e.target.checked })}
-                    style={{ marginRight: '0.5rem' }}
-                  />
-                  <span style={{ fontSize: '0.875rem' }}>{t('checkout.sameAsShipping')}</span>
-                </label>
-
-                {!billingAddress.sameAsShipping && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div style={{ gridColumn: '1 / -1' }}>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        {t('checkout.companyName')}
-                      </label>
-                      <input
-                        type="text"
-                        value={billingAddress.companyName}
-                        onChange={(e) => setBillingAddress({ ...billingAddress, companyName: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '0.75rem',
-                          border: '1px solid #d1d5db',
-                          borderRadius: '0.5rem',
-                          fontSize: '0.875rem'
-                        }}
-                      />
-                    </div>
-                    <div style={{ gridColumn: '1 / -1' }}>
-                      <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        {t('checkout.taxId')} (NIP)
-                      </label>
-                      <input
-                        type="text"
-                        value={billingAddress.taxId}
-                        onChange={(e) => setBillingAddress({ ...billingAddress, taxId: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '0.75rem',
-                          border: '1px solid #d1d5db',
-                          borderRadius: '0.5rem',
-                          fontSize: '0.875rem'
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                <div style={{ marginTop: '1.5rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                    {t('checkout.purchaseOrderNumber')} (opcjonalnie)
-                  </label>
-                  <input
-                    type="text"
-                    value={purchaseOrderNumber}
-                    onChange={(e) => setPurchaseOrderNumber(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem'
-                    }}
-                    placeholder="PO-2024-001"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Payment */}
-            {currentStep === 4 && (
-              <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '0.75rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-                  {t('checkout.paymentMethod')}
-                </h2>
-                <div style={{
-                  padding: '2rem',
-                  backgroundColor: '#f9fafb',
-                  borderRadius: '0.5rem',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💳</div>
-                  <p style={{ color: '#6b7280', marginBottom: '1rem' }}>
+                <div className="p-8 bg-neutral-50 rounded-lg text-center border border-neutral-200">
+                  <div className="text-5xl mb-4">💳</div>
+                  <p className="text-[14px] text-neutral-600 mb-4">
                     Płatność Stripe zostanie zintegrowana w następnym kroku
                   </p>
-                  <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                  <div className="text-[13px] text-neutral-500">
                     Akceptujemy: Visa, Mastercard, BLIK, Przelewy24
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Step 5: Review */}
-            {currentStep === 5 && (
-              <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '0.75rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-                  {t('checkout.reviewOrder')}
+            {/* Step 4: Review */}
+            {currentStep === 4 && (
+              <div className="bg-white p-6 md:p-8 rounded-xl border border-neutral-200">
+                <h2 className="text-[18px] font-bold text-neutral-900 mb-6">
+                  Podsumowanie zamówienia
                 </h2>
                 
                 {/* Order Items */}
-                <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' }}>
+                <div className="mb-6">
+                  <h3 className="text-[14px] font-semibold text-neutral-900 mb-3">
                     Produkty ({cart.items.length})
                   </h3>
-                  {cart.items.map((item: any) => (
-                    <div key={item.id} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      padding: '1rem',
-                      backgroundColor: '#f9fafb',
-                      borderRadius: '0.5rem',
-                      marginBottom: '0.5rem'
-                    }}>
-                      <div>
-                        <div style={{ fontWeight: '600' }}>Product #{item.product_id}</div>
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                          {t('common.quantity')}: {item.quantity}
+                  <div className="space-y-2">
+                    {cart.items.map((item: any) => (
+                      <div key={item.id} className="flex justify-between p-4 bg-neutral-50 rounded-lg">
+                        <div>
+                          <div className="font-semibold text-[14px] text-neutral-900">Product #{item.product_id}</div>
+                          <div className="text-[13px] text-neutral-600">
+                            Ilość: {item.quantity}
+                          </div>
+                        </div>
+                        <div className="font-semibold text-[14px] text-neutral-900">
+                          {(item.total / 100).toFixed(2)} PLN
                         </div>
                       </div>
-                      <div style={{ fontWeight: '600' }}>
-                        {(item.total / 100).toFixed(2)} PLN
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
 
                 {/* Addresses */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.shippingAddress')}
+                    <h3 className="text-[14px] font-semibold text-neutral-900 mb-2">
+                      Adres dostawy
                     </h3>
-                    <div style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.6' }}>
+                    <div className="text-[13px] text-neutral-600 leading-relaxed">
                       {shippingAddress.firstName} {shippingAddress.lastName}<br />
                       {shippingAddress.address}<br />
                       {shippingAddress.postalCode} {shippingAddress.city}<br />
@@ -503,10 +346,10 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {t('checkout.shippingMethod')}
+                    <h3 className="text-[14px] font-semibold text-neutral-900 mb-2">
+                      Metoda dostawy
                     </h3>
-                    <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                    <div className="text-[13px] text-neutral-600">
                       {selectedShippingMethod?.name}<br />
                       Dostawa w {selectedShippingMethod?.estimatedDays} dni
                     </div>
@@ -516,99 +359,63 @@ export default function CheckoutPage() {
             )}
 
             {/* Navigation Buttons */}
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+            <div className="flex gap-3 mt-6">
               {currentStep > 1 && (
                 <button
                   onClick={handleBack}
-                  style={{
-                    flex: 1,
-                    padding: '1rem',
-                    backgroundColor: 'white',
-                    color: '#3b82f6',
-                    border: '2px solid #3b82f6',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
+                  className="flex-1 px-6 py-3 bg-white text-neutral-900 border border-neutral-300 rounded-lg text-[14px] font-semibold hover:bg-neutral-50 transition-colors"
                 >
                   ← Wstecz
                 </button>
               )}
-              {currentStep < 5 ? (
+              {currentStep < 4 ? (
                 <button
                   onClick={handleNext}
-                  style={{
-                    flex: 1,
-                    padding: '1rem',
-                    backgroundColor: '#3b82f6',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
+                  className="flex-1 px-6 py-3 bg-neutral-900 text-white rounded-lg text-[14px] font-semibold hover:bg-neutral-800 transition-colors"
                 >
                   Dalej →
                 </button>
               ) : (
                 <button
                   onClick={handlePlaceOrder}
-                  style={{
-                    flex: 1,
-                    padding: '1rem',
-                    backgroundColor: '#10b981',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem',
-                    fontWeight: '600',
-                    cursor: 'pointer'
-                  }}
+                  className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg text-[14px] font-semibold hover:bg-green-700 transition-colors"
                 >
-                  {t('checkout.placeOrder')} 🎉
+                  Złóż zamówienie 🎉
                 </button>
               )}
             </div>
           </div>
 
           {/* Order Summary Sidebar */}
-          <div>
-            <div style={{
-              backgroundColor: 'white',
-              padding: '1.5rem',
-              borderRadius: '0.75rem',
-              position: 'sticky',
-              top: '100px'
-            }}>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-                {t('checkout.orderSummary')}
+          <div className="lg:col-span-1">
+            <div className="bg-white p-6 rounded-xl border border-neutral-200 sticky top-24">
+              <h3 className="text-[16px] font-bold text-neutral-900 mb-5">
+                Podsumowanie
               </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #e5e7eb' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                  <span style={{ color: '#6b7280' }}>{t('cart.subtotal')}:</span>
-                  <span style={{ fontWeight: '600' }}>{(subtotal / 100).toFixed(2)} PLN</span>
+              <div className="space-y-3 mb-5 pb-5 border-b border-neutral-200">
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-neutral-600">Produkty:</span>
+                  <span className="font-semibold text-neutral-900">{(subtotal / 100).toFixed(2)} PLN</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                  <span style={{ color: '#6b7280' }}>{t('cart.shipping')}:</span>
-                  <span style={{ fontWeight: '600' }}>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-neutral-600">Dostawa:</span>
+                  <span className="font-semibold text-neutral-900">
                     {selectedShipping ? `${(shippingCost / 100).toFixed(2)} PLN` : 'Wybierz metodę'}
                   </span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                  <span style={{ color: '#6b7280' }}>{t('cart.tax')}:</span>
-                  <span style={{ fontWeight: '600' }}>{(tax / 100).toFixed(2)} PLN</span>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-neutral-600">Podatek:</span>
+                  <span className="font-semibold text-neutral-900">{(tax / 100).toFixed(2)} PLN</span>
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: 'bold' }}>
-                <span>{t('cart.total')}:</span>
-                <span style={{ color: '#3b82f6' }}>{(total / 100).toFixed(2)} PLN</span>
+              <div className="flex justify-between items-center">
+                <span className="text-[16px] font-bold text-neutral-900">Razem:</span>
+                <span className="text-2xl font-bold text-neutral-900">{(total / 100).toFixed(2)} PLN</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-</div>
+    </div>
   )
 }

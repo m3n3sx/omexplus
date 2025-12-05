@@ -19,10 +19,10 @@ export default function CartPage() {
 
   if (loading && !cart) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
-          <p>{t('common.loading')}</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-5xl mb-4">⏳</div>
+          <p className="text-neutral-600">{t('common.loading')}</p>
         </div>
       </div>
     )
@@ -30,45 +30,41 @@ export default function CartPage() {
 
   if (!cart || cart.items.length === 0) {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '4rem 2rem' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>🛒</div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem', color: '#1f2937' }}>
-            {t('cart.empty')}
-          </h1>
-          <p style={{ color: '#6b7280', marginBottom: '2rem' }}>
-            Dodaj produkty do koszyka, aby kontynuować zakupy
-          </p>
-          <Link href={`/${locale}/products`}>
-            <button style={{
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              padding: '1rem 2rem',
-              border: 'none',
-              borderRadius: '0.5rem',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s',
-            }}>
+      <div className="min-h-screen bg-neutral-50 py-20">
+        <div className="container mx-auto px-4 md:px-[60px]">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="text-7xl mb-6">🛒</div>
+            <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-3">
+              {t('cart.empty')}
+            </h1>
+            <p className="text-[14px] text-neutral-600 mb-8">
+              Dodaj produkty do koszyka, aby kontynuować zakupy
+            </p>
+            <Link
+              href={`/${locale}/products`}
+              className="inline-flex items-center gap-2 px-8 py-3 bg-[#1675F2] text-white rounded-2xl text-[14px] font-bold hover:bg-[#0554F2] transition-all shadow-lg shadow-[#1675F2]/30"
+            >
               Przeglądaj produkty
-            </button>
-          </Link>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+    <div className="min-h-screen bg-gradient-to-br from-[#F2F2F2] via-[#E8F4FE] to-[#D4EBFC] py-8 md:py-12">
+      <div className="container mx-auto px-4 md:px-[60px]">
         {/* Header */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '0.5rem' }}>
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">
             {t('cart.title')} ({itemCount})
           </h1>
-          <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-            <Link href={`/${locale}`} style={{ color: '#3b82f6' }}>
+          <div className="text-[13px] text-neutral-600">
+            <Link href={`/${locale}`} className="hover:text-neutral-900 transition-colors">
               {t('common.home')}
             </Link>
             {' / '}
@@ -76,129 +72,90 @@ export default function CartPage() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '2rem' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Cart Items */}
-          <div>
-            <div style={{ backgroundColor: 'white', borderRadius: '0.75rem', overflow: 'hidden' }}>
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl border-2 border-[#D4EBFC] divide-y divide-[#E8F4FE] shadow-lg">
               {cart.items.map((item) => (
-                <div
-                  key={item.id}
-                  style={{
-                    display: 'flex',
-                    gap: '1.5rem',
-                    padding: '1.5rem',
-                    borderBottom: '1px solid #e5e7eb',
-                  }}
-                >
-                  {/* Product Image */}
-                  <div style={{
-                    width: '120px',
-                    height: '120px',
-                    backgroundColor: '#f3f4f6',
-                    borderRadius: '0.5rem',
-                    overflow: 'hidden',
-                    flexShrink: 0,
-                  }}>
-                    {item.thumbnail ? (
-                      <Image
-                        src={item.thumbnail}
-                        alt={item.title}
-                        width={120}
-                        height={120}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <div style={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '2rem',
-                      }}>
-                        📦
-                      </div>
-                    )}
-                  </div>
+                <div key={item.id} className="p-4 md:p-6">
+                  <div className="flex gap-4 md:gap-6">
+                    {/* Product Image */}
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-neutral-100 rounded-lg overflow-hidden flex-shrink-0">
+                      {item.thumbnail ? (
+                        <Image
+                          src={item.thumbnail}
+                          alt={item.title}
+                          width={128}
+                          height={128}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-4xl">
+                          📦
+                        </div>
+                      )}
+                    </div>
 
-                  {/* Product Details */}
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem', color: '#1f2937' }}>
-                      {item.title}
-                    </h3>
-                    {item.description && (
-                      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
-                        {item.description}
-                      </p>
-                    )}
-                    {item.variant && (
-                      <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                        SKU: {item.variant.sku || 'N/A'}
-                      </p>
-                    )}
+                    {/* Product Details */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-[15px] md:text-[16px] font-semibold text-neutral-900 mb-2 line-clamp-2">
+                        {item.title}
+                      </h3>
+                      {item.description && (
+                        <p className="text-[13px] text-neutral-600 mb-2 line-clamp-1">
+                          {item.description}
+                        </p>
+                      )}
+                      {item.variant && (
+                        <p className="text-[12px] text-neutral-500">
+                          SKU: {item.variant.sku || 'N/A'}
+                        </p>
+                      )}
 
-                    {/* Quantity Controls */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '0.5rem' }}>
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-3 mt-4">
+                        <div className="flex items-center border border-neutral-300 rounded-lg">
+                          <button
+                            onClick={() => updateItem(item.id, Math.max(1, item.quantity - 1))}
+                            disabled={loading}
+                            className="px-3 py-2 text-neutral-700 hover:bg-neutral-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                            </svg>
+                          </button>
+                          <span className="px-4 py-2 font-semibold text-[14px] min-w-[3rem] text-center">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateItem(item.id, item.quantity + 1)}
+                            disabled={loading}
+                            className="px-3 py-2 text-neutral-700 hover:bg-neutral-50 disabled:opacity-50 transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </button>
+                        </div>
+
                         <button
-                          onClick={() => updateItem(item.id, Math.max(1, item.quantity - 1))}
+                          onClick={() => removeItem(item.id)}
                           disabled={loading}
-                          style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: '1.25rem',
-                            color: '#6b7280',
-                          }}
+                          className="px-4 py-2 bg-red-50 text-red-600 rounded-lg text-[13px] font-semibold hover:bg-red-100 disabled:opacity-50 transition-colors"
                         >
-                          −
-                        </button>
-                        <span style={{ padding: '0 1rem', fontWeight: '600', minWidth: '3rem', textAlign: 'center' }}>
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateItem(item.id, item.quantity + 1)}
-                          disabled={loading}
-                          style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: '1.25rem',
-                            color: '#6b7280',
-                          }}
-                        >
-                          +
+                          {t('cart.remove')}
                         </button>
                       </div>
-
-                      <button
-                        onClick={() => removeItem(item.id)}
-                        disabled={loading}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          backgroundColor: '#fee2e2',
-                          color: '#dc2626',
-                          border: 'none',
-                          borderRadius: '0.5rem',
-                          fontSize: '0.875rem',
-                          fontWeight: '600',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {t('cart.remove')}
-                      </button>
                     </div>
-                  </div>
 
-                  {/* Price */}
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937' }}>
-                      {formatPrice(item.total, cart.region?.currency_code)}
-                    </div>
-                    <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                      {formatPrice(item.unit_price, cart.region?.currency_code)} / szt.
+                    {/* Price */}
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-[16px] md:text-lg font-bold text-neutral-900">
+                        {formatPrice(item.total, cart.region?.currency_code)}
+                      </div>
+                      <div className="text-[12px] text-neutral-500 mt-1">
+                        {formatPrice(item.unit_price, cart.region?.currency_code)} / szt.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -206,107 +163,98 @@ export default function CartPage() {
             </div>
 
             {/* Continue Shopping */}
-            <div style={{ marginTop: '1.5rem' }}>
-              <Link href={`/${locale}/products`}>
-                <button style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: 'white',
-                  color: '#3b82f6',
-                  border: '2px solid #3b82f6',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                }}>
-                  ← {t('cart.continueShopping')}
-                </button>
+            <div className="mt-6">
+              <Link
+                href={`/${locale}/products`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-neutral-900 border border-neutral-300 rounded-lg text-[13px] font-semibold hover:bg-neutral-50 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                {t('cart.continueShopping')}
               </Link>
             </div>
           </div>
 
           {/* Order Summary */}
-          <div>
-            <div style={{
-              backgroundColor: 'white',
-              padding: '1.5rem',
-              borderRadius: '0.75rem',
-              position: 'sticky',
-              top: '100px',
-            }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#1f2937' }}>
+          <div className="lg:col-span-1">
+            <div className="bg-white p-6 rounded-2xl border-2 border-[#D4EBFC] sticky top-24 shadow-lg">
+              <h2 className="text-[16px] font-bold text-neutral-900 mb-6">
                 {t('checkout.orderSummary')}
               </h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                  <span style={{ color: '#6b7280' }}>{t('cart.subtotal')}:</span>
-                  <span style={{ fontWeight: '600' }}>
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-neutral-600">{t('cart.subtotal')}:</span>
+                  <span className="font-semibold text-neutral-900">
                     {formatPrice(cart.subtotal, cart.region?.currency_code)}
                   </span>
                 </div>
 
                 {cart.discount_total > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                    <span style={{ color: '#6b7280' }}>Rabat:</span>
-                    <span style={{ fontWeight: '600', color: '#10b981' }}>
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-neutral-600">Rabat:</span>
+                    <span className="font-semibold text-green-600">
                       -{formatPrice(cart.discount_total, cart.region?.currency_code)}
                     </span>
                   </div>
                 )}
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                  <span style={{ color: '#6b7280' }}>{t('cart.shipping')}:</span>
-                  <span style={{ fontWeight: '600' }}>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-neutral-600">{t('cart.shipping')}:</span>
+                  <span className="font-semibold text-neutral-900">
                     {cart.shipping_total > 0
                       ? formatPrice(cart.shipping_total, cart.region?.currency_code)
                       : 'Obliczane przy kasie'}
                   </span>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
-                  <span style={{ color: '#6b7280' }}>{t('cart.tax')}:</span>
-                  <span style={{ fontWeight: '600' }}>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-neutral-600">{t('cart.tax')}:</span>
+                  <span className="font-semibold text-neutral-900">
                     {formatPrice(cart.tax_total, cart.region?.currency_code)}
                   </span>
                 </div>
               </div>
 
-              <div style={{
-                paddingTop: '1.5rem',
-                borderTop: '2px solid #e5e7eb',
-                marginBottom: '1.5rem',
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.5rem', fontWeight: 'bold' }}>
-                  <span>{t('cart.total')}:</span>
-                  <span style={{ color: '#3b82f6' }}>
+              <div className="pt-6 border-t-2 border-neutral-200 mb-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-[16px] font-bold text-neutral-900">{t('cart.total')}:</span>
+                  <span className="text-xl md:text-2xl font-bold text-neutral-900">
                     {formatPrice(cart.total, cart.region?.currency_code)}
                   </span>
                 </div>
               </div>
 
-              <Link href={`/${locale}/checkout`}>
-                <button style={{
-                  width: '100%',
-                  padding: '1rem',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s',
-                }}>
-                  {t('cart.checkout')} →
-                </button>
+              <Link
+                href={`/${locale}/checkout`}
+                className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-[#1675F2] text-white rounded-2xl text-[14px] font-bold hover:bg-[#0554F2] transition-all shadow-lg shadow-[#1675F2]/30"
+              >
+                {t('cart.checkout')}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Link>
 
               {/* Trust Badges */}
-              <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
-                <div style={{ fontSize: '0.75rem', color: '#6b7280', textAlign: 'center' }}>
-                  <div style={{ marginBottom: '0.5rem' }}>🔒 Bezpieczne płatności</div>
-                  <div style={{ marginBottom: '0.5rem' }}>📦 Darmowa dostawa od 200 PLN</div>
-                  <div>↩️ 30 dni na zwrot</div>
+              <div className="mt-6 p-4 bg-neutral-50 rounded-lg space-y-2">
+                <div className="flex items-center gap-2 text-[12px] text-neutral-700">
+                  <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Bezpieczne płatności
+                </div>
+                <div className="flex items-center gap-2 text-[12px] text-neutral-700">
+                  <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Darmowa dostawa od 200 PLN
+                </div>
+                <div className="flex items-center gap-2 text-[12px] text-neutral-700">
+                  <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  30 dni na zwrot
                 </div>
               </div>
             </div>

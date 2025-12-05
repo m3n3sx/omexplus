@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
-import { notFound } from 'next/navigation'
 import '../globals.css'
-import { NewHeader } from '@/components/layout/NewHeader'
-import { NewFooter } from '@/components/layout/NewFooter'
+import { FigmaHeader } from '@/components/layout/FigmaHeader'
+import { FigmaFooter } from '@/components/layout/FigmaFooter'
 import { Providers } from '@/components/providers/Providers'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -42,11 +41,11 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
             <div className="flex flex-col min-h-screen">
-              <NewHeader />
+              <FigmaHeader />
               <main className="flex-1">
                 {children}
               </main>
-              <NewFooter />
+              <FigmaFooter />
             </div>
           </Providers>
         </NextIntlClientProvider>

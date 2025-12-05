@@ -48,9 +48,12 @@ const config: Config = {
         },
         // Status
         success: '#27ae60',
-        warning: '#f39c12',
-        danger: '#e74c3c',
+        warning: '#F2B90C',
+        danger: '#A62B0F',
         info: '#3498db',
+        // Accent colors
+        yellow: '#F2B90C',
+        red: '#A62B0F',
       },
       spacing: {
         'xs': '4px',
