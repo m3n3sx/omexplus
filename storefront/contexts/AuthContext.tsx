@@ -52,8 +52,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await medusaClient.customers.retrieve()
       setCustomer(response.customer as Customer)
     } catch (err: any) {
-      // Not authenticated or network error
-      console.log('Auth check failed:', err.message)
+      // Not authenticated - this is normal for non-logged-in users
+      // Only log if it's not a 401 error
+      if (err?.response?.status !== 401) {
+        console.error('Auth check error:', err)
+      }
       setCustomer(null)
     } finally {
       setLoading(false)

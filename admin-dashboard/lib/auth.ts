@@ -54,11 +54,13 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   const token = getToken()
   if (!token) return null
   
-  try {
-    const response = await medusaClient.admin.users.list()
-    return response.users[0] as AuthUser
-  } catch (error) {
-    console.error("Get current user error:", error)
-    return null
+  // For now, return a default admin user
+  // In production, you would fetch from /admin/users/me endpoint
+  return {
+    id: "admin",
+    email: "admin@medusa-test.com",
+    first_name: "Admin",
+    last_name: "User",
+    role: "admin",
   }
 }

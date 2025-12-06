@@ -2,14 +2,23 @@
 
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
 export default function OrderSuccessPage() {
   const t = useTranslations()
   const locale = useLocale()
+  const [mounted, setMounted] = useState(false)
 
   // Mock order data - in real app, this would come from URL params or API
-  const orderNumber = 'ORD-2024-' + Math.floor(Math.random() * 10000)
-  const estimatedDelivery = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('pl-PL')
+  const [orderNumber, setOrderNumber] = useState('ORD-2024-XXXX')
+  const [estimatedDelivery, setEstimatedDelivery] = useState('...')
+
+  useEffect(() => {
+    setMounted(true)
+    // Generate order number and date only on client side
+    setOrderNumber('ORD-2024-' + Math.floor(Math.random() * 10000))
+    setEstimatedDelivery(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('pl-PL'))
+  }, [])
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>

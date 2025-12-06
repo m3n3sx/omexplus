@@ -10,7 +10,7 @@ import Button from "@/components/ui/Button"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
 import { formatPrice, formatDate } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
-import medusaClient from "@/lib/medusa-client"
+import api from "@/lib/api-client"
 import { Product } from "@/lib/types"
 import { Search, Plus, Edit, Trash2 } from "lucide-react"
 
@@ -46,7 +46,8 @@ export default function ProductsPage() {
         params.status = statusFilter
       }
       
-      const response = await medusaClient.admin.products.list(params)
+      // Use api-client instead of medusaClient
+      const response = await api.getProducts(params)
       setProducts(response.products as Product[])
       setTotalPages(Math.ceil((response.count || 0) / productsPerPage))
     } catch (error) {
@@ -60,7 +61,7 @@ export default function ProductsPage() {
     if (!confirm("Are you sure you want to delete this product?")) return
     
     try {
-      await medusaClient.admin.products.delete(productId)
+      await api.deleteProduct(productId)
       await loadProducts()
     } catch (error) {
       console.error("Error deleting product:", error)

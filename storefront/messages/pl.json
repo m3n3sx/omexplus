@@ -88,5 +88,19 @@
     "home": "Strona główna",
     "continueShopping": "Kontynuuj zakupy",
     "quantity": "Ilość"
+  },
+  "order": {
+    "orderNumber": "Numer zamówienia",
+    "estimatedDelivery": "Szacowana dostawa",
+    "orderHistory": "Historia zamówień",
+    "orderDetails": "Szczegóły zamówienia",
+    "orderDate": "Data zamówienia",
+    "orderStatus": "Status zamówienia",
+    "trackOrder": "Śledź zamówienie",
+    "orderItems": "Produkty w zamówieniu",
+    "shippingAddress": "Adres dostawy",
+    "billingAddress": "Adres rozliczeniowy",
+    "paymentMethod": "Metoda płatności",
+    "orderTotal": "Suma zamówienia"
   }
 }

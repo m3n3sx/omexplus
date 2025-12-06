@@ -10,7 +10,7 @@ import Button from "@/components/ui/Button"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
 import { formatDate } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
-import medusaClient from "@/lib/medusa-client"
+import api from "@/lib/api-client"
 import { Customer } from "@/lib/types"
 import { Search, Mail } from "lucide-react"
 
@@ -36,7 +36,7 @@ export default function CustomersPage() {
       setLoading(true)
       const offset = (currentPage - 1) * customersPerPage
       
-      const response = await medusaClient.admin.customers.list({
+      const response = await api.getCustomers({
         limit: customersPerPage,
         offset,
       })

@@ -12,6 +12,10 @@ export interface OrderItem {
   unit_price: number
   total: number
   thumbnail?: string
+  variant?: {
+    id: string
+    title: string
+  }
 }
 
 export interface Order {
@@ -27,6 +31,7 @@ export interface Order {
   subtotal: number
   tax_total: number
   shipping_total: number
+  discount_total: number
   currency_code: string
   items: OrderItem[]
   customer?: {
@@ -34,6 +39,7 @@ export interface Order {
     email: string
     first_name?: string
     last_name?: string
+    phone?: string
   }
   shipping_address?: {
     first_name?: string
@@ -44,7 +50,23 @@ export interface Order {
     province?: string
     postal_code?: string
     country_code?: string
+    phone?: string
   }
+  billing_address?: {
+    first_name?: string
+    last_name?: string
+    address_1?: string
+    address_2?: string
+    city?: string
+    province?: string
+    postal_code?: string
+    country_code?: string
+  }
+  payments?: Array<{
+    id: string
+    provider_id: string
+    amount: number
+  }>
 }
 
 export interface Product {

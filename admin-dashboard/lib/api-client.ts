@@ -18,9 +18,10 @@ async function apiRequest(endpoint: string, options: RequestOptions = {}) {
   // Add authorization header if we have a token
   if (token && !endpoint.includes("/auth/")) {
     headers["Authorization"] = `Bearer ${token}`
+    headers["x-medusa-access-token"] = token
   }
   
-  console.log(`API Request: ${options.method || "GET"} ${endpoint}`)
+  console.log(`API Request: ${options.method || "GET"} ${endpoint}`, token ? 'with token' : 'no token')
   
   const response = await fetch(`${BACKEND_URL}${endpoint}`, {
     method: options.method || "GET",
@@ -32,6 +33,14 @@ async function apiRequest(endpoint: string, options: RequestOptions = {}) {
   console.log(`API Response: ${response.status}`)
   
   if (!response.ok) {
+    // If unauthorized, clear token and redirect to login
+    if (response.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("medusa_admin_token")
+      if (!endpoint.includes("/auth/")) {
+        window.location.href = "/login"
+      }
+    }
+    
     const errorText = await response.text()
     console.error(`API Error: ${errorText}`)
     
@@ -75,6 +84,13 @@ export const api = {
   
   refundOrder: async (orderId: string, data: any) => {
     return apiRequest(`/admin/orders/${orderId}/refund`, {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  updateOrder: async (orderId: string, data: any) => {
+    return apiRequest(`/admin/orders/${orderId}`, {
       method: "POST",
       body: data,
     })

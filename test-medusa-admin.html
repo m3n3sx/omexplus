@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Medusa Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Medusa Admin</h1>
+    
+    <div class="info">
+        <h3>Instrukcje:</h3>
+        <ol>
+            <li>Kliknij "Test Backend" - sprawdzi czy backend działa</li>
+            <li>Kliknij "Test Admin" - sprawdzi czy admin odpowiada</li>
+            <li>Kliknij "Open Admin" - otworzy admin w iframe</li>
+            <li>Lub kliknij "Open in New Tab" - otworzy w nowej karcie</li>
+        </ol>
+    </div>
+
+    <div>
+        <button onclick="testBackend()">Test Backend</button>
+        <button onclick="testAdmin()">Test Admin</button>
+        <button onclick="showAdmin()">Open Admin (iframe)</button>
+        <button onclick="openNewTab()">Open in New Tab</button>
+    </div>
+
+    <div id="results"></div>
+    <div id="adminFrame"></div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:9000';
+        const ADMIN_URL = 'http://localhost:9000/app';
+
+        async function testBackend() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="info">Testing backend...</div>';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/health`);
+                const text = await response.text();
+                
+                if (response.ok) {
+                    results.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Backend działa!</h3>
+                            <p>Status: ${response.status}</p>
+                            <p>Response: ${text}</p>
+                        </div>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <div class="error">
+                            <h3>❌ Backend nie odpowiada poprawnie</h3>
+                            <p>Status: ${response.status}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Nie można połączyć z backendem</h3>
+                        <p>Error: ${error.message}</p>
+                        <p><strong>Rozwiązanie:</strong> Uruchom backend: <code>npm run dev</code></p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testAdmin() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="info">Testing admin...</div>';
+            
+            try {
+                const response = await fetch(ADMIN_URL);
+                const text = await response.text();
+                
+                if (response.ok && text.includes('medusa')) {
+                    results.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Medusa Admin działa!</h3>
+                            <p>Status: ${response.status}</p>
+                            <p>Admin jest dostępny na: <a href="${ADMIN_URL}" target="_blank">${ADMIN_URL}</a></p>
+                            <p><strong>Dane logowania:</strong></p>
+                            <ul>
+                                <li>Email: admin@medusa-test.com</li>
+                                <li>Password: supersecret</li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <div class="error">
+                            <h3>❌ Admin nie odpowiada poprawnie</h3>
+                            <p>Status: ${response.status}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Nie można połączyć z adminem</h3>
+                        <p>Error: ${error.message}</p>
+                        <p><strong>Rozwiązanie:</strong> Zrestartuj backend</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showAdmin() {
+            const adminFrame = document.getElementById('adminFrame');
+            adminFrame.innerHTML = `
+                <h3>Medusa Admin (w iframe):</h3>
+                <iframe src="${ADMIN_URL}"></iframe>
+                <p class="info">
+                    <strong>Uwaga:</strong> Jeśli widzisz pusty iframe, otwórz admin w nowej karcie (przycisk "Open in New Tab")
+                </p>
+            `;
+        }
+
+        function openNewTab() {
+            window.open(ADMIN_URL, '_blank');
+            const results = document.getElementById('results');
+            results.innerHTML = `
+                <div class="success">
+                    <h3>✅ Otwarto admin w nowej karcie</h3>
+                    <p>Jeśli karta się nie otworzyła, kliknij: <a href="${ADMIN_URL}" target="_blank">${ADMIN_URL}</a></p>
+                    <p><strong>Dane logowania:</strong></p>
+                    <ul>
+                        <li>Email: admin@medusa-test.com</li>
+                        <li>Password: supersecret</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Auto-test on load
+        window.onload = function() {
+            testBackend();
+        };
+    </script>
+</body>
+</html>

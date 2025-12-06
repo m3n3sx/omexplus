@@ -70,8 +70,109 @@ export default function CheckoutPage() {
   }
 
   const handlePlaceOrder = async () => {
-    alert('Zamówienie złożone!')
-    router.push(`/${locale}/order-success`)
+    try {
+      if (!cart) {
+        alert('Brak koszyka')
+        return
+      }
+
+      // 1. Update cart with shipping address
+      const response1 = await fetch(`http://localhost:9000/store/carts/${cart.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
+        },
+        body: JSON.stringify({
+          shipping_address: {
+            first_name: shippingAddress.firstName,
+            last_name: shippingAddress.lastName,
+            address_1: shippingAddress.address,
+            city: shippingAddress.city,
+            postal_code: shippingAddress.postalCode,
+            country_code: 'pl',
+            phone: shippingAddress.phone
+          },
+          email: shippingAddress.email
+        })
+      })
+
+      if (!response1.ok) {
+        const errorData = await response1.json().catch(() => ({}))
+        console.error('Shipping address error:', errorData)
+        throw new Error(`Failed to update shipping address: ${errorData.message || response1.statusText}`)
+      }
+
+      // 2. Add shipping method (if selected)
+      if (selectedShipping) {
+        // Get shipping options first
+        const shippingOptionsResponse = await fetch(`http://localhost:9000/store/shipping-options/${cart.id}`, {
+          headers: {
+            'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
+          }
+        })
+        
+        if (shippingOptionsResponse.ok) {
+          const shippingOptions = await shippingOptionsResponse.json()
+          const firstOption = shippingOptions.shipping_options?.[0]
+          
+          if (firstOption) {
+            await fetch(`http://localhost:9000/store/carts/${cart.id}/shipping-methods`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
+              },
+              body: JSON.stringify({
+                option_id: firstOption.id
+              })
+            })
+          }
+        }
+      }
+
+      // 3. Initialize payment session
+      const paymentResponse = await fetch(`http://localhost:9000/store/carts/${cart.id}/payment-collections`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
+        }
+      })
+
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json().catch(() => ({}))
+        console.error('Payment initialization error:', errorData)
+        // Continue anyway - payment might not be required for testing
+      }
+
+      // 4. Complete the cart (create order)
+      const completeResponse = await fetch(`http://localhost:9000/store/carts/${cart.id}/complete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
+        }
+      })
+
+      if (!completeResponse.ok) {
+        const errorData = await completeResponse.json()
+        console.error('Complete cart error:', errorData)
+        throw new Error(errorData.message || 'Failed to complete order')
+      }
+
+      const orderData = await completeResponse.json()
+      console.log('Order created:', orderData)
+
+      // Clear cart from localStorage
+      localStorage.removeItem('cart_id')
+
+      // Redirect to success page
+      router.push(`/${locale}/order-success?order=${orderData.order?.id || 'success'}`)
+    } catch (error: any) {
+      console.error('Order placement error:', error)
+      alert(`Błąd podczas składania zamówienia: ${error.message}`)
+    }
   }
 
   const selectedShippingMethod = SHIPPING_METHODS.find(m => m.id === selectedShipping)

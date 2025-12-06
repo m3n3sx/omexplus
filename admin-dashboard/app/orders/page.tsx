@@ -11,7 +11,7 @@ import Input from "@/components/ui/Input"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
 import { formatPrice, formatDate, getOrderStatusColor, getPaymentStatusColor } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
-import medusaClient from "@/lib/medusa-client"
+import api from "@/lib/api-client"
 import { Order } from "@/lib/types"
 import { Search, Filter, Download } from "lucide-react"
 
@@ -47,7 +47,7 @@ export default function OrdersPage() {
         params.status = statusFilter
       }
       
-      const response = await medusaClient.admin.orders.list(params)
+      const response = await api.getOrders(params)
       setOrders(response.orders as Order[])
       setTotalPages(Math.ceil((response.count || 0) / ordersPerPage))
     } catch (error) {

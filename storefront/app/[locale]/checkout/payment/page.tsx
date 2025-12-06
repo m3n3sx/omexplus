@@ -5,21 +5,23 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from '../../../../components/PaymentForm';
 import { useRouter } from 'next/navigation';
+import { useCartContext } from '@/contexts/CartContext';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CheckoutPaymentPage() {
   const router = useRouter();
+  const { cart } = useCartContext();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Mock cart data - replace with actual cart context
+  // Use real cart data from context
   const cartData = {
-    id: 'cart_123',
-    total: 9999, // $99.99 in cents
-    currency: 'usd',
-    email: 'customer@example.com',
+    id: cart?.id || 'cart_temp',
+    total: cart?.total || 0,
+    currency: cart?.region?.currency_code || 'pln',
+    email: cart?.email || 'customer@example.com',
   };
 
   useEffect(() => {

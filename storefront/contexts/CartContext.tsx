@@ -69,7 +69,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const createCart = async () => {
     try {
-      const response = await medusaClient.carts.create({})
+      const response = await medusaClient.carts.create({
+        region_id: 'reg_01KBDXHQAFG1GS7F3WH2680KP0' // Europe region with Poland
+      })
       const newCart = response.cart as Cart
       setCart(newCart)
       if (typeof window !== 'undefined') {

@@ -13,6 +13,14 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
+  admin: {
+    // Włącz wbudowany admin
+    disable: false,
+    // Ścieżka do admina
+    path: "/app",
+    // Backend URL
+    backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
+  },
   modules: [
     {
       resolve: "./src/modules/product-review",
