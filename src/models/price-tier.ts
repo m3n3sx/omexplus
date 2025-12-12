@@ -7,6 +7,7 @@ export const PriceTier = model.define("price_tier", {
   quantity_min: model.number(),
   quantity_max: model.number().nullable(),
   price: model.bigNumber(),
+  currency_code: model.text().default("PLN"),
   created_at: model.dateTime().default("now"),
   updated_at: model.dateTime().default("now"),
 })

@@ -76,77 +76,33 @@ export default function CheckoutPage() {
         return
       }
 
-      // 1. Update cart with shipping address
-      const response1 = await fetch(`http://localhost:9000/store/carts/${cart.id}`, {
+      // Update cart with shipping address and email
+      const updateResponse = await fetch(`http://localhost:9000/store/carts/${cart.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
         },
         body: JSON.stringify({
+          email: shippingAddress.email || 'customer@example.com',
           shipping_address: {
-            first_name: shippingAddress.firstName,
-            last_name: shippingAddress.lastName,
-            address_1: shippingAddress.address,
-            city: shippingAddress.city,
-            postal_code: shippingAddress.postalCode,
+            first_name: shippingAddress.firstName || 'Jan',
+            last_name: shippingAddress.lastName || 'Kowalski',
+            address_1: shippingAddress.address || 'ul. Testowa 1',
+            city: shippingAddress.city || 'Warszawa',
+            postal_code: shippingAddress.postalCode || '00-001',
             country_code: 'pl',
-            phone: shippingAddress.phone
-          },
-          email: shippingAddress.email
+            phone: shippingAddress.phone || '+48123456789'
+          }
         })
       })
 
-      if (!response1.ok) {
-        const errorData = await response1.json().catch(() => ({}))
-        console.error('Shipping address error:', errorData)
-        throw new Error(`Failed to update shipping address: ${errorData.message || response1.statusText}`)
+      if (!updateResponse.ok) {
+        const error = await updateResponse.json()
+        throw new Error(error.message || 'Nie udało się zaktualizować adresu')
       }
 
-      // 2. Add shipping method (if selected)
-      if (selectedShipping) {
-        // Get shipping options first
-        const shippingOptionsResponse = await fetch(`http://localhost:9000/store/shipping-options/${cart.id}`, {
-          headers: {
-            'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
-          }
-        })
-        
-        if (shippingOptionsResponse.ok) {
-          const shippingOptions = await shippingOptionsResponse.json()
-          const firstOption = shippingOptions.shipping_options?.[0]
-          
-          if (firstOption) {
-            await fetch(`http://localhost:9000/store/carts/${cart.id}/shipping-methods`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
-              },
-              body: JSON.stringify({
-                option_id: firstOption.id
-              })
-            })
-          }
-        }
-      }
-
-      // 3. Initialize payment session
-      const paymentResponse = await fetch(`http://localhost:9000/store/carts/${cart.id}/payment-collections`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-publishable-api-key': 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
-        }
-      })
-
-      if (!paymentResponse.ok) {
-        const errorData = await paymentResponse.json().catch(() => ({}))
-        console.error('Payment initialization error:', errorData)
-        // Continue anyway - payment might not be required for testing
-      }
-
-      // 4. Complete the cart (create order)
+      // Complete cart to create order
       const completeResponse = await fetch(`http://localhost:9000/store/carts/${cart.id}/complete`, {
         method: 'POST',
         headers: {
@@ -156,19 +112,19 @@ export default function CheckoutPage() {
       })
 
       if (!completeResponse.ok) {
-        const errorData = await completeResponse.json()
-        console.error('Complete cart error:', errorData)
-        throw new Error(errorData.message || 'Failed to complete order')
+        const error = await completeResponse.json()
+        throw new Error(error.message || 'Nie udało się złożyć zamówienia')
       }
 
       const orderData = await completeResponse.json()
-      console.log('Order created:', orderData)
-
-      // Clear cart from localStorage
+      
+      // Clear cart
       localStorage.removeItem('cart_id')
 
       // Redirect to success page
-      router.push(`/${locale}/order-success?order=${orderData.order?.id || 'success'}`)
+      const orderId = orderData.order?.id || 'success'
+      router.push(`/${locale}/order-success?order=${orderId}`)
+      
     } catch (error: any) {
       console.error('Order placement error:', error)
       alert(`Błąd podczas składania zamówienia: ${error.message}`)
@@ -479,7 +435,7 @@ export default function CheckoutPage() {
               ) : (
                 <button
                   onClick={handlePlaceOrder}
-                  className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg text-[14px] font-semibold hover:bg-green-700 transition-colors"
+                  className="flex-1 px-6 py-3 bg-primary-500 text-secondary-700 rounded-lg text-[14px] font-semibold hover:bg-primary-600 transition-colors"
                 >
                   Złóż zamówienie 🎉
                 </button>

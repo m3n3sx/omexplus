@@ -13,7 +13,7 @@ export function formatPrice(amount: number, currencyCode: string = "USD"): strin
 }
 
 export function formatDate(date: string | Date): string {
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("pl-PL", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -23,7 +23,7 @@ export function formatDate(date: string | Date): string {
 }
 
 export function formatShortDate(date: string | Date): string {
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("pl-PL", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -35,8 +35,9 @@ export function getOrderStatusColor(status: string): string {
     pending: "bg-yellow-100 text-yellow-800",
     completed: "bg-green-100 text-green-800",
     canceled: "bg-red-100 text-red-800",
-    requires_action: "bg-orange-100 text-orange-800",
+    draft: "bg-gray-100 text-gray-800",
     archived: "bg-gray-100 text-gray-800",
+    requires_action: "bg-orange-100 text-orange-800",
   }
   return colors[status] || "bg-gray-100 text-gray-800"
 }

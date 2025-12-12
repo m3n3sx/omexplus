@@ -116,11 +116,11 @@ export function EnhancedFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/pl/reklamacje" className="text-neutral-400 hover:text-white transition-colors flex items-center gap-2 group">
+                <Link href="/pl/zwroty" className="text-neutral-400 hover:text-white transition-colors flex items-center gap-2 group">
                   <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                  Reklamacje
+                  Zwroty i reklamacje
                 </Link>
               </li>
               <li>
@@ -243,7 +243,7 @@ export function EnhancedFooter() {
               <Link href="/pl/polityka-prywatnosci" className="hover:text-white transition-colors">
                 Prywatność
               </Link>
-              <Link href="/pl/cookies" className="hover:text-white transition-colors">
+              <Link href="/pl/polityka-prywatnosci" className="hover:text-white transition-colors">
                 Cookies
               </Link>
             </div>

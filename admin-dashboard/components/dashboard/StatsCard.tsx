@@ -8,6 +8,7 @@ interface StatsCardProps {
   trend?: {
     value: number
     isPositive: boolean
+    label?: string
   }
   iconColor?: string
 }
@@ -21,7 +22,7 @@ export default function StatsCard({ title, value, icon: Icon, trend, iconColor =
           <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
           {trend && (
             <p className={`text-sm mt-1 ${trend.isPositive ? "text-green-600" : "text-red-600"}`}>
-              {trend.isPositive ? "+" : ""}{trend.value}% from last month
+              {trend.isPositive ? "↑" : "↓"} {typeof trend.value === 'number' ? trend.value.toFixed(1) : trend.value}{trend.label ? '' : '%'} {trend.label || 'vs poprzedni miesiąc'}
             </p>
           )}
         </div>

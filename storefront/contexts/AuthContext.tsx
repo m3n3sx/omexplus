@@ -4,6 +4,9 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { Customer } from '@/types'
 import medusaClient from '@/lib/medusa'
 
+// Import auth API if needed
+// import { authAPI } from '@/lib/auth-api'
+
 interface AuthContextType {
   customer: Customer | null
   loading: boolean
@@ -14,6 +17,7 @@ interface AuthContextType {
   updateCustomer: (data: Partial<Customer>) => Promise<void>
   refreshCustomer: () => Promise<void>
   isAuthenticated: boolean
+  clearError: () => void
 }
 
 interface RegisterData {
@@ -32,53 +36,93 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
 
-  // Set mounted state
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Check if user is logged in on mount
-  useEffect(() => {
-    // Only run on client side after mount
-    if (!mounted || typeof window === 'undefined') return
-    checkAuth().catch((err) => {
-      console.log('Auth check failed on mount, user not logged in')
-    })
-  }, [mounted])
-
   const checkAuth = async () => {
     try {
       setLoading(true)
-      const response = await medusaClient.customers.retrieve()
-      setCustomer(response.customer as Customer)
+      
+      // Get token from localStorage
+      const token = typeof window !== 'undefined' ? localStorage.getItem('medusa_auth_token') : null
+      
+      if (!token) {
+        setCustomer(null)
+        setLoading(false)
+        return
+      }
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'}/store/customers/me`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0',
+        },
+        credentials: 'include',
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.customer) {
+          console.log('Customer loaded:', data.customer)
+          setCustomer(data.customer as Customer)
+        }
+      } else {
+        console.log('Failed to load customer, clearing token')
+        localStorage.removeItem('medusa_auth_token')
+        setCustomer(null)
+      }
     } catch (err: any) {
       // Not authenticated - this is normal for non-logged-in users
-      // Only log if it's not a 401 error
-      if (err?.response?.status !== 401) {
-        console.error('Auth check error:', err)
-      }
       setCustomer(null)
     } finally {
       setLoading(false)
     }
   }
 
+  // Set mounted state and check auth on mount
+  useEffect(() => {
+    setMounted(true)
+    
+    // Check if user is logged in on mount
+    if (typeof window === 'undefined') return
+    
+    checkAuth()
+  }, []) // Empty dependency array - run only once on mount
+
   const login = async (email: string, password: string) => {
     try {
       setLoading(true)
       setError(null)
 
-      const response = await medusaClient.auth.authenticate({
-        email,
-        password,
+      const response = await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'}/store/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
       })
 
-      if (response.customer) {
-        setCustomer(response.customer as Customer)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Login failed')
+      }
+
+      const loginData = await response.json()
+      console.log('Login successful:', loginData)
+
+      // Store token in localStorage
+      if (loginData.token) {
+        localStorage.setItem('medusa_auth_token', loginData.token)
+      }
+
+      // Set customer data immediately
+      if (loginData.customer) {
+        setCustomer(loginData.customer as Customer)
       }
     } catch (err: any) {
-      console.error('Login failed:', err)
-      setError(err.response?.data?.message || 'Login failed')
+      console.error('Login error:', err)
+      setError(err.message || 'Login failed')
       throw err
     } finally {
       setLoading(false)
@@ -90,15 +134,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true)
       setError(null)
 
-      const response = await medusaClient.customers.create(data)
-      
-      // Auto-login after registration
-      if (response.customer) {
-        await login(data.email, data.password)
+      console.log('Starting registration for:', data.email)
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'}/store/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          email: data.email, 
+          password: data.password,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          phone: data.phone,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Registration failed:', errorData)
+        throw new Error(errorData.message || 'Failed to register')
+      }
+
+      const registerData = await response.json()
+      console.log('Registration successful:', registerData)
+
+      // Store token from registration
+      if (registerData.token) {
+        localStorage.setItem('medusa_auth_token', registerData.token)
+      }
+
+      // Set customer data immediately
+      if (registerData.customer) {
+        setCustomer(registerData.customer as Customer)
       }
     } catch (err: any) {
-      console.error('Registration failed:', err)
-      setError(err.response?.data?.message || 'Registration failed')
+      console.error('Registration error:', err)
+      setError(err.message || 'Registration failed')
       throw err
     } finally {
       setLoading(false)
@@ -108,10 +182,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       setLoading(true)
-      await medusaClient.auth.deleteSession()
+      
+      const token = typeof window !== 'undefined' ? localStorage.getItem('medusa_auth_token') : null
+      
+      if (token) {
+        await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'}/auth/session`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0',
+          },
+          credentials: 'include',
+        })
+      }
+      
+      // Clear token from localStorage
+      localStorage.removeItem('medusa_auth_token')
       setCustomer(null)
     } catch (err: any) {
-      console.error('Logout failed:', err)
       setError(err.message)
     } finally {
       setLoading(false)
@@ -128,7 +216,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await medusaClient.customers.update(data)
       setCustomer(response.customer as Customer)
     } catch (err: any) {
-      console.error('Update failed:', err)
       setError(err.message)
       throw err
     } finally {
@@ -138,6 +225,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshCustomer = async () => {
     await checkAuth()
+  }
+
+  const clearError = () => {
+    setError(null)
   }
 
   return (
@@ -152,6 +243,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updateCustomer,
         refreshCustomer,
         isAuthenticated: !!customer,
+        clearError,
       }}
     >
       {children}

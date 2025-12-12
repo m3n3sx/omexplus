@@ -241,8 +241,8 @@ export default function AccountPage() {
                           </div>
                           <span className={`inline-block px-3 py-1 rounded-full text-[12px] font-semibold ${
                             order.status === 'Dostarczone'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-blue-100 text-blue-700'
+                              ? 'bg-primary-100 text-secondary-700'
+                              : 'bg-info/10 text-secondary-700'
                           }`}>
                             {order.status}
                           </span>

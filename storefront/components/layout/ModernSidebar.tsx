@@ -38,23 +38,23 @@ export function ModernSidebar() {
         </Link>
         
         <Link
-          href="/pl/gifts"
+          href="/pl/promocje"
           className="flex items-center gap-3 px-4 py-3 text-neutral-700 rounded-xl font-medium text-[14px] hover:bg-neutral-50 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
           </svg>
-          Gifts and Living
+          Promocje
         </Link>
         
         <Link
-          href="/pl/inspiration"
+          href="/pl/nowosci"
           className="flex items-center gap-3 px-4 py-3 text-neutral-700 rounded-xl font-medium text-[14px] hover:bg-neutral-50 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
-          Inspiration
+          Nowości
         </Link>
       </nav>
 

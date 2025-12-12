@@ -10,7 +10,15 @@
     "currencies": "Валюти",
     "about": "Про нас",
     "contact": "Контакти",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "featuredProducts": "Рекомендовані продукти",
+    "viewAllProducts": "Переглянути всі продукти",
+    "unableToLoadFeaturedProducts": "Не вдалося завантажити рекомендовані продукти",
+    "noFeaturedProductsAvailable": "Немає доступних рекомендованих продуктів",
+    "failedToLoadCategories": "Не вдалося завантажити категорії",
+    "noCategoriesAvailable": "Немає доступних категорій",
+    "hoverToSeeSubcategories": "Наведіть курсор на категорію, щоб побачити підкатегорії",
+    "hoverToSeeSubSubcategories": "Наведіть курсор на підкатегорію, щоб побачити елементи"
   },
   "products": {
     "title": "Наші продукти",
@@ -87,5 +95,53 @@
     "home": "Головна",
     "continueShopping": "Продовжити покупки",
     "quantity": "Кількість"
+  },
+  "templates": {
+    "button": {
+      "loading": "Завантаження..."
+    },
+    "cart": {
+      "decreaseQuantity": "Зменшити кількість",
+      "increaseQuantity": "Збільшити кількість",
+      "remove": "Видалити",
+      "perItem": "за шт."
+    },
+    "form": {
+      "required": "Це поле обов'язкове"
+    },
+    "modal": {
+      "close": "Закрити"
+    },
+    "notification": {
+      "close": "Закрити"
+    },
+    "category": {
+      "seeMore": "Дивитися більше",
+      "noSubcategories": "Немає підкатегорій",
+      "categories": "Категорії"
+    },
+    "search": {
+      "resultsFor": "для:",
+      "searchingProducts": "Шукаємо продукти...",
+      "errorOccurred": "Сталася помилка",
+      "foundProducts": "Знайдено",
+      "product": "продукт",
+      "products": "продуктів",
+      "searchTime": "Час пошуку:",
+      "noResultsFound": "Результатів не знайдено",
+      "tryDifferentCriteria": "Спробуйте змінити критерії пошуку або використати інший метод",
+      "detectedParameters": "Виявлені параметри пошуку:",
+      "brands": "Бренди:",
+      "models": "Моделі:",
+      "partTypes": "Типи деталей:",
+      "oemNumbers": "OEM номери:"
+    },
+    "emptyState": {
+      "noResults": "Результатів не знайдено",
+      "tryAgain": "Спробувати знову"
+    },
+    "error": {
+      "retry": "Спробувати знову"
+    }
   }
 }

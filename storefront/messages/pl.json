@@ -10,7 +10,15 @@
     "currencies": "Waluty",
     "about": "O nas",
     "contact": "Kontakt",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "featuredProducts": "Polecane produkty",
+    "viewAllProducts": "Zobacz wszystkie produkty",
+    "unableToLoadFeaturedProducts": "Nie można załadować polecanych produktów",
+    "noFeaturedProductsAvailable": "Brak dostępnych polecanych produktów",
+    "failedToLoadCategories": "Nie udało się załadować kategorii",
+    "noCategoriesAvailable": "Brak dostępnych kategorii",
+    "hoverToSeeSubcategories": "Najedź na kategorię, aby zobaczyć podkategorie",
+    "hoverToSeeSubSubcategories": "Najedź na podkategorię, aby zobaczyć elementy"
   },
   "products": {
     "title": "Nasze produkty",
@@ -101,6 +109,62 @@
     "shippingAddress": "Adres dostawy",
     "billingAddress": "Adres rozliczeniowy",
     "paymentMethod": "Metoda płatności",
-    "orderTotal": "Suma zamówienia"
+    "orderTotal": "Suma zamówienia",
+    "statusPending": "Oczekujące",
+    "statusProcessing": "Przetwarzanie",
+    "statusShipped": "Wysłane",
+    "statusDelivered": "Dostarczone",
+    "statusCancelled": "Anulowane",
+    "downloadInvoice": "Pobierz fakturę",
+    "trackingNumber": "Numer śledzenia",
+    "trackShipment": "Śledź przesyłkę"
+  },
+  "templates": {
+    "button": {
+      "loading": "Ładowanie..."
+    },
+    "cart": {
+      "decreaseQuantity": "Zmniejsz ilość",
+      "increaseQuantity": "Zwiększ ilość",
+      "remove": "Usuń",
+      "perItem": "szt."
+    },
+    "form": {
+      "required": "To pole jest wymagane"
+    },
+    "modal": {
+      "close": "Zamknij"
+    },
+    "notification": {
+      "close": "Zamknij"
+    },
+    "category": {
+      "seeMore": "Zobacz więcej",
+      "noSubcategories": "Brak podkategorii",
+      "categories": "Kategorie"
+    },
+    "search": {
+      "resultsFor": "dla:",
+      "searchingProducts": "Szukamy produktów...",
+      "errorOccurred": "Wystąpił błąd",
+      "foundProducts": "Znaleziono",
+      "product": "produkt",
+      "products": "produktów",
+      "searchTime": "Czas wyszukiwania:",
+      "noResultsFound": "Nie znaleziono wyników",
+      "tryDifferentCriteria": "Spróbuj zmienić kryteria wyszukiwania lub użyj innej metody",
+      "detectedParameters": "Wykryte parametry wyszukiwania:",
+      "brands": "Marki:",
+      "models": "Modele:",
+      "partTypes": "Typy części:",
+      "oemNumbers": "Numery OEM:"
+    },
+    "emptyState": {
+      "noResults": "Nie znaleziono wyników",
+      "tryAgain": "Spróbuj ponownie"
+    },
+    "error": {
+      "retry": "Spróbuj ponownie"
+    }
   }
 }

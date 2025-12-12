@@ -38,8 +38,8 @@ export default function CMSDemoPage() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-green-50 rounded-lg p-6">
-            <h3 className="text-xl font-bold mb-3 text-green-800">✅ Zalety</h3>
+          <div className="bg-primary-50 rounded-lg p-6">
+            <h3 className="text-xl font-bold mb-3 text-secondary-700">✅ Zalety</h3>
             <ul className="space-y-2 text-gray-700">
               <li>• Edycja bez kodu</li>
               <li>• Wielojęzyczność</li>
@@ -118,7 +118,7 @@ export default function CMSDemoPage() {
             {/* Przykład 3: Section */}
             <div className="bg-white rounded-lg p-6 shadow">
               <div className="mb-4">
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                <span className="bg-primary-100 text-secondary-700 px-3 py-1 rounded-full text-sm font-semibold">
                   Type: section
                 </span>
               </div>

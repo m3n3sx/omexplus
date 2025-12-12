@@ -4,9 +4,9 @@ import { Pool } from 'pg'
 const pool = new Pool({
   host: 'localhost',
   port: 5432,
-  database: 'medusa-my-medusa-store',
-  user: 'postgres',
-  password: 'supersecret',
+  database: 'medusa_db',
+  user: 'medusa_user',
+  password: 'medusa_password',
 })
 
 export async function GET() {

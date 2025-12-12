@@ -21,6 +21,9 @@ export default function DashboardPage() {
     totalRevenue: 0,
     newOrders: 0,
     totalCustomers: 0,
+    ordersLastWeek: 0,
+    ordersLastMonth: 0,
+    revenueTrend: 0,
   })
   const [recentOrders, setRecentOrders] = useState<Order[]>([])
   const [salesData, setSalesData] = useState<Array<{ date: string; sales: number }>>([])
@@ -39,37 +42,67 @@ export default function DashboardPage() {
     try {
       setLoading(true)
       
-      // Fetch orders
-      const ordersResponse = await api.getOrders({ limit: 50 })
-      const orders = ordersResponse.orders || []
+      // Fetch ALL orders for accurate statistics
+      const ordersResponse = await api.getOrders({ limit: 1000 })
+      const allOrders = ordersResponse.orders || []
       
-      // Calculate stats
-      const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0)
+      // Calculate real stats from all orders
+      const totalRevenue = allOrders.reduce((sum: number, order: any) => sum + (order.total || 0), 0)
+      const totalOrders = allOrders.length
+      
       const now = new Date()
       const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
-      const newOrders = orders.filter(order => new Date(order.created_at) > yesterday).length
+      const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      
+      const newOrders = allOrders.filter((order: any) => new Date(order.created_at) > yesterday).length
+      const ordersLastWeek = allOrders.filter((order: any) => new Date(order.created_at) > lastWeek).length
+      const ordersLastMonth = allOrders.filter((order: any) => new Date(order.created_at) > lastMonth).length
+      
+      // Calculate trends
+      const revenueLastMonth = allOrders
+        .filter((order: any) => new Date(order.created_at) > lastMonth)
+        .reduce((sum: number, order: any) => sum + (order.total || 0), 0)
+      
+      const previousMonth = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+      const revenuePreviousMonth = allOrders
+        .filter((order: any) => {
+          const orderDate = new Date(order.created_at)
+          return orderDate > previousMonth && orderDate <= lastMonth
+        })
+        .reduce((sum: number, order: any) => sum + (order.total || 0), 0)
+      
+      const revenueTrend = revenuePreviousMonth > 0 
+        ? ((revenueLastMonth - revenuePreviousMonth) / revenuePreviousMonth) * 100
+        : 0
       
       // Fetch customers
-      const customersResponse = await api.getCustomers({ limit: 100 })
+      const customersResponse = await api.getCustomers({ limit: 1000 })
       const totalCustomers = customersResponse.customers?.length || 0
       
       setStats({
-        totalOrders: orders.length,
+        totalOrders,
         totalRevenue,
         newOrders,
         totalCustomers,
+        ordersLastWeek,
+        ordersLastMonth,
+        revenueTrend,
       })
       
-      // Recent orders (last 5)
-      setRecentOrders(orders.slice(0, 5) as Order[])
+      // Recent orders (last 10, sorted by date)
+      const sortedOrders = [...allOrders].sort((a: any, b: any) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+      setRecentOrders(sortedOrders.slice(0, 10) as Order[])
       
-      // Generate sales data for chart (last 7 days)
-      const salesByDay = generateSalesData(orders)
+      // Generate sales data for chart (last 30 days for better view)
+      const salesByDay = generateSalesData(allOrders, 30)
       setSalesData(salesByDay)
       
-      // Calculate top products
-      const productSales = calculateTopProducts(orders)
-      setTopProducts(productSales.slice(0, 5))
+      // Calculate top products from all orders
+      const productSales = calculateTopProducts(allOrders)
+      setTopProducts(productSales.slice(0, 10))
       
     } catch (error) {
       console.error("Error loading dashboard data:", error)
@@ -78,29 +111,29 @@ export default function DashboardPage() {
     }
   }
 
-  const generateSalesData = (orders: any[]) => {
-    const last7Days = []
-    for (let i = 6; i >= 0; i--) {
+  const generateSalesData = (orders: any[], days: number = 30) => {
+    const salesByDay = []
+    for (let i = days - 1; i >= 0; i--) {
       const date = new Date()
       date.setDate(date.getDate() - i)
       const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
       
       const daySales = orders
-        .filter(order => {
+        .filter((order: any) => {
           const orderDate = new Date(order.created_at)
           return orderDate.toDateString() === date.toDateString()
         })
-        .reduce((sum, order) => sum + (order.total || 0), 0)
+        .reduce((sum: number, order: any) => sum + (order.total || 0), 0)
       
-      last7Days.push({ date: dateStr, sales: daySales / 100 })
+      salesByDay.push({ date: dateStr, sales: daySales / 100 })
     }
-    return last7Days
+    return salesByDay
   }
 
   const calculateTopProducts = (orders: any[]) => {
     const productMap = new Map()
     
-    orders.forEach(order => {
+    orders.forEach((order: any) => {
       order.items?.forEach((item: any) => {
         const existing = productMap.get(item.product_id) || {
           id: item.product_id,
@@ -116,7 +149,7 @@ export default function DashboardPage() {
       })
     })
     
-    return Array.from(productMap.values()).sort((a, b) => b.revenue - a.revenue)
+    return Array.from(productMap.values()).sort((a: any, b: any) => b.revenue - a.revenue)
   }
 
   if (loading) {
@@ -134,35 +167,34 @@ export default function DashboardPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your store.</p>
+          <p className="text-gray-600 mt-1">Witaj! Oto co dzieje się w Twoim sklepie.</p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
-            title="Total Orders"
-            value={stats.totalOrders}
+            title="Wszystkie zamówienia"
+            value={stats.totalOrders.toLocaleString('pl-PL')}
             icon={ShoppingCart}
-            trend={{ value: 12, isPositive: true }}
+            trend={{ value: stats.ordersLastMonth, isPositive: true, label: 'ostatni miesiąc' }}
           />
           <StatsCard
-            title="Total Revenue"
-            value={`$${(stats.totalRevenue / 100).toFixed(2)}`}
+            title="Całkowity przychód"
+            value={`${(stats.totalRevenue / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN`}
             icon={DollarSign}
-            trend={{ value: 8, isPositive: true }}
+            trend={{ value: Math.abs(stats.revenueTrend), isPositive: stats.revenueTrend >= 0 }}
             iconColor="text-green-600"
           />
           <StatsCard
-            title="New Orders (24h)"
+            title="Nowe zamówienia (24h)"
             value={stats.newOrders}
             icon={Package}
             iconColor="text-blue-600"
           />
           <StatsCard
-            title="Total Customers"
+            title="Klienci"
             value={stats.totalCustomers}
             icon={Users}
-            trend={{ value: 5, isPositive: true }}
             iconColor="text-purple-600"
           />
         </div>

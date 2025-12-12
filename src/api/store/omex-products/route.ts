@@ -19,8 +19,18 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   } = req.query
 
   try {
+    // Support both single category_id and multiple category_id[] parameters
+    let categoryIds: string[] = []
+    if (category_id) {
+      if (Array.isArray(category_id)) {
+        categoryIds = category_id as string[]
+      } else {
+        categoryIds = [category_id as string]
+      }
+    }
+
     const filters = {
-      category_id: category_id as string,
+      category_ids: categoryIds,
       equipment_type: equipment_type as string,
       min_price: min_price ? parseFloat(min_price as string) : undefined,
       max_price: max_price ? parseFloat(max_price as string) : undefined,

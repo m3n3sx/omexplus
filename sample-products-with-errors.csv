@@ -1,9 +1,0 @@
-SKU,name_pl,name_en,name_de,desc_pl,desc_en,desc_de,price,cost,category_id,equipment_type,min_order_qty,technical_specs_json
-HYD-001,Pompa hydrauliczna A10VSO,Hydraulic pump A10VSO,Hydraulische Pumpe A10VSO,Pompa tłokowa osiowa,Variable displacement pump,Axialkolbenpumpe,2499.99,1249.99,cat-hydraulika,Hydraulika,1,"{""displacement"": ""28cc""}"
-INVALID,Zawór sterujący,Control valve,Wegeventil,Zawór rozdzielający,Directional valve,Wegeventil,899.99,449.99,cat-hydraulika,Hydraulika,1,"{""flow"": ""80L/min""}"
-HYD-003,,Hydraulic cylinder,Hydraulikzylinder,Siłownik hydrauliczny,Double-acting cylinder,Hydraulikzylinder,1299.99,649.99,cat-hydraulika,Hydraulika,1,"{""bore"": ""50mm""}"
-HYD-004,Pompa zębata PGP505,Gear pump PGP505,Zahnradpumpe PGP505,Pompa hydrauliczna zębata,Fixed displacement pump,Zahnradpumpe,-599.99,299.99,cat-hydraulika,Hydraulika,1,"{""displacement"": ""5cc""}"
-HYD-005,Akumulator hydrauliczny,Hydraulic accumulator,Hydraulikspeicher,Akumulator pęcherzowy,Bladder accumulator,Blasenspeicher,449.99,224.99,,Hydraulika,1,"{""volume"": ""1L""}"
-HYD-006,Filtr hydrauliczny,Hydraulic filter,Hydraulikfilter,Wkład filtra,Filter element,Filterelement,89.99,44.99,cat-hydraulika,Hydraulika,abc,"{""filtration"": ""10μm""}"
-HYD-007,Rozdzielacz monoblock,Monoblock valve,Monoblock-Ventil,Rozdzielacz hydrauliczny,Hydraulic valve,Hydraulik-Ventil,1899.99,949.99,cat-hydraulika,Hydraulika,1,"{invalid json}"
-HYD-008,Pompa łopatkowa V20,Vane pump V20,Flügelzellenpumpe V20,Pompa hydrauliczna,Hydraulic pump,Hydraulikpumpe,1599.99,799.99,cat-hydraulika,Hydraulika,1,"{""displacement"": ""12cc""}"

@@ -1,53 +1,71 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-/**
- * GET /admin/b2b/purchase-orders
- * List all purchase orders
- */
-export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const { customer_id, status, limit = 50, offset = 0 } = req.query
+// Przykładowe dane zamówień zakupowych
+const mockPurchaseOrders = [
+  {
+    id: "po_001",
+    po_number: "PO-2024-123",
+    company_name: "AutoParts Dystrybucja",
+    customer_id: "cus_b2b_004",
+    status: "processing",
+    total_amount: 7850000, // 78 500 PLN
+    payment_terms: "NET60",
+    delivery_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    items: []
+  },
+  {
+    id: "po_002",
+    po_number: "PO-2024-124",
+    company_name: "Maszyny Budowlane Sp. j.",
+    customer_id: "cus_b2b_005",
+    status: "confirmed",
+    total_amount: 12500000, // 125 000 PLN
+    payment_terms: "NET45",
+    delivery_date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    items: []
+  },
+  {
+    id: "po_003",
+    po_number: "PO-2024-125",
+    company_name: "Przemysł-Tech S.A.",
+    customer_id: "cus_b2b_006",
+    status: "delivered",
+    total_amount: 9800000, // 98 000 PLN
+    payment_terms: "NET60",
+    delivery_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    items: []
+  },
+  {
+    id: "po_004",
+    po_number: "PO-2024-126",
+    company_name: "Logistyka Maszyn S.A.",
+    customer_id: "cus_b2b_009",
+    status: "pending",
+    total_amount: 15600000, // 156 000 PLN
+    payment_terms: "NET60",
+    delivery_date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    items: []
+  }
+];
 
+export const GET = async (
+  req: MedusaRequest,
+  res: MedusaResponse
+) => {
   try {
-    const b2bService = req.scope.resolve("omexB2b")
-
-    // In real implementation, list purchase orders with filters
-    return res.json({
-      purchase_orders: [],
-      count: 0,
-      limit: Number(limit),
-      offset: Number(offset),
+    // W produkcji pobierz z bazy danych
+    res.json({
+      purchase_orders: mockPurchaseOrders,
+      count: mockPurchaseOrders.length
     })
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message || "Failed to list purchase orders",
-    })
-  }
-}
-
-/**
- * POST /admin/b2b/purchase-orders
- * Create a new purchase order
- */
-export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  const data = req.body
-
-  if (!data.customer_id || !data.po_number || !data.items || data.items.length === 0) {
-    return res.status(400).json({
-      error: "Customer ID, PO number, and items are required",
-    })
-  }
-
-  try {
-    const b2bService = req.scope.resolve("omexB2b")
-
-    const purchaseOrder = await b2bService.createPurchaseOrder(data)
-
-    return res.status(201).json({
-      purchase_order: purchaseOrder,
-    })
-  } catch (error: any) {
-    return res.status(500).json({
-      error: error.message || "Failed to create purchase order",
+    console.error("Error fetching purchase orders:", error)
+    res.status(500).json({
+      error: error.message || "Failed to fetch purchase orders"
     })
   }
 }

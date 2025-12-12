@@ -10,7 +10,7 @@ export default function LoginPage() {
   const t = useTranslations()
   const locale = useLocale()
   const router = useRouter()
-  const { login, register, loading } = useAuth()
+  const { login, register, loading, refreshCustomer } = useAuth()
 
   const [isLogin, setIsLogin] = useState(true)
   const [formData, setFormData] = useState({
@@ -29,10 +29,13 @@ export default function LoginPage() {
     try {
       if (isLogin) {
         await login(formData.email, formData.password)
+        // Refresh customer data after login
+        await refreshCustomer()
       } else {
         await register(formData)
       }
-      router.push(`/${locale}/account`)
+      // Redirect to home page to see the header with user greeting
+      router.push(`/${locale}`)
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Wystąpił błąd')
     }

@@ -1,43 +1,56 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import B2BService from "../../../../modules/omex-b2b/service"
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-// GET /admin/b2b/quotes - List all quotes
-export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const b2bService = req.scope.resolve("b2bService") as B2BService
-
-  try {
-    const { status, customer_id, page = 1, limit = 20 } = req.query
-
-    const quotes = await b2bService.listQuotes({
-      status: status as string,
-      customer_id: customer_id as string,
-      page: parseInt(page as string),
-      limit: parseInt(limit as string),
-    })
-
-    return res.json(quotes)
-  } catch (error) {
-    console.error("List quotes error:", error)
-    return res.status(500).json({
-      error: "Failed to list quotes",
-      message: error.message,
-    })
+// Przykładowe dane ofert (w produkcji byłyby w bazie)
+const mockQuotes = [
+  {
+    id: "quote_001",
+    quote_number: "Q-2024-001",
+    company_name: "BudMech Sp. z o.o.",
+    customer_id: "cus_b2b_001",
+    status: "sent",
+    total_amount: 4500000, // 45 000 PLN
+    valid_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    items: []
+  },
+  {
+    id: "quote_002",
+    quote_number: "Q-2024-002",
+    company_name: "TechMaszyny S.A.",
+    customer_id: "cus_b2b_002",
+    status: "accepted",
+    total_amount: 7850000, // 78 500 PLN
+    valid_until: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    items: []
+  },
+  {
+    id: "quote_003",
+    quote_number: "Q-2024-003",
+    company_name: "Hydraulika Plus Sp. z o.o.",
+    customer_id: "cus_b2b_003",
+    status: "draft",
+    total_amount: 3200000, // 32 000 PLN
+    valid_until: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    items: []
   }
-}
+];
 
-// POST /admin/b2b/quotes - Create quote
-export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  const b2bService = req.scope.resolve("b2bService") as B2BService
-
+export const GET = async (
+  req: MedusaRequest,
+  res: MedusaResponse
+) => {
   try {
-    const quote = await b2bService.createQuote(req.body)
-
-    return res.status(201).json({ quote })
-  } catch (error) {
-    console.error("Create quote error:", error)
-    return res.status(500).json({
-      error: "Failed to create quote",
-      message: error.message,
+    // W produkcji pobierz z bazy danych
+    res.json({
+      quotes: mockQuotes,
+      count: mockQuotes.length
+    })
+  } catch (error: any) {
+    console.error("Error fetching quotes:", error)
+    res.status(500).json({
+      error: error.message || "Failed to fetch quotes"
     })
   }
 }

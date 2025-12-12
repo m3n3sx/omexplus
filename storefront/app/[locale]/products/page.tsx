@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { storeAPI } from '@/lib/api-client'
+import { ProductCardTemplate } from '@/components/product/ProductCardTemplate'
 
 export default function ProductsPage() {
   const locale = useLocale()
-  const t = useTranslations()
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get('category')
 
@@ -35,75 +35,43 @@ export default function ProductsPage() {
   }, [categoryParam])
 
   return (
-    <div className="min-h-screen flex flex-col">
-<main className="flex-1">
+    <div className="min-h-screen flex flex-col bg-neutral-900">
+      <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
           {/* Breadcrumb */}
-          <div className="text-sm text-gray-600 mb-6">
-            <Link href={`/${locale}`} className="hover:text-gray-900">Home</Link>
-            <span className="mx-2">/</span>
-            <span className="text-gray-900">Products</span>
+          <div className="text-sm text-neutral-400 mb-6 flex items-center gap-2">
+            <Link href={`/${locale}`} className="hover:text-secondary-500 transition-colors">Home</Link>
+            <span className="text-neutral-600">/</span>
+            <span className="text-neutral-100 font-semibold">Products</span>
           </div>
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Products</h1>
-            <p className="text-gray-600">Browse our complete catalog</p>
+            <h1 className="text-3xl font-bold text-neutral-100 mb-2 uppercase tracking-wide">Products</h1>
+            <div className="h-1 w-24 bg-secondary-500 mb-4"></div>
+            <p className="text-neutral-400">Browse our complete catalog</p>
           </div>
 
           {/* Products Grid */}
           {loading ? (
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(12)].map((_, i) => (
-                <div key={i} className="bg-white border border-gray-200 h-80 animate-pulse" />
+                <div key={i} className="bg-neutral-800 border border-neutral-700 rounded-lg h-80 animate-pulse" />
               ))}
             </div>
           ) : products.length > 0 ? (
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {products.map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/${locale}/products/${product.id}`}
-                  className="bg-white border border-gray-200 hover:border-gray-900 transition-colors"
-                >
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                    {product.thumbnail ? (
-                      <img 
-                        src={product.thumbnail} 
-                        alt={product.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-gray-400 text-sm">No image</span>
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium text-gray-900 mb-2 line-clamp-2">
-                      {product.title}
-                    </h3>
-                    {product.variants?.[0]?.prices?.[0] && (
-                      <p className="text-sm text-gray-900 font-semibold">
-                        {(product.variants[0].prices[0].amount / 100).toFixed(2)} PLN
-                      </p>
-                    )}
-                    {product.variants?.[0]?.inventory_quantity !== undefined && (
-                      <p className="text-xs text-gray-600 mt-1">
-                        {product.variants[0].inventory_quantity > 0 
-                          ? `In stock: ${product.variants[0].inventory_quantity}`
-                          : 'Out of stock'
-                        }
-                      </p>
-                    )}
-                  </div>
-                </Link>
+                <ProductCardTemplate key={product.id} product={product} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <p className="text-gray-600 mb-4">No products found</p>
+            <div className="text-center py-16 bg-neutral-800 border border-neutral-700 rounded-lg">
+              <div className="text-5xl mb-4">📦</div>
+              <p className="text-neutral-400 mb-4">No products found</p>
               <Link 
                 href={`/${locale}/products`}
-                className="text-sm text-gray-900 font-medium hover:underline"
+                className="inline-block px-6 py-3 bg-secondary-500 text-neutral-900 rounded-lg font-bold hover:bg-secondary-400 transition-all uppercase tracking-wide text-sm"
               >
                 View all products
               </Link>
@@ -111,6 +79,6 @@ export default function ProductsPage() {
           )}
         </div>
       </main>
-</div>
+    </div>
   )
 }

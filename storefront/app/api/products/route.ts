@@ -4,9 +4,9 @@ import { Pool } from 'pg'
 const pool = new Pool({
   host: 'localhost',
   port: 5432,
-  database: 'medusa-my-medusa-store',
-  user: 'postgres',
-  password: 'supersecret',
+  database: 'medusa_db',
+  user: 'medusa_user',
+  password: 'medusa_password',
 })
 
 export async function GET(request: Request) {
@@ -14,6 +14,19 @@ export async function GET(request: Request) {
   const limit = parseInt(searchParams.get('limit') || '8')
   
   try {
+    // Get total count
+    const countQuery = `
+      SELECT COUNT(DISTINCT p.id) as total
+      FROM product p
+      LEFT JOIN product_variant pv ON p.id = pv.product_id AND pv.deleted_at IS NULL
+      WHERE p.deleted_at IS NULL
+      GROUP BY p.id
+      HAVING COUNT(pv.id) > 0
+    `
+    const countResult = await pool.query(countQuery)
+    const totalCount = countResult.rows.length
+    
+    // Get products
     const query = `
       SELECT 
         p.id,
@@ -36,7 +49,7 @@ export async function GET(request: Request) {
               FROM product_variant_price_set pvps2
               JOIN price pr ON pvps2.price_set_id = pr.price_set_id
               WHERE pvps2.variant_id = pv.id
-                AND pr.currency_code IN ('eur', 'pln')
+                AND pr.deleted_at IS NULL
             )
           )
         ) FILTER (WHERE pv.id IS NOT NULL) as variants
@@ -53,7 +66,7 @@ export async function GET(request: Request) {
     
     return NextResponse.json({
       products: result.rows,
-      count: result.rows.length
+      count: totalCount
     })
   } catch (error) {
     console.error('Database error:', error)

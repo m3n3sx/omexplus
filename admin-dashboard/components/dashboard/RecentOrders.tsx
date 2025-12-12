@@ -9,24 +9,33 @@ interface RecentOrdersProps {
   orders: Order[]
 }
 
+const statusTranslations: { [key: string]: string } = {
+  'pending': 'Oczekujące',
+  'completed': 'Zrealizowane',
+  'canceled': 'Anulowane',
+  'draft': 'Wersja robocza',
+  'archived': 'Zarchiwizowane',
+  'requires_action': 'Wymaga działania'
+}
+
 export default function RecentOrders({ orders }: RecentOrdersProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Recent Orders</CardTitle>
+        <CardTitle>Ostatnie zamówienia</CardTitle>
         <Link href="/orders" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-          View all
+          Zobacz wszystkie
         </Link>
       </CardHeader>
       <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>Zamówienie</TableHead>
+              <TableHead>Klient</TableHead>
+              <TableHead>Data</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="text-right">Total</TableHead>
+              <TableHead className="text-right">Wartość</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -37,15 +46,15 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                     #{order.display_id}
                   </Link>
                 </TableCell>
-                <TableCell>{order.email}</TableCell>
+                <TableCell>{order.email || 'Brak email'}</TableCell>
                 <TableCell className="text-gray-600">{formatDate(order.created_at)}</TableCell>
                 <TableCell>
                   <Badge className={getOrderStatusColor(order.status)}>
-                    {order.status}
+                    {statusTranslations[order.status] || order.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right font-medium">
-                  {formatPrice(order.total, order.currency_code)}
+                  {order.total ? `${(order.total / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN` : '0,00 PLN'}
                 </TableCell>
               </TableRow>
             ))}

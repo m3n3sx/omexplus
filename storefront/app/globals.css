@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,8 +10,20 @@
   }
   
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-neutral-50 text-secondary-700;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  
+  /* Industrial/Professional theme - Yellow & Gray */
+  :root {
+    --color-primary: #EBAE34;
+    --color-primary-hover: #D97706;
+    --color-secondary: #424242;
+    --color-neutral: #FBF9F6;
+    --color-white: #FFFFFF;
   }
 }
 
@@ -19,24 +33,41 @@
     max-width: 1400px;
   }
   
+  /* Industrial/Professional buttons - Yellow accent */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold tracking-tight transition-all duration-300 text-base;
   }
   
   .btn-primary {
-    @apply bg-blue-600 text-white hover:bg-blue-700;
+    @apply bg-primary-500 text-white hover:bg-primary-600 hover:shadow-lg font-bold;
   }
   
   .btn-secondary {
-    @apply bg-gray-200 text-gray-900 hover:bg-gray-300;
+    @apply bg-secondary-700 text-white hover:bg-secondary-800 font-bold;
   }
   
   .btn-outline {
-    @apply border-2 border-blue-600 text-blue-600 hover:bg-blue-50;
+    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-bold;
   }
   
+  /* Professional cards - White on light background */
   .card {
-    @apply bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+    @apply bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-neutral-200;
+  }
+  
+  /* Yellow accent line */
+  .accent-line {
+    @apply h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent;
+  }
+  
+  /* Strong headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-extrabold tracking-tight;
+  }
+  
+  /* Strong text elements */
+  strong, b {
+    @apply font-extrabold;
   }
 }
 

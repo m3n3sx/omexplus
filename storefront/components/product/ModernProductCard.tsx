@@ -22,7 +22,7 @@ export function ModernProductCard({ product }: ModernProductCardProps) {
   const isNew = product.created_at && new Date(product.created_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
   // Random pastel colors for variety
-  const colors = ['bg-blue-50', 'bg-purple-50', 'bg-pink-50', 'bg-green-50', 'bg-yellow-50', 'bg-orange-50']
+  const colors = ['bg-info/10', 'bg-primary-50', 'bg-neutral-100', 'bg-primary-100']
   const randomColor = colors[Math.floor(Math.random() * colors.length)]
 
   return (

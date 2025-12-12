@@ -37,13 +37,13 @@ A complete, production-ready admin dashboard for managing your Medusa e-commerce
 - Account status tracking
 - Email customers
 
-### 🎨 CMS Management (NEW!)
-- **Content Management** - Edit all frontend elements
-- **Menu Management** - Create and manage navigation menus
-- **Visual Editors** - User-friendly editors for each content type
-- **JSON Mode** - Advanced editing for developers
-- **Multi-language** - Support for pl, en, de, uk
-- **Dynamic Components** - Ready-to-use React components
+### 🎨 Treść & Wygląd (NEW!)
+- **Kategorie** - Hierarchiczne zarządzanie kategoriami produktów
+- **Strony CMS** - Tworzenie i edycja statycznych stron (O nas, Kontakt, FAQ)
+- **Topbar** - Zarządzanie górnym paskiem (telefon, email, języki, waluty)
+- **Mega Menu** - Konfiguracja głównego menu kategorii z ikonami i priorytetami
+- **Bannery** - Zarządzanie bannerami promocyjnymi z pozycjonowaniem
+- **SEO** - Zarządzanie meta tagami i optymalizacja SEO
 
 ### ⚙️ Settings
 - Store configuration
@@ -334,20 +334,26 @@ http://localhost:3001/cms
 - JSON mode for advanced users
 - Ready-to-use React components
 
-## Future Enhancements
+## Nowe Funkcjonalności ✨
 
-- [x] CMS System (COMPLETED!)
-- [ ] Page Builder (drag & drop)
+### Zaimplementowane
+- [x] **Zarządzanie Kategoriami** - Pełna hierarchia z edycją i kolejnością
+- [x] **Strony CMS** - Tworzenie i edycja statycznych stron
+- [x] **Topbar Settings** - Konfiguracja górnego paska nawigacyjnego
+- [x] **Mega Menu** - Zaawansowane menu kategorii z ikonami
+- [x] **Bannery** - System zarządzania bannerami promocyjnymi
+- [x] **Integracja z Backend** - Wszystkie moduły pracują na prawdziwych danych
+
+### Planowane
+- [ ] Drag & drop dla kategorii
+- [ ] WYSIWYG editor dla stron CMS
+- [ ] Upload obrazków w dashboardzie
+- [ ] Wersje językowe dla treści
+- [ ] Historia zmian
+- [ ] Uprawnienia użytkowników
+- [ ] Bulk operations
 - [ ] Media Library
-- [ ] Advanced analytics dashboard
-- [ ] Bulk product import/export
-- [ ] Customer segmentation
-- [ ] Email campaign management
-- [ ] Inventory alerts
-- [ ] Multi-currency support
-- [ ] Role-based access control
-- [ ] Activity logs
-- [ ] Automated reports
+- [ ] Advanced analytics
 
 ## Support
 

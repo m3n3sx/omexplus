@@ -92,13 +92,14 @@ export function FilterSidebar({
   }
 
   return (
-    <aside className="hidden lg:block w-72 bg-white border-r border-gray-200 p-6 sticky top-40 h-[calc(100vh-10rem)] overflow-y-auto" aria-label="Filtry produktów">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">FILTRY</h2>
+    <aside className="hidden lg:block w-72 bg-neutral-800 border-r border-neutral-700 p-6 sticky top-40 h-[calc(100vh-10rem)] overflow-y-auto rounded-lg" aria-label="Filtry produktów">
+      <h2 className="text-xl font-bold text-neutral-100 mb-6 uppercase tracking-wide">FILTRY</h2>
+      <div className="h-1 w-16 bg-secondary-500 mb-6"></div>
 
       {/* Category Filter */}
-      <section className="mb-6 pb-6 border-b border-gray-200">
+      <section className="mb-6 pb-6 border-b border-neutral-700">
         <button
-          className="w-full flex justify-between items-center font-semibold text-gray-900 border-t-2 border-secondary pt-3 mb-3"
+          className="w-full flex justify-between items-center font-bold text-neutral-100 border-t-2 border-secondary-500 pt-3 mb-3 uppercase tracking-wide text-sm hover:text-secondary-500 transition-colors"
           onClick={() => toggleSection('category')}
           aria-expanded={expandedSections.category}
         >
@@ -112,15 +113,15 @@ export function FilterSidebar({
           <fieldset className="space-y-2">
             <legend className="sr-only">Wybierz kategorię</legend>
             {categories.map(category => (
-              <label key={category.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+              <label key={category.id} className="flex items-center gap-2 cursor-pointer hover:bg-neutral-750 p-2 rounded transition-colors group">
                 <input
                   type="checkbox"
                   checked={filters.categories.includes(category.id)}
                   onChange={() => handleCategoryChange(category.id)}
-                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                  className="w-4 h-4 text-secondary-500 bg-neutral-900 border-neutral-600 rounded focus:ring-secondary-500"
                 />
-                <span className="text-sm text-gray-700">
-                  {category.name} ({category.count})
+                <span className="text-sm text-neutral-300 group-hover:text-neutral-100">
+                  {category.name} <span className="text-neutral-500">({category.count})</span>
                 </span>
               </label>
             ))}
@@ -129,9 +130,9 @@ export function FilterSidebar({
       </section>
 
       {/* Price Filter */}
-      <section className="mb-6 pb-6 border-b border-gray-200">
+      <section className="mb-6 pb-6 border-b border-neutral-700">
         <button
-          className="w-full flex justify-between items-center font-semibold text-gray-900 border-t-2 border-secondary pt-3 mb-3"
+          className="w-full flex justify-between items-center font-bold text-neutral-100 border-t-2 border-secondary-500 pt-3 mb-3 uppercase tracking-wide text-sm hover:text-secondary-500 transition-colors"
           onClick={() => toggleSection('price')}
           aria-expanded={expandedSections.price}
         >
@@ -152,10 +153,10 @@ export function FilterSidebar({
                   ...filters, 
                   priceMin: e.target.value ? Number(e.target.value) : null 
                 })}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+                className="flex-1 px-3 py-2 bg-neutral-900 border border-neutral-700 rounded text-sm text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500"
                 aria-label="Minimalna cena"
               />
-              <span className="text-gray-500">-</span>
+              <span className="text-neutral-500">-</span>
               <input
                 type="number"
                 placeholder="Max"
@@ -164,12 +165,12 @@ export function FilterSidebar({
                   ...filters, 
                   priceMax: e.target.value ? Number(e.target.value) : null 
                 })}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-primary focus:border-primary"
+                className="flex-1 px-3 py-2 bg-neutral-900 border border-neutral-700 rounded text-sm text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500"
                 aria-label="Maksymalna cena"
               />
             </div>
             <button 
-              className="w-full px-4 py-2 bg-primary text-white rounded font-semibold hover:bg-primary-dark transition-colors text-sm"
+              className="w-full px-4 py-2 bg-secondary-500 text-neutral-900 rounded font-bold hover:bg-secondary-400 transition-colors text-sm uppercase tracking-wide"
               onClick={handlePriceChange}
             >
               Zastosuj
@@ -179,9 +180,9 @@ export function FilterSidebar({
       </section>
 
       {/* Manufacturer Filter */}
-      <section className="mb-6 pb-6 border-b border-gray-200">
+      <section className="mb-6 pb-6 border-b border-neutral-700">
         <button
-          className="w-full flex justify-between items-center font-semibold text-gray-900 border-t-2 border-secondary pt-3 mb-3"
+          className="w-full flex justify-between items-center font-bold text-neutral-100 border-t-2 border-secondary-500 pt-3 mb-3 uppercase tracking-wide text-sm hover:text-secondary-500 transition-colors"
           onClick={() => toggleSection('manufacturer')}
           aria-expanded={expandedSections.manufacturer}
         >
@@ -195,15 +196,15 @@ export function FilterSidebar({
           <fieldset className="space-y-2">
             <legend className="sr-only">Wybierz producenta</legend>
             {manufacturers.map(manufacturer => (
-              <label key={manufacturer.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+              <label key={manufacturer.id} className="flex items-center gap-2 cursor-pointer hover:bg-neutral-750 p-2 rounded transition-colors group">
                 <input
                   type="checkbox"
                   checked={filters.manufacturers.includes(manufacturer.id)}
                   onChange={() => handleManufacturerChange(manufacturer.id)}
-                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                  className="w-4 h-4 text-secondary-500 bg-neutral-900 border-neutral-600 rounded focus:ring-secondary-500"
                 />
-                <span className="text-sm text-gray-700">
-                  {manufacturer.name} ({manufacturer.count})
+                <span className="text-sm text-neutral-300 group-hover:text-neutral-100">
+                  {manufacturer.name} <span className="text-neutral-500">({manufacturer.count})</span>
                 </span>
               </label>
             ))}
@@ -214,7 +215,7 @@ export function FilterSidebar({
       {/* Availability Filter */}
       <section className="mb-6">
         <button
-          className="w-full flex justify-between items-center font-semibold text-gray-900 border-t-2 border-secondary pt-3 mb-3"
+          className="w-full flex justify-between items-center font-bold text-neutral-100 border-t-2 border-secondary-500 pt-3 mb-3 uppercase tracking-wide text-sm hover:text-secondary-500 transition-colors"
           onClick={() => toggleSection('availability')}
           aria-expanded={expandedSections.availability}
         >
@@ -227,7 +228,7 @@ export function FilterSidebar({
         {expandedSections.availability && (
           <fieldset className="space-y-2">
             <legend className="sr-only">Wybierz dostępność</legend>
-            <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+            <label className="flex items-center gap-2 cursor-pointer hover:bg-neutral-750 p-2 rounded transition-colors group">
               <input
                 type="checkbox"
                 checked={filters.inStock}
@@ -236,9 +237,9 @@ export function FilterSidebar({
                   setFilters(newFilters)
                   onFilterChange(newFilters)
                 }}
-                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                className="w-4 h-4 text-secondary-500 bg-neutral-900 border-neutral-600 rounded focus:ring-secondary-500"
               />
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-neutral-300 group-hover:text-neutral-100">
                 Tylko w magazynie
               </span>
             </label>
@@ -248,7 +249,7 @@ export function FilterSidebar({
 
       {/* Clear Filters Button */}
       <button 
-        className="w-full px-4 py-3 border border-primary text-primary rounded font-semibold hover:bg-primary hover:text-white transition-all"
+        className="w-full px-4 py-3 border-2 border-secondary-500 text-secondary-500 rounded-lg font-bold hover:bg-secondary-500 hover:text-neutral-900 transition-all uppercase tracking-wide text-sm"
         onClick={clearFilters}
       >
         Wyczyść filtry

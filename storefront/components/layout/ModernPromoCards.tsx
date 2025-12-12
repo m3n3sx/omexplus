@@ -7,7 +7,7 @@ export function ModernPromoCards() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       {/* Green Card - 50% OFF */}
       <Link 
-        href="/pl/sale"
+        href="/pl/promocje"
         className="relative bg-gradient-to-br from-green-300 to-green-400 rounded-3xl p-8 overflow-hidden group hover:scale-105 transition-transform duration-300"
       >
         <div className="relative z-10">
@@ -26,7 +26,7 @@ export function ModernPromoCards() {
 
       {/* Yellow Card - Winter's Weekend */}
       <Link 
-        href="/pl/winter"
+        href="/pl/nowosci"
         className="relative bg-gradient-to-br from-yellow-200 to-yellow-300 rounded-3xl p-8 overflow-hidden group hover:scale-105 transition-transform duration-300"
       >
         <div className="relative z-10">

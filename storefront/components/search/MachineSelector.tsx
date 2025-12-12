@@ -189,7 +189,7 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
             style={{
               flex: 1,
               height: '6px',
-              backgroundColor: s <= step ? '#1675F2' : '#E8F4FE',
+              backgroundColor: s <= step ? '#EBAE34' : '#FBF9F6',
               borderRadius: '3px',
               transition: 'background-color 0.3s',
             }}
@@ -212,6 +212,7 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
         <h2 style={{
           fontSize: '1.5rem',
           fontWeight: 'bold',
+          color: '#424242',
         }}>
           {step === 1 && 'Wybierz markę maszyny'}
           {step === 2 && 'Wybierz typ maszyny'}
@@ -224,20 +225,16 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
       {/* STEP 1: Brand Selection */}
       {step === 1 && (
         <>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-            gap: '1rem',
-          }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {MACHINE_BRANDS.map(brand => (
               <button
                 key={brand.id}
                 onClick={() => handleSelection(1, brand.code)}
                 style={{
                   padding: '1.5rem',
-                  border: `2px solid ${selectedBrand === brand.code ? '#1675F2' : '#D4EBFC'}`,
+                  border: `2px solid ${selectedBrand === brand.code ? '#EBAE34' : '#e5e7eb'}`,
                   borderRadius: '16px',
-                  backgroundColor: selectedBrand === brand.code ? '#E8F4FE' : 'white',
+                  backgroundColor: selectedBrand === brand.code ? '#FBF9F6' : 'white',
                   cursor: 'pointer',
                   textAlign: 'center',
                   transition: 'all 0.2s',
@@ -247,8 +244,8 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
                   fontSize: '1.25rem', 
                   marginBottom: '0.5rem',
                   padding: '0.5rem 1rem',
-                  backgroundColor: selectedBrand === brand.code ? '#1675F2' : '#F2F2F2',
-                  color: selectedBrand === brand.code ? 'white' : '#6b7280',
+                  backgroundColor: selectedBrand === brand.code ? '#EBAE34' : '#FBF9F6',
+                  color: selectedBrand === brand.code ? 'white' : '#424242',
                   borderRadius: '8px',
                   fontFamily: 'monospace',
                   fontWeight: 'bold',
@@ -259,6 +256,7 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
                   fontSize: '0.875rem',
                   fontWeight: '600',
                   marginBottom: '0.25rem',
+                  color: '#424242',
                 }}>
                   {brand.name}
                 </div>
@@ -339,21 +337,16 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
       {/* STEP 2: Machine Type */}
       {step === 2 && (
         <>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '1rem',
-            marginBottom: '2rem',
-          }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 mb-8">
             {MACHINE_TYPES.map(type => (
               <button
                 key={type.id}
                 onClick={() => handleSelection(2, type.name)}
                 style={{
                   padding: '1.5rem',
-                  border: `2px solid ${selectedType === type.name ? '#1675F2' : '#D4EBFC'}`,
+                  border: `2px solid ${selectedType === type.name ? '#EBAE34' : '#e5e7eb'}`,
                   borderRadius: '16px',
-                  backgroundColor: selectedType === type.name ? '#E8F4FE' : 'white',
+                  backgroundColor: selectedType === type.name ? '#FBF9F6' : 'white',
                   cursor: 'pointer',
                   textAlign: 'center',
                   transition: 'all 0.2s',
@@ -363,8 +356,8 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
                   fontSize: '1rem', 
                   marginBottom: '0.5rem',
                   padding: '0.5rem 1rem',
-                  backgroundColor: selectedType === type.name ? '#1675F2' : '#F2F2F2',
-                  color: selectedType === type.name ? 'white' : '#6b7280',
+                  backgroundColor: selectedType === type.name ? '#EBAE34' : '#FBF9F6',
+                  color: selectedType === type.name ? 'white' : '#424242',
                   borderRadius: '8px',
                   fontFamily: 'monospace',
                   fontWeight: 'bold',
@@ -374,6 +367,7 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
                 <div style={{
                   fontSize: '0.875rem',
                   fontWeight: '600',
+                  color: '#424242',
                 }}>
                   {type.name}
                 </div>
@@ -557,24 +551,22 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
       {/* STEP 4: Series Selection (Optional) */}
       {step === 4 && (
         <>
-          <div style={{
-            display: 'grid',
-            gap: '0.75rem',
-          }}>
+          <div className="grid grid-cols-1 gap-3">
             {SERIES_OPTIONS.map(series => (
               <button
                 key={series.id}
                 onClick={() => setSelectedSeries(series.id)}
                 style={{
                   padding: '1rem',
-                  border: `2px solid ${selectedSeries === series.id ? '#1675F2' : '#D4EBFC'}`,
+                  border: `2px solid ${selectedSeries === series.id ? '#EBAE34' : '#e5e7eb'}`,
                   borderRadius: '12px',
-                  backgroundColor: selectedSeries === series.id ? '#E8F4FE' : 'white',
+                  backgroundColor: selectedSeries === series.id ? '#FBF9F6' : 'white',
                   cursor: 'pointer',
                   textAlign: 'left',
                   fontSize: '0.875rem',
                   fontWeight: '600',
                   transition: 'all 0.2s',
+                  color: '#424242',
                 }}
               >
                 {series.name}
@@ -649,25 +641,22 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
       {/* STEP 5: Engine Selection (Optional) */}
       {step === 5 && (
         <>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-            gap: '1rem',
-          }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {ENGINE_OPTIONS.map(engine => (
               <button
                 key={engine.id}
                 onClick={() => setSelectedEngine(engine.id)}
                 style={{
                   padding: '1.5rem',
-                  border: `2px solid ${selectedEngine === engine.id ? '#1675F2' : '#D4EBFC'}`,
+                  border: `2px solid ${selectedEngine === engine.id ? '#EBAE34' : '#e5e7eb'}`,
                   borderRadius: '12px',
-                  backgroundColor: selectedEngine === engine.id ? '#E8F4FE' : 'white',
+                  backgroundColor: selectedEngine === engine.id ? '#FBF9F6' : 'white',
                   cursor: 'pointer',
                   textAlign: 'center',
                   fontSize: '0.875rem',
                   fontWeight: '600',
                   transition: 'all 0.2s',
+                  color: '#424242',
                 }}
               >
                 {engine.name}
@@ -775,10 +764,10 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
               onClick={handleComplete}
               style={{
                 padding: '0.75rem 1.5rem',
-                border: '2px solid #1675F2',
+                border: '2px solid #EBAE34',
                 borderRadius: '12px',
                 backgroundColor: 'white',
-                color: '#1675F2',
+                color: '#EBAE34',
                 cursor: 'pointer',
                 fontSize: '0.875rem',
                 fontWeight: '600',
@@ -800,7 +789,7 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
                 padding: '0.75rem 1.5rem',
                 border: 'none',
                 borderRadius: '12px',
-                backgroundColor: canProceed() ? '#1675F2' : '#E8F4FE',
+                backgroundColor: canProceed() ? '#EBAE34' : '#FBF9F6',
                 color: canProceed() ? 'white' : '#9ca3af',
                 cursor: canProceed() ? 'pointer' : 'not-allowed',
                 fontSize: '0.875rem',
@@ -819,7 +808,7 @@ export default function MachineSelector({ onComplete, onCancel }: MachineSelecto
                 padding: '0.75rem 1.5rem',
                 border: 'none',
                 borderRadius: '12px',
-                backgroundColor: '#1675F2',
+                backgroundColor: '#EBAE34',
                 color: 'white',
                 cursor: 'pointer',
                 fontSize: '0.875rem',

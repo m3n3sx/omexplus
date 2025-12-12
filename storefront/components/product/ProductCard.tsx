@@ -1,159 +1,83 @@
 'use client'
 
-import { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { AddToCartButton } from './AddToCartButton'
+import { HTMLAttributes } from 'react'
 
 interface Product {
   id: string
   title: string
-  handle: string
-  thumbnail: string | null
+  handle?: string
   sku?: string
+  thumbnail?: string
   inventory_quantity?: number
-  rating?: number
-  reviewCount?: number
-  metadata?: {
-    manufacturer_sku?: string
-  }
-  variants: Array<{
-    id?: string
-    prices: Array<{
+  variants?: Array<{
+    id: string
+    prices?: Array<{
       amount: number
       currency_code: string
     }>
   }>
 }
 
-interface ProductCardProps {
+interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product
-  onAddToCart?: (productId: string) => Promise<void>
 }
 
-export function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  const stockStatus = getStockStatus(product.inventory_quantity || 0)
+export function ProductCard({ product, className = '', ...props }: ProductCardProps) {
   const price = product.variants?.[0]?.prices?.[0]
   const priceAmount = price ? (price.amount / 100).toFixed(2) : '0.00'
   const currency = price?.currency_code === 'pln' ? 'PLN' : price?.currency_code?.toUpperCase() || 'PLN'
+  const inStock = (product.inventory_quantity ?? 0) > 0
 
   return (
-    <Link href={`/pl/products/${product.handle}`}>
-      <article 
-        className={`
-          group relative bg-white border rounded-lg overflow-hidden
-          transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary
-          cursor-pointer
-          ${stockStatus.borderClass}
-        `}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        aria-labelledby={`product-title-${product.id}`}
-      >
-      {/* Image Area */}
-      <div className="relative h-48 bg-gray-50">
-        <Image
-          src={product.thumbnail || '/placeholder.svg'}
-          alt={product.title}
-          fill
-          className="object-contain p-4"
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-        />
-        
-        {/* Hover Overlay */}
-        {isHovered && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-center animate-in fade-in duration-300">
-            <button className="px-6 py-2 bg-white text-primary font-semibold rounded-md hover:bg-gray-100 transition-colors">
-              Podgląd
-            </button>
-          </div>
-        )}
+    <div
+      className={`group relative bg-neutral-800 rounded-lg p-6 shadow-lg border border-neutral-700 hover:border-secondary-500 hover:shadow-2xl hover:shadow-secondary-500/10 transition-all duration-300 ${className}`}
+      {...props}
+    >
+      {/* Gold accent on hover */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-secondary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-t-lg"></div>
+
+      {/* Product Image */}
+      <div className="text-5xl text-center mb-4 bg-neutral-900 p-6 rounded-lg border border-neutral-700 group-hover:border-secondary-500/30 transition-colors">
+        📦
       </div>
 
-      {/* Content Area */}
-      <div className="p-4 space-y-2">
-        {/* Rating */}
-        <div className="flex items-center gap-1 text-xs text-gray-600">
-          <span aria-hidden="true">⭐⭐⭐⭐⭐</span>
-          <span className="sr-only">Ocena {product.rating || 4.5} z 5 gwiazdek</span>
-          <span>({product.rating || 4.5}) {product.reviewCount || 0} opinie</span>
-        </div>
+      {/* Product Title */}
+      <h3 className="text-base font-semibold mb-2 text-neutral-100 line-clamp-2 group-hover:text-secondary-500 transition-colors">
+        {product.title}
+      </h3>
 
-        {/* Title */}
-        <h3 
-          id={`product-title-${product.id}`}
-          className="font-semibold text-gray-900 line-clamp-2 hover:text-primary transition-colors cursor-pointer"
+      {/* SKU */}
+      <p className="text-xs text-neutral-500 mb-2 uppercase tracking-wide">
+        SKU: {product.sku || 'N/A'}
+      </p>
+
+      {/* Stock Status */}
+      <div className={`text-xs mb-4 font-bold uppercase tracking-wide ${inStock ? 'text-success' : 'text-warning'}`}>
+        {inStock ? `✓ ${product.inventory_quantity}x na magazynie` : '⏳ Zamówienie'}
+      </div>
+
+      {/* Divider */}
+      <div className="h-px bg-neutral-700 mb-4"></div>
+
+      {/* Price & Add to Cart */}
+      <div className="flex justify-between items-center gap-3">
+        <div>
+          <div className="text-xs text-neutral-500 uppercase tracking-wide mb-1">Cena netto</div>
+          <span className="text-xl font-bold text-secondary-500">
+            {priceAmount} {currency}
+          </span>
+        </div>
+        <button
+          className={`px-5 py-2.5 rounded-lg text-sm font-bold uppercase tracking-wide transition-all duration-300 ${
+            inStock
+              ? 'bg-secondary-500 text-neutral-900 hover:bg-secondary-400 hover:shadow-lg hover:shadow-secondary-500/30'
+              : 'bg-neutral-700 text-neutral-500 cursor-not-allowed border border-neutral-600'
+          }`}
+          disabled={!inStock}
         >
-          {product.title}
-        </h3>
-
-        {/* SKU */}
-        <div className="text-xs font-mono text-gray-600 space-y-1">
-          <div>SKU: {product.sku || 'N/A'}</div>
-          {product.metadata?.manufacturer_sku && (
-            <div>Mfr: {product.metadata.manufacturer_sku}</div>
-          )}
-        </div>
-
-        <hr className="my-2 border-gray-200" />
-
-        {/* Price */}
-        <div className="text-2xl font-bold text-primary">
-          {currency === '€' ? `€${priceAmount}` : `${priceAmount} ${currency}`}
-        </div>
-
-        {/* Stock Status */}
-        <div className={`text-sm font-semibold flex items-center gap-1 ${stockStatus.color}`}>
-          <span aria-hidden="true">{stockStatus.icon}</span>
-          <span>{stockStatus.text}</span>
-        </div>
-
-        {/* Actions */}
-        <div className="space-y-2 pt-2">
-          <div onClick={(e) => e.preventDefault()}>
-            {product.variants?.[0] && (
-              <AddToCartButton 
-                variantId={product.variants[0].id || product.id}
-                disabled={stockStatus.outOfStock}
-              />
-            )}
-          </div>
-          <button className="w-full px-4 py-3 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-all min-h-[44px]">
-            Szczegóły
-          </button>
-        </div>
+          {inStock ? 'Dodaj' : 'Zamów'}
+        </button>
       </div>
-    </article>
-    </Link>
+    </div>
   )
-}
-
-function getStockStatus(quantity: number) {
-  if (quantity === 0) {
-    return {
-      borderClass: 'border-l-4 border-danger opacity-70',
-      color: 'text-danger',
-      icon: '✗',
-      text: 'Brak',
-      outOfStock: true
-    }
-  }
-  if (quantity < 10) {
-    return {
-      borderClass: 'border-l-4 border-warning',
-      color: 'text-warning',
-      icon: '⚠',
-      text: 'Mało',
-      outOfStock: false
-    }
-  }
-  return {
-    borderClass: '',
-    color: 'text-success',
-    icon: '✓',
-    text: 'W magazynie',
-    outOfStock: false
-  }
 }

@@ -17,6 +17,7 @@
     "build": "medusa build",
     "start": "medusa start",
     "seed": "medusa exec ./src/scripts/seed.ts",
+    "seed:categories": "medusa exec ./src/scripts/seed-categories.ts",
     "init-cms": "node init-cms-db.js",
     "test-cms": "node test-cms.js"
   },

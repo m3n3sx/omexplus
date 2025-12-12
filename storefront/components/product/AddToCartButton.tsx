@@ -19,9 +19,10 @@ export function AddToCartButton({ variantId, disabled, className }: AddToCartBut
       await addItem(variantId, quantity)
       setSuccess(true)
       setTimeout(() => setSuccess(false), 2000)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to add to cart:', error)
-      alert('Nie udało się dodać do koszyka')
+      const errorMsg = error?.response?.data?.message || error?.message || 'Nie udało się dodać do koszyka'
+      alert(`Błąd: ${errorMsg}`)
     }
   }
 

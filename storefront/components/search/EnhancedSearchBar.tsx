@@ -121,7 +121,7 @@ export default function EnhancedSearchBar({
   }
 
   return (
-    <div ref={searchRef} style={{ position: 'relative', width: '100%', maxWidth: '600px' }}>
+    <div ref={searchRef} style={{ position: 'relative', width: '100%' }}>
       <form onSubmit={handleSubmit}>
         <div style={{ position: 'relative' }}>
           <input
@@ -129,32 +129,8 @@ export default function EnhancedSearchBar({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={placeholder}
-            style={{
-              width: '100%',
-              padding: '1rem 3.5rem 1rem 1rem',
-              border: '2px solid #e5e7eb',
-              borderRadius: '12px',
-              fontSize: '1rem',
-              outline: 'none',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#1675F2'
-            }}
-            onMouseLeave={(e) => {
-              if (document.activeElement !== e.currentTarget) {
-                e.currentTarget.style.borderColor = '#D4EBFC'
-              }
-            }}
-            onFocus={(e) => {
-              setIsOpen(true)
-              e.currentTarget.style.borderColor = '#1675F2'
-              e.currentTarget.style.boxShadow = '0 0 0 4px rgba(22, 117, 242, 0.1)'
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = '#D4EBFC'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
+            className="w-full px-6 py-4 pr-28 border-2 border-neutral-200 rounded-full text-sm font-bold outline-none transition-all duration-300 bg-white hover:border-primary-500 focus:border-primary-500 focus:shadow-lg placeholder:text-neutral-400 placeholder:font-normal"
+            onFocus={() => setIsOpen(true)}
           />
           
           {/* Clear Button */}
@@ -165,18 +141,7 @@ export default function EnhancedSearchBar({
                 setQuery('')
                 clear()
               }}
-              style={{
-                position: 'absolute',
-                right: '3rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '1.25rem',
-                padding: '0.25rem',
-                color: '#6b7280',
-              }}
+              className="absolute right-24 top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer text-xl p-1 text-neutral-400 hover:text-neutral-600 transition-colors"
             >
               ✕
             </button>
@@ -185,22 +150,10 @@ export default function EnhancedSearchBar({
           {/* Search Button */}
           <button
             type="submit"
-            style={{
-              position: 'absolute',
-              right: '0.75rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: '#1675F2',
-              border: 'none',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              padding: '0.5rem 0.75rem',
-              color: 'white',
-              boxShadow: '0 4px 12px rgba(22, 117, 242, 0.3)',
-            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary-500 border-none rounded-full cursor-pointer px-6 py-3 text-white shadow-md hover:bg-primary-600 hover:shadow-lg transition-all duration-300 font-bold text-sm uppercase tracking-wider"
           >
-            <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </button>
         </div>
@@ -208,27 +161,10 @@ export default function EnhancedSearchBar({
 
       {/* Dropdown */}
       {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 0.5rem)',
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          borderRadius: '12px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-          maxHeight: '500px',
-          overflowY: 'auto',
-          zIndex: 50,
-          border: '1px solid #e5e7eb',
-        }}>
+        <div className="absolute top-[calc(100%+0.75rem)] left-0 right-0 bg-white rounded-3xl shadow-xl max-h-[500px] overflow-y-auto z-50 border border-neutral-200">
           {/* Loading State */}
           {loading && (
-            <div style={{
-              padding: '1rem',
-              textAlign: 'center',
-              color: '#6b7280',
-              fontSize: '0.875rem',
-            }}>
+            <div className="p-6 text-center text-secondary-600 text-sm font-bold">
               Szukam...
             </div>
           )}
@@ -236,62 +172,29 @@ export default function EnhancedSearchBar({
           {/* Suggestions */}
           {!loading && suggestions.length > 0 && (
             <div>
-              <div style={{
-                padding: '0.75rem 1rem',
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                color: '#6b7280',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                borderBottom: '1px solid #f3f4f6',
-              }}>
+              <div className="px-6 py-4 text-xs font-bold text-secondary-600 uppercase tracking-wider border-b border-neutral-200">
                 Sugestie
               </div>
               {suggestions.map((suggestion, index) => (
                 <button
                   key={index}
                   onClick={() => handleSuggestionClick(suggestion.text)}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    border: 'none',
-                    borderBottom: index < suggestions.length - 1 ? '1px solid #f3f4f6' : 'none',
-                    backgroundColor: 'white',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'background-color 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f9fafb'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'white'
-                  }}
+                  className="w-full flex items-center gap-4 px-6 py-4 border-none bg-white cursor-pointer text-left transition-all duration-300 hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0"
                 >
-                  <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-mono font-bold">
+                  <span className="px-3 py-1.5 bg-primary-50 text-primary-600 rounded-full text-xs font-bold uppercase tracking-wider">
                     {getSuggestionIcon(suggestion.type)}
                   </span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>
+                  <div className="flex-1">
+                    <div className="text-sm font-bold text-secondary-800">
                       {suggestion.text}
                     </div>
                     {suggestion.count !== undefined && (
-                      <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                      <div className="text-xs text-secondary-600 font-bold mt-0.5">
                         {suggestion.count} {suggestion.count === 1 ? 'wynik' : 'wyników'}
                       </div>
                     )}
                   </div>
-                  <span style={{
-                    padding: '0.25rem 0.5rem',
-                    backgroundColor: '#f3f4f6',
-                    borderRadius: '4px',
-                    fontSize: '0.75rem',
-                    color: '#6b7280',
-                    textTransform: 'capitalize',
-                  }}>
+                  <span className="px-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-full text-xs text-secondary-700 font-bold uppercase tracking-wider">
                     {suggestion.type === 'product' ? 'Produkt' :
                      suggestion.type === 'category' ? 'Kategoria' :
                      suggestion.type === 'brand' ? 'Marka' :
@@ -306,29 +209,11 @@ export default function EnhancedSearchBar({
           {/* Search History */}
           {!loading && query.length === 0 && showHistory && searchHistory.length > 0 && (
             <div>
-              <div style={{
-                padding: '0.75rem 1rem',
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                color: '#6b7280',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                borderBottom: '1px solid #f3f4f6',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
+              <div className="px-6 py-4 text-xs font-bold text-secondary-600 uppercase tracking-wider border-b border-neutral-200 flex justify-between items-center">
                 <span>Historia wyszukiwań</span>
                 <button
                   onClick={clearHistory}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#ef4444',
-                    cursor: 'pointer',
-                    fontSize: '0.75rem',
-                    textTransform: 'none',
-                  }}
+                  className="bg-none border-none text-red-600 cursor-pointer text-xs font-bold hover:text-red-700 transition-colors"
                 >
                   Wyczyść
                 </button>
@@ -337,30 +222,12 @@ export default function EnhancedSearchBar({
                 <button
                   key={index}
                   onClick={() => handleSuggestionClick(item)}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    border: 'none',
-                    borderBottom: index < Math.min(searchHistory.length, 5) - 1 ? '1px solid #f3f4f6' : 'none',
-                    backgroundColor: 'white',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'background-color 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f9fafb'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'white'
-                  }}
+                  className="w-full flex items-center gap-4 px-6 py-4 border-none bg-white cursor-pointer text-left transition-all duration-300 hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0"
                 >
-                  <svg style={{ width: '16px', height: '16px', color: '#6b7280' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span style={{ fontSize: '0.875rem' }}>{item}</span>
+                  <span className="text-sm font-bold text-secondary-800">{item}</span>
                 </button>
               ))}
             </div>
@@ -369,46 +236,19 @@ export default function EnhancedSearchBar({
           {/* Popular Searches */}
           {!loading && query.length === 0 && showPopular && popularSearches.length > 0 && (
             <div>
-              <div style={{
-                padding: '0.75rem 1rem',
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                color: '#6b7280',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                borderBottom: '1px solid #f3f4f6',
-                borderTop: searchHistory.length > 0 ? '1px solid #f3f4f6' : 'none',
-              }}>
+              <div className={`px-6 py-4 text-xs font-bold text-secondary-600 uppercase tracking-wider border-b border-neutral-200 ${searchHistory.length > 0 ? 'border-t border-neutral-200' : ''}`}>
                 Popularne wyszukiwania
               </div>
               {popularSearches.map((item, index) => (
                 <button
                   key={index}
                   onClick={() => handleSuggestionClick(item)}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    border: 'none',
-                    borderBottom: index < popularSearches.length - 1 ? '1px solid #f3f4f6' : 'none',
-                    backgroundColor: 'white',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'background-color 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f9fafb'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'white'
-                  }}
+                  className="w-full flex items-center gap-4 px-6 py-4 border-none bg-white cursor-pointer text-left transition-all duration-300 hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0"
                 >
-                  <svg style={{ width: '16px', height: '16px', color: '#6b7280' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                   </svg>
-                  <span style={{ fontSize: '0.875rem' }}>{item}</span>
+                  <span className="text-sm font-bold text-secondary-800">{item}</span>
                 </button>
               ))}
             </div>
@@ -416,18 +256,14 @@ export default function EnhancedSearchBar({
 
           {/* No Results */}
           {!loading && query.length >= 2 && suggestions.length === 0 && (
-            <div style={{
-              padding: '2rem 1rem',
-              textAlign: 'center',
-              color: '#6b7280',
-            }}>
-              <svg style={{ width: '48px', height: '48px', margin: '0 auto 0.5rem', color: '#d1d5db' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <div className="p-8 text-center text-secondary-600">
+              <svg className="w-12 h-12 mx-auto mb-3 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <div style={{ fontSize: '0.875rem' }}>
+              <div className="text-sm font-bold text-secondary-800">
                 Brak sugestii dla "{query}"
               </div>
-              <div style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>
+              <div className="text-xs font-bold text-secondary-600 mt-2">
                 Naciśnij Enter aby wyszukać
               </div>
             </div>

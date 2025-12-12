@@ -4,11 +4,13 @@ import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function RegisterPage() {
   const t = useTranslations()
   const locale = useLocale()
   const router = useRouter()
+  const { register } = useAuth()
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -25,6 +27,7 @@ export default function RegisterPage() {
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [acceptGdpr, setAcceptGdpr] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -32,24 +35,34 @@ export default function RegisterPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
 
     if (formData.password !== formData.confirmPassword) {
-      alert('Hasła nie są identyczne')
+      setError('Hasła nie są identyczne')
       return
     }
 
     if (!acceptTerms || !acceptGdpr) {
-      alert('Musisz zaakceptować regulamin i politykę prywatności')
+      setError('Musisz zaakceptować regulamin i politykę prywatności')
       return
     }
 
     setLoading(true)
 
-    // TODO: Implement actual registration
-    setTimeout(() => {
+    try {
+      await register({
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone: formData.phone,
+      })
+      router.push(`/${locale}`)
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Nie udało się utworzyć konta')
+    } finally {
       setLoading(false)
-      router.push(`/${locale}/logowanie`)
-    }, 1500)
+    }
   }
 
   return (
@@ -69,6 +82,11 @@ export default function RegisterPage() {
 
           {/* Registration Form */}
           <div className="bg-white rounded-xl p-6 md:p-8 border border-neutral-200 shadow-sm">
+            {error && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-[13px]">
+                {error}
+              </div>
+            )}
             {/* Account Type Selector */}
             <div className="mb-8">
               <label className="block text-[13px] font-semibold mb-3 text-neutral-900">

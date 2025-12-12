@@ -5,21 +5,26 @@ import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
 import DashboardLayout from "@/components/layout/DashboardLayout"
 import Button from "@/components/ui/Button"
-import Badge from "@/components/ui/Badge"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/Table"
-import { formatPrice, formatDate, getOrderStatusColor } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
 import api from "@/lib/api-client"
-import { Customer } from "@/lib/types"
-import { ArrowLeft, User, Mail, Phone, MapPin, ShoppingBag } from "lucide-react"
+import { ArrowLeft, Save, Mail, User, Calendar } from "lucide-react"
 
 export default function CustomerDetailPage() {
   const router = useRouter()
   const params = useParams()
   const customerId = params.id as string
-  const [customer, setCustomer] = useState<Customer | null>(null)
+
+  const [customer, setCustomer] = useState<any>(null)
+  const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [editMode, setEditMode] = useState(false)
+  const [editedEmail, setEditedEmail] = useState("")
+  const [editedFirstName, setEditedFirstName] = useState("")
+  const [editedLastName, setEditedLastName] = useState("")
+  const [editedPhone, setEditedPhone] = useState("")
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -27,17 +32,41 @@ export default function CustomerDetailPage() {
       return
     }
     loadCustomer()
-  }, [router, customerId])
+  }, [customerId])
 
   const loadCustomer = async () => {
     try {
       setLoading(true)
       const response = await api.getCustomer(customerId)
-      setCustomer(response.customer as Customer)
+      setCustomer(response.customer)
+      setEditedEmail(response.customer.email || "")
+      setEditedFirstName(response.customer.first_name || "")
+      setEditedLastName(response.customer.last_name || "")
+      setEditedPhone(response.customer.phone || "")
+
+      // Load customer orders
+      const ordersResponse = await api.getOrders({ limit: 100 })
+      const customerOrders = ordersResponse.orders.filter((o: any) => o.customer_id === customerId)
+      setOrders(customerOrders)
     } catch (error) {
       console.error("Error loading customer:", error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    try {
+      setSaving(true)
+      // Note: Medusa API might not support all these fields
+      // This is a simplified example
+      alert("Funkcja zapisu zostanie wkrótce dodana")
+      setEditMode(false)
+    } catch (error: any) {
+      console.error("Error updating customer:", error)
+      alert(`Błąd: ${error.message}`)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -55,187 +84,209 @@ export default function CustomerDetailPage() {
     return (
       <DashboardLayout>
         <div className="text-center py-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Customer not found</h2>
-          <p className="text-gray-600 mb-6">The customer you're looking for doesn't exist.</p>
+          <p className="text-gray-600">Nie znaleziono klienta</p>
           <Link href="/customers">
-            <Button>Back to Customers</Button>
+            <Button className="mt-4">Powrót do listy</Button>
           </Link>
         </div>
       </DashboardLayout>
     )
   }
 
-  const customerName = customer.first_name || customer.last_name
-    ? `${customer.first_name || ""} ${customer.last_name || ""}`.trim()
-    : "N/A"
+  const totalSpent = orders.reduce((sum, order) => sum + (order.total || 0), 0)
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <Link href="/customers">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                Powrót
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{customerName}</h1>
-              <p className="text-gray-600 mt-1">{customer.email}</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {customer.first_name} {customer.last_name}
+              </h1>
+              <p className="text-sm text-gray-600 mt-1">
+                Klient od {formatDate(customer.created_at)}
+              </p>
             </div>
           </div>
-          <Badge variant={customer.has_account ? "success" : "default"}>
-            {customer.has_account ? "Registered" : "Guest"}
-          </Badge>
+          <div className="flex gap-2">
+            {!editMode ? (
+              <Button onClick={() => setEditMode(true)}>
+                Edytuj klienta
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" onClick={() => {
+                  setEditMode(false)
+                  setEditedEmail(customer.email || "")
+                  setEditedFirstName(customer.first_name || "")
+                  setEditedLastName(customer.last_name || "")
+                  setEditedPhone(customer.phone || "")
+                }}>
+                  Anuluj
+                </Button>
+                <Button onClick={handleSave} isLoading={saving}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Zapisz zmiany
+                </Button>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Order History */}
+            {/* Customer Info */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <ShoppingBag className="w-5 h-5 mr-2" />
-                Order History
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Informacje o kliencie</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Mail className="w-4 h-4 inline mr-1" />
+                    Email
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="email"
+                      value={editedEmail}
+                      onChange={(e) => setEditedEmail(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  ) : (
+                    <p className="text-gray-900">{customer.email || '-'}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <User className="w-4 h-4 inline mr-1" />
+                    Imię
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      value={editedFirstName}
+                      onChange={(e) => setEditedFirstName(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  ) : (
+                    <p className="text-gray-900">{customer.first_name || '-'}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <User className="w-4 h-4 inline mr-1" />
+                    Nazwisko
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      value={editedLastName}
+                      onChange={(e) => setEditedLastName(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  ) : (
+                    <p className="text-gray-900">{customer.last_name || '-'}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Telefon
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="tel"
+                      value={editedPhone}
+                      onChange={(e) => setEditedPhone(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  ) : (
+                    <p className="text-gray-900">{customer.phone || '-'}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Orders History */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Historia zamówień ({orders.length})
               </h2>
-              
-              {customer.orders && customer.orders.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Order</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Total</TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {customer.orders.map((order) => (
-                      <TableRow key={order.id}>
-                        <TableCell>
-                          <Link href={`/orders/${order.id}`} className="font-medium text-primary-600 hover:text-primary-700">
-                            #{order.display_id}
-                          </Link>
-                        </TableCell>
-                        <TableCell className="text-gray-600">{formatDate(order.created_at)}</TableCell>
-                        <TableCell>
-                          <Badge className={getOrderStatusColor(order.status)}>
-                            {order.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right font-medium">
-                          {formatPrice(order.total, order.currency_code)}
-                        </TableCell>
-                        <TableCell>
-                          <Link href={`/orders/${order.id}`}>
-                            <Button size="sm" variant="ghost">View</Button>
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              {orders.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">Brak zamówień</p>
               ) : (
-                <p className="text-gray-600 text-center py-8">No orders yet</p>
+                <div className="space-y-3">
+                  {orders.map((order) => (
+                    <Link
+                      key={order.id}
+                      href={`/orders/${order.id}`}
+                      className="block p-4 border border-gray-200 rounded-lg hover:border-primary-500 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-gray-900">Zamówienie #{order.display_id}</p>
+                          <p className="text-sm text-gray-600">{formatDate(order.created_at)}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900">
+                            {((order.total || 0) / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2 })} PLN
+                          </p>
+                          <p className="text-sm text-gray-600">{order.status}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               )}
             </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Contact Information */}
+            {/* Stats */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <User className="w-5 h-5 mr-2" />
-                Contact Information
-              </h2>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex items-start">
-                  <Mail className="w-4 h-4 text-gray-400 mr-2 mt-0.5" />
-                  <div>
-                    <span className="text-gray-600 block">Email</span>
-                    <p className="text-gray-900">{customer.email}</p>
-                  </div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Statystyki</h2>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-600">Liczba zamówień</p>
+                  <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
                 </div>
-                
-                {customer.phone && (
-                  <div className="flex items-start">
-                    <Phone className="w-4 h-4 text-gray-400 mr-2 mt-0.5" />
-                    <div>
-                      <span className="text-gray-600 block">Phone</span>
-                      <p className="text-gray-900">{customer.phone}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Addresses */}
-            {customer.shipping_addresses && customer.shipping_addresses.length > 0 && (
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <MapPin className="w-5 h-5 mr-2" />
-                  Addresses
-                </h2>
-                
-                <div className="space-y-4">
-                  {customer.shipping_addresses.map((address, idx) => (
-                    <div key={idx} className="text-sm">
-                      <p className="font-medium text-gray-900 mb-1">
-                        {address.first_name} {address.last_name}
-                      </p>
-                      <p className="text-gray-600">{address.address_1}</p>
-                      {address.address_2 && <p className="text-gray-600">{address.address_2}</p>}
-                      <p className="text-gray-600">
-                        {address.city}, {address.province} {address.postal_code}
-                      </p>
-                      <p className="text-gray-600">{address.country_code?.toUpperCase()}</p>
-                      {address.phone && <p className="text-gray-600 mt-1">{address.phone}</p>}
-                    </div>
-                  ))}
+                <div>
+                  <p className="text-sm text-gray-600">Łączna wartość</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {(totalSpent / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2 })} PLN
+                  </p>
                 </div>
-              </div>
-            )}
-
-            {/* Customer Stats */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Statistics</h2>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Total Orders</span>
-                  <span className="font-medium text-gray-900">{customer.orders?.length || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Member Since</span>
-                  <span className="font-medium text-gray-900">{formatDate(customer.created_at)}</span>
+                <div>
+                  <p className="text-sm text-gray-600">Średnia wartość zamówienia</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {orders.length > 0 
+                      ? ((totalSpent / orders.length) / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2 })
+                      : '0,00'} PLN
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Metadata */}
+            {/* Account Info */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Details</h2>
-              
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Informacje o koncie</h2>
               <div className="space-y-3 text-sm">
-                <div>
-                  <span className="text-gray-600">Customer ID:</span>
-                  <p className="text-gray-900 mt-1 font-mono text-xs break-all">{customer.id}</p>
+                <div className="flex items-center text-gray-600">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  <span>Zarejestrowany: {formatDate(customer.created_at)}</span>
                 </div>
-                <div>
-                  <span className="text-gray-600">Created:</span>
-                  <p className="text-gray-900 mt-1">{formatDate(customer.created_at)}</p>
+                <div className="flex items-center text-gray-600">
+                  <User className="w-4 h-4 mr-2" />
+                  <span>ID: {customer.id}</span>
                 </div>
-                {customer.updated_at && (
-                  <div>
-                    <span className="text-gray-600">Updated:</span>
-                    <p className="text-gray-900 mt-1">{formatDate(customer.updated_at)}</p>
-                  </div>
-                )}
               </div>
             </div>
           </div>

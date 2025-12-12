@@ -102,11 +102,11 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
           onDragOver={handleDrag}
           onDrop={handleDrop}
           style={{
-            border: dragActive ? '2px dashed #1675F2' : '2px dashed #D4EBFC',
+            border: dragActive ? '2px dashed #EBAE34' : '2px dashed #e5e7eb',
             borderRadius: '16px',
             padding: '3rem 2rem',
             textAlign: 'center',
-            backgroundColor: dragActive ? '#E8F4FE' : '#F2F2F2',
+            backgroundColor: dragActive ? '#FBF9F6' : 'white',
             cursor: 'pointer',
             transition: 'all 0.2s',
           }}
@@ -116,7 +116,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: '#0554F2' }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: '#424242' }}>
             Wyszukaj przez zdjęcie
           </h3>
           <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem' }}>
@@ -130,10 +130,10 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
               }}
               style={{
                 padding: '0.75rem 1.5rem',
-                border: '2px solid #1675F2',
+                border: '2px solid #EBAE34',
                 borderRadius: '12px',
                 backgroundColor: 'white',
-                color: '#1675F2',
+                color: '#EBAE34',
                 cursor: 'pointer',
                 fontSize: '1rem',
                 fontWeight: '600',
@@ -179,7 +179,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
                 }}
               />
               <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem', color: '#0554F2' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem', color: '#424242' }}>
                   Zdjęcie gotowe do wyszukania
                 </h3>
                 <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
@@ -193,12 +193,12 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
                       padding: '0.75rem 1.5rem',
                       border: 'none',
                       borderRadius: '12px',
-                      backgroundColor: loading ? '#E8F4FE' : '#1675F2',
+                      backgroundColor: loading ? '#FBF9F6' : '#EBAE34',
                       color: loading ? '#9ca3af' : 'white',
                       cursor: loading ? 'not-allowed' : 'pointer',
                       fontSize: '1rem',
                       fontWeight: '600',
-                      boxShadow: loading ? 'none' : '0 4px 12px rgba(22, 117, 242, 0.3)',
+                      boxShadow: loading ? 'none' : '0 4px 12px rgba(235, 174, 52, 0.3)',
                     }}
                   >
                     {loading ? 'Szukam...' : 'Szukaj'}
@@ -207,13 +207,13 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
                     onClick={handleClear}
                     style={{
                       padding: '0.75rem 1.5rem',
-                      border: '2px solid #D4EBFC',
+                      border: '2px solid #e5e7eb',
                       borderRadius: '12px',
                       backgroundColor: 'white',
                       cursor: 'pointer',
                       fontSize: '1rem',
                       fontWeight: '600',
-                      color: '#1675F2',
+                      color: '#424242',
                     }}
                   >
                     Wyczyść
@@ -246,12 +246,12 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
           {searchResults.ocrResults && searchResults.ocrResults.length > 0 && (
             <div style={{
               padding: '1rem',
-              backgroundColor: '#E8F4FE',
-              border: '2px solid #1675F2',
+              backgroundColor: '#FBF9F6',
+              border: '2px solid #EBAE34',
               borderRadius: '16px',
               marginBottom: '1rem',
             }}>
-              <h4 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '0.5rem', color: '#0554F2' }}>
+              <h4 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '0.5rem', color: '#424242' }}>
                 Wykryte numery części:
               </h4>
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -296,7 +296,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
           {/* Similar Parts */}
           {searchResults.similarParts && searchResults.similarParts.length > 0 && (
             <div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#0554F2' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#424242' }}>
                 Podobne części ({searchResults.similarParts.length})
               </h3>
               <div style={{
@@ -337,12 +337,12 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
                         padding: '0.5rem',
                         border: 'none',
                         borderRadius: '12px',
-                        backgroundColor: '#1675F2',
+                        backgroundColor: '#EBAE34',
                         color: 'white',
                         cursor: 'pointer',
                         fontSize: '0.875rem',
                         fontWeight: '600',
-                        boxShadow: '0 4px 12px rgba(22, 117, 242, 0.3)',
+                        boxShadow: '0 4px 12px rgba(235, 174, 52, 0.3)',
                       }}
                     >
                       Dodaj do koszyka

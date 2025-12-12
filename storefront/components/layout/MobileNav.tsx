@@ -25,16 +25,16 @@ export function MobileNav() {
 
   return (
     <>
-      {/* Hamburger Button */}
+      {/* Hamburger Button - Gold accent */}
       <button
-        className="flex flex-col gap-1 p-2"
+        className="flex flex-col gap-1.5 p-2 rounded hover:bg-neutral-800 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Menu"
         aria-expanded={isOpen}
       >
-        <span className="w-6 h-0.5 bg-white transition-all" />
-        <span className="w-6 h-0.5 bg-white transition-all" />
-        <span className="w-6 h-0.5 bg-white transition-all" />
+        <span className={`w-6 h-0.5 bg-secondary-500 transition-all ${isOpen ? 'rotate-45 translate-y-2' : ''}`} />
+        <span className={`w-6 h-0.5 bg-secondary-500 transition-all ${isOpen ? 'opacity-0' : ''}`} />
+        <span className={`w-6 h-0.5 bg-secondary-500 transition-all ${isOpen ? '-rotate-45 -translate-y-2' : ''}`} />
       </button>
 
       {/* Overlay and Menu - using portal to avoid hydration issues */}
@@ -42,140 +42,165 @@ export function MobileNav() {
         <div>
           {/* Overlay */}
           <div 
-            className="fixed inset-0 bg-black/50 z-[1002]"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[1002]"
             onClick={() => setIsOpen(false)}
             aria-hidden="true"
           />
           
-          {/* Menu Drawer */}
+          {/* Menu Drawer - Dark theme */}
           <nav 
-            className="fixed top-0 left-0 w-72 h-full bg-white z-[1003] overflow-y-auto shadow-2xl"
+            className="fixed top-0 left-0 w-80 h-full bg-neutral-900 z-[1003] overflow-y-auto shadow-2xl border-r border-neutral-700"
             aria-label="Mobile navigation"
           >
+            {/* Gold accent line */}
+            <div className="h-1 bg-gradient-to-r from-secondary-500 via-secondary-400 to-transparent"></div>
+            
             {/* Menu Header */}
-            <div className="flex justify-between items-center p-5 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">Menu</h2>
+            <div className="flex justify-between items-center p-6 border-b border-neutral-700">
+              <div>
+                <h2 className="text-2xl font-bold text-neutral-100 uppercase tracking-wider">OMEX</h2>
+                <div className="h-0.5 w-16 bg-secondary-500 mt-1"></div>
+              </div>
               <button
-                className="text-2xl text-gray-600 hover:text-gray-900 p-1"
+                className="w-10 h-10 flex items-center justify-center rounded bg-neutral-800 border border-neutral-700 text-neutral-400 hover:text-secondary-500 hover:border-secondary-500 transition-all"
                 onClick={() => setIsOpen(false)}
                 aria-label="Zamknij menu"
               >
-                ✕
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
             {/* Menu Items */}
-            <div className="p-5">
+            <div className="p-6">
               {/* Main Categories */}
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <Link
-                  href="/"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
+                  href="/pl"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-100 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-bold transition-all group border border-transparent hover:border-secondary-500/30"
                   onClick={() => setIsOpen(false)}
                 >
-                  🏠 Strona główna
+                  <span className="text-xl">🏠</span>
+                  <span className="uppercase tracking-wide text-sm">Strona główna</span>
                 </Link>
                 <Link
-                  href="/kategoria/hydraulika"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  href="/pl/products"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all group border border-transparent hover:border-secondary-500/30"
                   onClick={() => setIsOpen(false)}
                 >
-                  Hydraulika
+                  <span className="text-xl">📦</span>
+                  <span className="uppercase tracking-wide text-sm">Wszystkie produkty</span>
                 </Link>
                 <Link
-                  href="/kategoria/filtry"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  href="/pl/categories"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all group border border-transparent hover:border-secondary-500/30"
                   onClick={() => setIsOpen(false)}
                 >
-                  Filtry
+                  <span className="text-xl">📂</span>
+                  <span className="uppercase tracking-wide text-sm">Kategorie</span>
                 </Link>
                 <Link
-                  href="/kategoria/osprzet"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  href="/pl/promocje"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all group border border-transparent hover:border-secondary-500/30"
                   onClick={() => setIsOpen(false)}
                 >
-                  Osprzęt
+                  <span className="text-xl">🏷️</span>
+                  <span className="uppercase tracking-wide text-sm">Promocje</span>
                 </Link>
                 <Link
-                  href="/kategoria/loziska"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  href="/pl/nowosci"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all group border border-transparent hover:border-secondary-500/30"
                   onClick={() => setIsOpen(false)}
                 >
-                  Łożyska
+                  <span className="text-xl">⚡</span>
+                  <span className="uppercase tracking-wide text-sm">Nowości</span>
                 </Link>
                 <Link
-                  href="/kategoria/silniki"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  href="/pl/bestsellery"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all group border border-transparent hover:border-secondary-500/30"
                   onClick={() => setIsOpen(false)}
                 >
-                  Silniki
-                </Link>
-                <Link
-                  href="/kategoria/lyzki"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Łyżki
+                  <span className="text-xl">⭐</span>
+                  <span className="uppercase tracking-wide text-sm">Bestsellery</span>
                 </Link>
               </div>
 
               {/* User Section */}
-              <div className="mt-6 pt-6 border-t border-gray-200 space-y-1">
+              <div className="mt-6 pt-6 border-t border-neutral-700 space-y-2">
+                <div className="text-xs text-secondary-500 font-bold uppercase tracking-widest mb-3 px-4">Konto</div>
                 <Link
-                  href="/konto"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  href="/pl/konto"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all text-sm"
                   onClick={() => setIsOpen(false)}
                 >
-                  👤 Moje konto
+                  <span className="text-lg">👤</span>
+                  <span>Moje konto</span>
                 </Link>
                 <Link
-                  href="/checkout"
-                  className="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  href="/pl/zamowienia"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all text-sm"
                   onClick={() => setIsOpen(false)}
                 >
-                  🛒 Koszyk
+                  <span className="text-lg">📋</span>
+                  <span>Moje zamówienia</span>
+                </Link>
+                <Link
+                  href="/pl/cart"
+                  className="flex items-center gap-3 px-4 py-3 text-neutral-300 hover:bg-neutral-800 hover:text-secondary-500 rounded-lg font-semibold transition-all text-sm"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span className="text-lg">🛒</span>
+                  <span>Koszyk</span>
                 </Link>
               </div>
 
               {/* Footer Links */}
-              <div className="mt-6 pt-6 border-t border-gray-200 space-y-1">
+              <div className="mt-6 pt-6 border-t border-neutral-700 space-y-2">
+                <div className="text-xs text-secondary-500 font-bold uppercase tracking-widest mb-3 px-4">Informacje</div>
                 <Link
-                  href="/o-nas"
-                  className="block px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
+                  href="/pl/o-nas"
+                  className="block px-4 py-2 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 rounded-lg text-sm transition-all"
                   onClick={() => setIsOpen(false)}
                 >
                   O nas
                 </Link>
                 <Link
-                  href="/kontakt"
-                  className="block px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
+                  href="/pl/kontakt"
+                  className="block px-4 py-2 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 rounded-lg text-sm transition-all"
                   onClick={() => setIsOpen(false)}
                 >
                   Kontakt
                 </Link>
                 <Link
-                  href="/faq"
-                  className="block px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
+                  href="/pl/faq"
+                  className="block px-4 py-2 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 rounded-lg text-sm transition-all"
                   onClick={() => setIsOpen(false)}
                 >
                   FAQ
                 </Link>
+                <Link
+                  href="/pl/tracking"
+                  className="block px-4 py-2 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 rounded-lg text-sm transition-all"
+                  onClick={() => setIsOpen(false)}
+                >
+                  📍 Śledzenie paczki
+                </Link>
               </div>
 
               {/* Contact Info */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <div className="text-sm text-gray-600 space-y-2">
-                  <div>
-                    <a href="tel:+48123456789" className="hover:text-gray-900">
-                      ☎ +48 123 456 789
-                    </a>
-                  </div>
-                  <div>
-                    <a href="mailto:kontakt@omex.pl" className="hover:text-gray-900">
-                      ✉ kontakt@omex.pl
-                    </a>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-3">
+              <div className="mt-6 pt-6 border-t border-neutral-700">
+                <div className="text-xs text-secondary-500 font-bold uppercase tracking-widest mb-3 px-4">Kontakt</div>
+                <div className="px-4 space-y-3">
+                  <a href="tel:+48123456789" className="flex items-center gap-2 text-neutral-300 hover:text-secondary-500 transition-colors">
+                    <span>☎</span>
+                    <span className="font-semibold">+48 123 456 789</span>
+                  </a>
+                  <a href="mailto:kontakt@omex.pl" className="flex items-center gap-2 text-neutral-300 hover:text-secondary-500 transition-colors">
+                    <span>✉</span>
+                    <span className="font-semibold">kontakt@omex.pl</span>
+                  </a>
+                  <div className="text-xs text-neutral-500 mt-3 pt-3 border-t border-neutral-800">
                     Pn-Pt 8:00-18:00
                   </div>
                 </div>

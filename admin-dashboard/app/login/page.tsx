@@ -36,17 +36,17 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            OMEX Admin Dashboard
+            OMEX Panel Administracyjny
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to your admin account
+            Zaloguj się do panelu administratora
           </p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
             <Input
-              label="Email address"
+              label="Adres email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -55,7 +55,7 @@ export default function LoginPage() {
             />
             
             <Input
-              label="Password"
+              label="Hasło"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -66,7 +66,7 @@ export default function LoginPage() {
 
           {error && (
             <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{error}</p>
+              <p className="text-sm text-red-800">Nieprawidłowy email lub hasło</p>
             </div>
           )}
 
@@ -75,7 +75,7 @@ export default function LoginPage() {
             className="w-full"
             isLoading={loading}
           >
-            Sign in
+            {loading ? 'Logowanie...' : 'Zaloguj się'}
           </Button>
         </form>
       </div>

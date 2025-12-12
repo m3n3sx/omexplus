@@ -86,62 +86,36 @@ export default function SearchBar() {
   }
 
   return (
-    <div ref={searchRef} style={{ position: 'relative', flex: 1, maxWidth: '500px', margin: '0 2rem' }}>
+    <div ref={searchRef} className="relative flex-1 max-w-[500px] mx-8">
       <form onSubmit={handleSubmit}>
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('search.placeholder')}
-            style={{
-              width: '100%',
-              padding: '0.75rem 3rem 0.75rem 1rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '0.5rem',
-              fontSize: '0.875rem',
-              outline: 'none',
-              transition: 'border-color 0.2s'
-            }}
+            className="w-full px-4 pr-12 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-neutral-100 placeholder-neutral-400 outline-none focus:border-secondary-500 focus:ring-2 focus:ring-secondary-500/20 transition-all"
             onFocus={() => {
               if (results.length > 0) setIsOpen(true)
             }}
           />
           <button
             type="submit"
-            style={{
-              position: 'absolute',
-              right: '0.5rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '1.25rem',
-              padding: '0.25rem 0.5rem'
-            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-xl p-2 text-neutral-400 hover:text-secondary-500 transition-colors"
           >
             🔍
           </button>
         </div>
       </form>
 
-      {/* Search Suggestions Dropdown */}
+      {/* Search Suggestions Dropdown - Dark theme */}
       {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 0.5rem)',
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          borderRadius: '0.5rem',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          maxHeight: '400px',
-          overflowY: 'auto',
-          zIndex: 50
-        }}>
+        <div className="absolute top-[calc(100%+0.5rem)] left-0 right-0 bg-neutral-800 border border-neutral-700 rounded-lg shadow-2xl max-h-[400px] overflow-y-auto z-50">
+          {/* Gold accent line */}
+          <div className="h-1 bg-gradient-to-r from-transparent via-secondary-500 to-transparent rounded-t-lg"></div>
+          
           {loading ? (
-            <div style={{ padding: '1rem', textAlign: 'center', color: '#6b7280' }}>
+            <div className="p-4 text-center text-neutral-400">
               {t('common.loading')}...
             </div>
           ) : results.length > 0 ? (
@@ -151,88 +125,44 @@ export default function SearchBar() {
                   key={product.id}
                   href={`/${locale}/products/${product.id}`}
                   onClick={handleResultClick}
+                  className="flex gap-4 p-3 border-b border-neutral-700 hover:bg-neutral-750 transition-colors cursor-pointer group"
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: '1rem',
-                      padding: '0.75rem 1rem',
-                      borderBottom: '1px solid #e5e7eb',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
-                  >
-                    <div style={{
-                      width: '60px',
-                      height: '60px',
-                      backgroundColor: '#f3f4f6',
-                      borderRadius: '0.375rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0
-                    }}>
-                      {product.thumbnail ? (
-                        <img
-                          src={product.thumbnail}
-                          alt={product.title}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.375rem' }}
-                        />
-                      ) : (
-                        <span style={{ fontSize: '1.5rem' }}>📦</span>
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <h4 style={{
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        marginBottom: '0.25rem',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {product.title}
-                      </h4>
-                      <p style={{
-                        fontSize: '0.75rem',
-                        color: '#6b7280',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {product.description}
-                      </p>
-                      <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#3b82f6', marginTop: '0.25rem' }}>
-                        {product.variants?.[0]?.prices?.[0]?.amount
-                          ? `${(product.variants[0].prices[0].amount / 100).toFixed(2)} PLN`
-                          : t('common.price')}
-                      </div>
+                  <div className="w-[60px] h-[60px] bg-neutral-900 border border-neutral-700 rounded flex items-center justify-center flex-shrink-0 group-hover:border-secondary-500 transition-colors">
+                    {product.thumbnail ? (
+                      <img
+                        src={product.thumbnail}
+                        alt={product.title}
+                        className="w-full h-full object-cover rounded"
+                      />
+                    ) : (
+                      <span className="text-2xl">📦</span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-semibold mb-1 text-neutral-100 group-hover:text-secondary-500 transition-colors truncate">
+                      {product.title}
+                    </h4>
+                    <p className="text-xs text-neutral-400 truncate">
+                      {product.description}
+                    </p>
+                    <div className="text-sm font-bold text-secondary-500 mt-1">
+                      {product.variants?.[0]?.prices?.[0]?.amount
+                        ? `${(product.variants[0].prices[0].amount / 100).toFixed(2)} PLN`
+                        : t('common.price')}
                     </div>
                   </div>
                 </Link>
               ))}
-              <Link href={`/${locale}/products?q=${encodeURIComponent(query)}`} onClick={handleResultClick}>
-                <div
-                  style={{
-                    padding: '0.75rem 1rem',
-                    textAlign: 'center',
-                    color: '#3b82f6',
-                    fontSize: '0.875rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
-                >
-                  {t('search.results')} "{query}" →
-                </div>
+              <Link 
+                href={`/${locale}/products?q=${encodeURIComponent(query)}`} 
+                onClick={handleResultClick}
+                className="block p-3 text-center text-secondary-500 text-sm font-bold hover:bg-neutral-750 transition-colors cursor-pointer uppercase tracking-wide"
+              >
+                {t('search.results')} "{query}" →
               </Link>
             </>
           ) : (
-            <div style={{ padding: '1rem', textAlign: 'center', color: '#6b7280' }}>
+            <div className="p-4 text-center text-neutral-400">
               {t('search.noResults')}
             </div>
           )}

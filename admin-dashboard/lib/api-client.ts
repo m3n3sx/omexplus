@@ -18,7 +18,6 @@ async function apiRequest(endpoint: string, options: RequestOptions = {}) {
   // Add authorization header if we have a token
   if (token && !endpoint.includes("/auth/")) {
     headers["Authorization"] = `Bearer ${token}`
-    headers["x-medusa-access-token"] = token
   }
   
   console.log(`API Request: ${options.method || "GET"} ${endpoint}`, token ? 'with token' : 'no token')
@@ -134,6 +133,126 @@ export const api = {
   
   getCustomer: async (id: string) => {
     return apiRequest(`/admin/customers/${id}`)
+  },
+  
+  // Categories
+  getCategories: async (params?: any) => {
+    const query = new URLSearchParams(params).toString()
+    return apiRequest(`/admin/product-categories${query ? `?${query}` : ""}`)
+  },
+  
+  getCategory: async (id: string) => {
+    return apiRequest(`/admin/product-categories/${id}`)
+  },
+  
+  createCategory: async (data: any) => {
+    return apiRequest("/admin/product-categories", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  updateCategory: async (id: string, data: any) => {
+    return apiRequest(`/admin/product-categories/${id}`, {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  deleteCategory: async (id: string) => {
+    return apiRequest(`/admin/product-categories/${id}`, {
+      method: "DELETE",
+    })
+  },
+  
+  // Store Settings
+  getStore: async () => {
+    return apiRequest("/admin/stores")
+  },
+  
+  updateStore: async (data: any) => {
+    return apiRequest("/admin/stores", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  // Custom CMS endpoints
+  getPages: async () => {
+    return apiRequest("/admin/cms/pages")
+  },
+  
+  getPage: async (id: string) => {
+    return apiRequest(`/admin/cms/pages/${id}`)
+  },
+  
+  createPage: async (data: any) => {
+    return apiRequest("/admin/cms/pages", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  updatePage: async (id: string, data: any) => {
+    return apiRequest(`/admin/cms/pages/${id}`, {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  deletePage: async (id: string) => {
+    return apiRequest(`/admin/cms/pages/${id}`, {
+      method: "DELETE",
+    })
+  },
+  
+  // Topbar Settings
+  getTopbarSettings: async () => {
+    return apiRequest("/public/settings/topbar")
+  },
+  
+  updateTopbarSettings: async (data: any) => {
+    return apiRequest("/admin/settings/topbar", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  // Mega Menu Settings
+  getMegaMenuSettings: async () => {
+    return apiRequest("/public/settings/megamenu")
+  },
+  
+  updateMegaMenuSettings: async (data: any) => {
+    return apiRequest("/admin/settings/megamenu", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  // Banners
+  getBanners: async () => {
+    return apiRequest("/public/banners")
+  },
+  
+  createBanner: async (data: any) => {
+    return apiRequest("/admin/banners", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  updateBanner: async (id: string, data: any) => {
+    return apiRequest(`/admin/banners/${id}`, {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  deleteBanner: async (id: string) => {
+    return apiRequest(`/admin/banners/${id}`, {
+      method: "DELETE",
+    })
   },
 }
 

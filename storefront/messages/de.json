@@ -10,7 +10,15 @@
     "currencies": "Währungen",
     "about": "Über uns",
     "contact": "Kontakt",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "featuredProducts": "Empfohlene Produkte",
+    "viewAllProducts": "Alle Produkte anzeigen",
+    "unableToLoadFeaturedProducts": "Empfohlene Produkte können nicht geladen werden",
+    "noFeaturedProductsAvailable": "Keine empfohlenen Produkte verfügbar",
+    "failedToLoadCategories": "Kategorien konnten nicht geladen werden",
+    "noCategoriesAvailable": "Keine Kategorien verfügbar",
+    "hoverToSeeSubcategories": "Bewegen Sie die Maus über eine Kategorie, um Unterkategorien anzuzeigen",
+    "hoverToSeeSubSubcategories": "Bewegen Sie die Maus über eine Unterkategorie, um Elemente anzuzeigen"
   },
   "products": {
     "title": "Unsere Produkte",
@@ -87,5 +95,53 @@
     "home": "Startseite",
     "continueShopping": "Weiter einkaufen",
     "quantity": "Menge"
+  },
+  "templates": {
+    "button": {
+      "loading": "Laden..."
+    },
+    "cart": {
+      "decreaseQuantity": "Menge verringern",
+      "increaseQuantity": "Menge erhöhen",
+      "remove": "Entfernen",
+      "perItem": "pro Stück"
+    },
+    "form": {
+      "required": "Dieses Feld ist erforderlich"
+    },
+    "modal": {
+      "close": "Schließen"
+    },
+    "notification": {
+      "close": "Schließen"
+    },
+    "category": {
+      "seeMore": "Mehr sehen",
+      "noSubcategories": "Keine Unterkategorien",
+      "categories": "Kategorien"
+    },
+    "search": {
+      "resultsFor": "für:",
+      "searchingProducts": "Produkte werden gesucht...",
+      "errorOccurred": "Ein Fehler ist aufgetreten",
+      "foundProducts": "Gefunden",
+      "product": "Produkt",
+      "products": "Produkte",
+      "searchTime": "Suchzeit:",
+      "noResultsFound": "Keine Ergebnisse gefunden",
+      "tryDifferentCriteria": "Versuchen Sie, die Suchkriterien zu ändern oder eine andere Methode zu verwenden",
+      "detectedParameters": "Erkannte Suchparameter:",
+      "brands": "Marken:",
+      "models": "Modelle:",
+      "partTypes": "Teiletypen:",
+      "oemNumbers": "OEM-Nummern:"
+    },
+    "emptyState": {
+      "noResults": "Keine Ergebnisse gefunden",
+      "tryAgain": "Erneut versuchen"
+    },
+    "error": {
+      "retry": "Erneut versuchen"
+    }
   }
 }

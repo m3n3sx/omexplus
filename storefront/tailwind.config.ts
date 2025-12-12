@@ -8,52 +8,59 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'sans-serif'],
+      },
       colors: {
-        // Primary
+        // Primary - Yellow/Gold tones (Industrial/Professional)
         primary: {
-          50: '#f0f4f8',
-          100: '#dfe9f3',
-          200: '#c5d9e8',
-          300: '#a8c3dc',
-          400: '#8aaccc',
-          500: '#5d8fb7',
-          600: '#4a7399',
-          700: '#375a7a',
-          800: '#1a3a52',
-          900: '#0f2538',
+          50: '#FFFBEB',
+          100: '#FEF3C7',
+          200: '#FDE68A',
+          300: '#FCD34D',
+          400: '#FBBF24',
+          500: '#EBAE34',  // Main yellow/gold
+          600: '#D97706',
+          700: '#B45309',
+          800: '#92400E',
+          900: '#78350F',
         },
-        // Secondary
+        // Secondary - Dark gray tones (Professional/Industrial)
         secondary: {
-          50: '#fef9f5',
-          100: '#fee5d0',
-          200: '#fccc9a',
-          300: '#f9a855',
-          400: '#f47c20',
-          500: '#d66b1a',
-          600: '#b85a15',
-          700: '#9a4810',
+          50: '#F9FAFB',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          600: '#4B5563',
+          700: '#424242',  // Main dark gray
+          800: '#1F2937',
+          900: '#111827',
         },
-        // Neutral
+        // Neutral - Light gray/white tones
         neutral: {
-          50: '#f9f9f9',
-          100: '#f5f5f5',
-          200: '#e0e0e0',
-          300: '#d0d0d0',
-          400: '#999999',
-          500: '#666666',
-          600: '#404040',
-          700: '#262626',
-          800: '#1a1a1a',
-          900: '#000000',
+          50: '#FBF9F6',   // Almost white background
+          100: '#F5F5F5',
+          200: '#E5E5E5',
+          300: '#D4D4D4',
+          400: '#A3A3A3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          750: '#2E2E2E',
+          800: '#262626',
+          900: '#171717',
         },
-        // Status
-        success: '#27ae60',
-        warning: '#F2B90C',
-        danger: '#A62B0F',
-        info: '#3498db',
+        // Status colors
+        success: '#27ae60',  // Green
+        warning: '#F2B90C',  // Yellow
+        danger: '#E61901',   // Red
+        info: '#3498db',     // Blue
         // Accent colors
-        yellow: '#F2B90C',
-        red: '#A62B0F',
+        yellow: '#EBAE34',   // For promotions, highlights
+        green: '#70E67F',    // For small accents only
+        red: '#E61901',      // For alerts
       },
       spacing: {
         'xs': '4px',
@@ -74,10 +81,20 @@ const config: Config = {
         '4xl': ['48px', { lineHeight: '1.1' }],
       },
       fontWeight: {
-        normal: '400',
-        medium: '500',
-        semibold: '600',
-        bold: '700',
+        light: '400',
+        normal: '600',
+        medium: '700',
+        semibold: '800',
+        bold: '900',
+        extrabold: '900',
+      },
+      letterSpacing: {
+        tighter: '-0.02em',
+        tight: '-0.01em',
+        normal: '0',
+        wide: '0.01em',
+        wider: '0.02em',
+        widest: '0.05em',
       },
       boxShadow: {
         'sm': '0 1px 2px rgba(0, 0, 0, 0.05)',

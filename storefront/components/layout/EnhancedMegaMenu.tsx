@@ -238,19 +238,20 @@ export function EnhancedMegaMenu({ isOpen, onClose }: EnhancedMegaMenuProps) {
 
   return (
     <div
-      className="absolute left-0 right-0 top-full mt-2 bg-white border-2 border-neutral-200 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300"
+      className="absolute left-0 right-0 top-full mt-2 bg-neutral-50 border-t-4 border-primary-500 shadow-2xl rounded-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300"
       style={{ zIndex: 100 }}
       onMouseLeave={onClose}
     >
+      
       <div className="container mx-auto p-8">
-        {/* Tabs */}
-        <div className="flex gap-2 mb-8 bg-neutral-100 p-1 rounded-xl">
+        {/* Tabs - Light theme */}
+        <div className="flex gap-4 mb-8 border-b border-neutral-200">
           <button
             onClick={() => setActiveTab('categories')}
-            className={`flex-1 px-6 py-3 font-semibold rounded-lg transition-all ${
+            className={`px-6 py-3 font-bold uppercase tracking-wide text-sm transition-all ${
               activeTab === 'categories'
-                ? 'bg-white text-primary-600 shadow-md'
-                : 'text-neutral-600 hover:text-primary-600'
+                ? 'text-secondary-700 border-b-2 border-primary-500'
+                : 'text-secondary-600 hover:text-secondary-700'
             }`}
           >
             <div className="flex items-center justify-center gap-2">
@@ -262,10 +263,10 @@ export function EnhancedMegaMenu({ isOpen, onClose }: EnhancedMegaMenuProps) {
           </button>
           <button
             onClick={() => setActiveTab('brands')}
-            className={`flex-1 px-6 py-3 font-semibold rounded-lg transition-all ${
+            className={`px-6 py-3 font-bold uppercase tracking-wide text-sm transition-all ${
               activeTab === 'brands'
-                ? 'bg-white text-primary-600 shadow-md'
-                : 'text-neutral-600 hover:text-primary-600'
+                ? 'text-secondary-700 border-b-2 border-primary-500'
+                : 'text-secondary-600 hover:text-secondary-700'
             }`}
           >
             <div className="flex items-center justify-center gap-2">
@@ -285,16 +286,16 @@ export function EnhancedMegaMenu({ isOpen, onClose }: EnhancedMegaMenuProps) {
                 <div key={category.slug} className="space-y-3">
                   <Link
                     href={`/pl/categories/${category.slug}`}
-                    className="flex items-center gap-2 text-base font-bold text-primary-500 hover:text-primary-600 transition-colors"
+                    className="flex items-center gap-2 text-base font-bold text-secondary-700 hover:text-secondary-800 transition-colors group"
                     onClick={onClose}
                   >
-                    <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded font-mono text-xs font-bold">
+                    <span className="px-2 py-1 bg-primary-500 border border-primary-600 text-secondary-700 rounded font-mono text-xs font-bold group-hover:border-primary-700 transition-colors">
                       {category.icon}
                     </span>
                     <div>
-                      <div>{category.name}</div>
+                      <div className="uppercase tracking-wide text-sm">{category.name}</div>
                       {category.priority && (
-                        <div className="text-xs text-gray-500 font-normal">
+                        <div className="text-xs text-secondary-500 font-normal">
                           {category.priority} {category.salesPercent && `• ${category.salesPercent}`}
                         </div>
                       )}
@@ -305,7 +306,7 @@ export function EnhancedMegaMenu({ isOpen, onClose }: EnhancedMegaMenuProps) {
                       <li key={idx}>
                         <Link
                           href={`/pl/categories/${category.slug}/${sub.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')}`}
-                          className="text-sm text-gray-600 hover:text-primary-500 transition-colors block"
+                          className="text-sm text-secondary-600 hover:text-secondary-700 hover:bg-white px-2 py-1 rounded transition-colors block"
                           onClick={onClose}
                         >
                           {sub}
@@ -316,7 +317,7 @@ export function EnhancedMegaMenu({ isOpen, onClose }: EnhancedMegaMenuProps) {
                       <li>
                         <Link
                           href={`/pl/categories/${category.slug}`}
-                          className="text-sm text-primary-500 hover:text-primary-600 font-semibold"
+                          className="text-sm text-primary-600 hover:text-primary-700 font-bold uppercase tracking-wide"
                           onClick={onClose}
                         >
                           + {category.subcategories.length - 8} więcej →
@@ -329,17 +330,17 @@ export function EnhancedMegaMenu({ isOpen, onClose }: EnhancedMegaMenuProps) {
             </div>
 
             {/* Footer */}
-            <div className="mt-6 pt-6 border-t">
+            <div className="mt-6 pt-6 border-t border-neutral-200">
               <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600">
-                  <strong>{CATEGORIES.length} kategorii głównych</strong> • 200+ podkategorii • 50,000+ części
+                <div className="text-sm text-secondary-600">
+                  <strong className="text-secondary-700">{CATEGORIES.length} kategorii głównych</strong> • 200+ podkategorii • 50,000+ części
                 </div>
                 <Link
                   href="/pl/categories"
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 bg-primary-500 border border-primary-600 text-secondary-700 rounded-lg text-sm font-bold hover:bg-primary-600 transition-all uppercase tracking-wide"
                   onClick={onClose}
                 >
-                  Zobacz wszystkie kategorie →
+                  Zobacz wszystkie →
                 </Link>
               </div>
             </div>
@@ -354,20 +355,20 @@ export function EnhancedMegaMenu({ isOpen, onClose }: EnhancedMegaMenuProps) {
                 <Link
                   key={brand.slug}
                   href={`/pl/brands/${brand.slug}`}
-                  className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-gray-50 transition-all"
+                  className="group flex items-center gap-3 p-4 bg-white border border-neutral-200 rounded-lg hover:border-primary-500 hover:shadow-lg hover:shadow-primary-500/10 transition-all"
                   onClick={onClose}
                 >
-                  <span className="px-3 py-2 bg-gray-100 text-gray-700 rounded font-mono text-sm font-bold">
+                  <span className="px-3 py-2 bg-primary-500 border border-primary-600 text-secondary-700 rounded font-mono text-sm font-bold group-hover:border-primary-700 transition-colors">
                     {brand.icon}
                   </span>
-                  <span className="text-lg font-semibold text-gray-700">{brand.name}</span>
+                  <span className="text-base font-bold text-secondary-700 group-hover:text-secondary-800 transition-colors uppercase tracking-wide">{brand.name}</span>
                 </Link>
               ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t">
-              <div className="text-center text-sm text-gray-600">
-                <strong>Części oryginalne i zamienniki</strong> do wszystkich popularnych marek maszyn budowlanych
+            <div className="mt-6 pt-6 border-t border-neutral-200">
+              <div className="text-center text-sm text-secondary-600">
+                <strong className="text-secondary-700">Części oryginalne i zamienniki</strong> do wszystkich popularnych marek maszyn budowlanych
               </div>
             </div>
           </div>

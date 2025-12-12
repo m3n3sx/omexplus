@@ -194,7 +194,7 @@ export default function CartPage() {
                 {cart.discount_total > 0 && (
                   <div className="flex justify-between text-[13px]">
                     <span className="text-neutral-600">Rabat:</span>
-                    <span className="font-semibold text-green-600">
+                    <span className="font-semibold text-danger">
                       -{formatPrice(cart.discount_total, cart.region?.currency_code)}
                     </span>
                   </div>
@@ -228,7 +228,7 @@ export default function CartPage() {
 
               <Link
                 href={`/${locale}/checkout`}
-                className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-[#1675F2] text-white rounded-2xl text-[14px] font-bold hover:bg-[#0554F2] transition-all shadow-lg shadow-[#1675F2]/30"
+                className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-primary-500 text-secondary-700 rounded-2xl text-[14px] font-bold hover:bg-primary-600 transition-all shadow-lg shadow-primary-500/30"
               >
                 {t('cart.checkout')}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

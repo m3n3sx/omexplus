@@ -4,26 +4,33 @@ import { useState } from 'react'
 import { useLocale } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function LoginPage() {
   const locale = useLocale()
   const router = useRouter()
+  const { login } = useAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError(null)
 
-    // TODO: Implement actual login
-    setTimeout(() => {
+    try {
+      await login(email, password)
+      router.push(`/${locale}`)
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Nieprawidłowy email lub hasło')
+    } finally {
       setLoading(false)
-      router.push(`/${locale}/konto`)
-    }, 1000)
+    }
   }
 
   return (
@@ -43,6 +50,11 @@ export default function LoginPage() {
 
           {/* Login Form */}
           <div className="bg-white rounded-2xl p-6 md:p-8 border-2 border-[#D4EBFC] shadow-2xl">
+            {error && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-[13px]">
+                {error}
+              </div>
+            )}
             <form onSubmit={handleLogin} className="space-y-5">
               {/* Email */}
               <div>

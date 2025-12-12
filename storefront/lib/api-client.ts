@@ -24,14 +24,18 @@ export async function fetchFromBackend<T = any>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options.headers,
   }
 
   // Add API key if available
   if (API_KEY) {
     headers['x-publishable-api-key'] = API_KEY
+  }
+
+  // Merge with provided headers
+  if (options.headers && typeof options.headers === 'object') {
+    Object.assign(headers, options.headers)
   }
 
   try {
@@ -90,10 +94,11 @@ export const storeAPI = {
     if (params?.offset) query.set('offset', params.offset.toString())
     if (params?.q) query.set('q', params.q)
     if (params?.category_id) {
-      params.category_id.forEach(id => query.append('category_id[]', id))
+      params.category_id.forEach(id => query.append('category_id', id))
     }
     
-    return fetchFromBackend(`/store/products?${query}`)
+    // Use omex-products endpoint which supports category filtering
+    return fetchFromBackend(`/store/omex-products?${query}`)
   },
 
   getProductById: async (id: string) => {

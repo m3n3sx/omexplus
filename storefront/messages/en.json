@@ -10,7 +10,15 @@
     "currencies": "Currencies",
     "about": "About",
     "contact": "Contact",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "featuredProducts": "Featured Products",
+    "viewAllProducts": "View All Products",
+    "unableToLoadFeaturedProducts": "Unable to load featured products",
+    "noFeaturedProductsAvailable": "No featured products available",
+    "failedToLoadCategories": "Failed to load categories",
+    "noCategoriesAvailable": "No categories available",
+    "hoverToSeeSubcategories": "Hover over a category to see subcategories",
+    "hoverToSeeSubSubcategories": "Hover over a subcategory to see items"
   },
   "products": {
     "title": "Our Products",
@@ -87,5 +95,53 @@
     "home": "Home",
     "continueShopping": "Continue Shopping",
     "quantity": "Quantity"
+  },
+  "templates": {
+    "button": {
+      "loading": "Loading..."
+    },
+    "cart": {
+      "decreaseQuantity": "Decrease quantity",
+      "increaseQuantity": "Increase quantity",
+      "remove": "Remove",
+      "perItem": "per item"
+    },
+    "form": {
+      "required": "This field is required"
+    },
+    "modal": {
+      "close": "Close"
+    },
+    "notification": {
+      "close": "Close"
+    },
+    "category": {
+      "seeMore": "See more",
+      "noSubcategories": "No subcategories",
+      "categories": "Categories"
+    },
+    "search": {
+      "resultsFor": "for:",
+      "searchingProducts": "Searching products...",
+      "errorOccurred": "An error occurred",
+      "foundProducts": "Found",
+      "product": "product",
+      "products": "products",
+      "searchTime": "Search time:",
+      "noResultsFound": "No results found",
+      "tryDifferentCriteria": "Try changing search criteria or use a different method",
+      "detectedParameters": "Detected search parameters:",
+      "brands": "Brands:",
+      "models": "Models:",
+      "partTypes": "Part types:",
+      "oemNumbers": "OEM numbers:"
+    },
+    "emptyState": {
+      "noResults": "No results found",
+      "tryAgain": "Try again"
+    },
+    "error": {
+      "retry": "Try again"
+    }
   }
 }
