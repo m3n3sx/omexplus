@@ -18,7 +18,10 @@
     "failedToLoadCategories": "Failed to load categories",
     "noCategoriesAvailable": "No categories available",
     "hoverToSeeSubcategories": "Hover over a category to see subcategories",
-    "hoverToSeeSubSubcategories": "Hover over a subcategory to see items"
+    "hoverToSeeSubSubcategories": "Hover over a subcategory to see items",
+    "viewAllCategories": "View All Categories",
+    "viewAll": "View All",
+    "discoverOurProducts": "Discover our products"
   },
   "products": {
     "title": "Our Products",

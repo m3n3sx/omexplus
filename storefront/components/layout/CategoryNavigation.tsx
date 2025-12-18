@@ -159,163 +159,177 @@ export function CategoryNavigation({ onCategorySelect }: CategoryNavigationProps
         <div className="nav-item relative">
           <button
             onMouseEnter={handleMenuOpen}
-            className="nav-item__trigger flex items-center gap-1 text-neutral-900 font-bold hover:text-neutral-700 transition-colors px-4 py-2 text-sm uppercase"
+            className="nav-item__trigger flex items-center gap-1 text-white font-bold hover:text-secondary-700 transition-colors px-4 py-2 text-sm uppercase font-heading"
           >
             PRODUCTS
           </button>
         </div>
       </nav>
 
-      {/* Full-width mega menu portal */}
+      {/* Mega menu - IBM Style (container width, centered) */}
       {isMenuOpen && (
         <div
-          className="mega-menu fixed left-0 right-0 bg-white shadow-2xl border-t-4 border-secondary-600 py-8 max-h-[600px] overflow-y-auto z-50"
-          style={{ top: '120px' }}
+          className="mega-menu fixed left-1/2 -translate-x-1/2 bg-secondary-800 shadow-2xl z-50 rounded-b-lg overflow-hidden"
+          style={{ top: '104px', maxHeight: 'calc(100vh - 120px)', width: '100%', maxWidth: '1400px' }}
           onMouseEnter={handleMenuOpen}
           onMouseLeave={handleMenuClose}
         >
-          <div className="container mx-auto px-6 lg:px-12 max-w-[1400px]">
-            {/* Dynamic 3-column layout: Categories expand as needed + Featured Products always visible */}
-            <div className="mega-menu__dynamic-grid flex gap-6">
-              {/* Column 1: Main Categories (Level 1) - Always visible */}
-              <div className="mega-menu__level-1 w-80 flex-shrink-0">
-                <div className="space-y-1">
-                  {categories.map((category) => (
-                    <div
-                      key={category.id}
-                      onMouseEnter={() => {
-                        setHoveredLevel1(category.id)
-                        setHoveredLevel2(null)
-                      }}
-                      className="relative"
-                    >
-                      <Link
-                        href={`/${locale}/categories/${category.slug}`}
-                        onClick={() => handleCategorySelect(category)}
-                        className={`block px-4 py-2.5 text-sm font-bold rounded-md transition-colors ${
-                          hoveredLevel1 === category.id
-                            ? 'bg-secondary-50 text-secondary-600'
-                            : 'text-neutral-900 hover:bg-neutral-50 hover:text-secondary-600'
-                        }`}
+          <div className="flex h-full">
+            {/* Left sidebar - Main Categories */}
+            <div className="w-64 bg-secondary-900 py-6 flex flex-col" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+              <div className="px-6 mb-4">
+                <h3 className="text-white text-sm font-semibold uppercase tracking-wider">
+                  {t('categories')}
+                </h3>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onMouseEnter={() => {
+                      setHoveredLevel1(category.id)
+                      setHoveredLevel2(null)
+                    }}
+                    onClick={() => {
+                      handleCategorySelect(category)
+                      window.location.href = `/${locale}/categories/${category.slug}`
+                    }}
+                    className={`w-full text-left px-6 py-3 text-sm font-medium transition-all duration-150 flex items-center justify-between group ${
+                      hoveredLevel1 === category.id
+                        ? 'bg-primary-500 text-white'
+                        : 'text-neutral-300 hover:bg-secondary-700 hover:text-white'
+                    }`}
+                  >
+                    <span>{category.name}</span>
+                    {category.subcategories && category.subcategories.length > 0 && (
+                      <svg 
+                        className={`w-4 h-4 transition-transform ${hoveredLevel1 === category.id ? 'text-white' : 'text-neutral-500 group-hover:text-white'}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
                       >
-                        {category.name}
-                        {category.productCount > 0 && (
-                          <span className="ml-2 text-xs text-neutral-500 font-normal">
-                            ({category.productCount})
-                          </span>
-                        )}
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+              {/* View All Link */}
+              <div className="px-6 pt-4 border-t border-secondary-700">
+                <Link
+                  href={`/${locale}/categories`}
+                  onClick={handleMenuClose}
+                  className="inline-flex items-center gap-2 text-sm text-primary-400 hover:text-primary-300 font-medium transition-colors"
+                >
+                  {t('viewAllCategories')}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right content area - Subcategories in grid */}
+            <div className="flex-1 py-6 px-8 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+              {hoveredLevel1 ? (
+                <>
+                  {/* Category header */}
+                  <div className="mb-6">
+                    <h2 className="text-white text-xl font-semibold mb-1">
+                      {categories.find(cat => cat.id === hoveredLevel1)?.name}
+                    </h2>
+                    <p className="text-neutral-400 text-sm">
+                      {categories.find(cat => cat.id === hoveredLevel1)?.description || 
+                       `${categories.find(cat => cat.id === hoveredLevel1)?.productCount || 0} ${t('products')}`}
+                    </p>
+                  </div>
+
+                  {/* Subcategories grid */}
+                  {categories.find(cat => cat.id === hoveredLevel1)?.subcategories && 
+                   categories.find(cat => cat.id === hoveredLevel1)!.subcategories!.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-x-8 gap-y-6">
+                      {categories
+                        .find(cat => cat.id === hoveredLevel1)
+                        ?.subcategories?.map((subcategory) => (
+                          <div key={subcategory.id} className="space-y-2">
+                            <Link
+                              href={`/${locale}/categories/${subcategory.slug}`}
+                              onClick={() => handleCategorySelect(subcategory)}
+                              className="text-white font-semibold text-sm hover:text-primary-400 transition-colors flex items-center gap-2"
+                            >
+                              {subcategory.name}
+                              <svg className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </Link>
+                            {/* Level 3 subcategories */}
+                            {subcategory.subcategories && subcategory.subcategories.length > 0 && (
+                              <div className="space-y-1 pl-0">
+                                {subcategory.subcategories.slice(0, 5).map((subSub) => (
+                                  <Link
+                                    key={subSub.id}
+                                    href={`/${locale}/categories/${subSub.slug}`}
+                                    onClick={() => handleCategorySelect(subSub)}
+                                    className="block text-neutral-400 text-sm hover:text-primary-400 transition-colors py-0.5"
+                                  >
+                                    {subSub.name}
+                                  </Link>
+                                ))}
+                                {subcategory.subcategories.length > 5 && (
+                                  <Link
+                                    href={`/${locale}/categories/${subcategory.slug}`}
+                                    onClick={() => handleCategorySelect(subcategory)}
+                                    className="block text-primary-400 text-sm hover:text-primary-300 transition-colors py-0.5 font-medium"
+                                  >
+                                    +{subcategory.subcategories.length - 5} {t('viewAll')}
+                                  </Link>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="text-neutral-400 text-sm">
+                      <Link
+                        href={`/${locale}/categories/${categories.find(cat => cat.id === hoveredLevel1)?.slug}`}
+                        onClick={handleMenuClose}
+                        className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 font-medium"
+                      >
+                        {t('viewAllProducts')}
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
                       </Link>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Column 2: Subcategories (Level 2) - Shows only when Level 1 is hovered */}
-              {hoveredLevel1 && categories.find(cat => cat.id === hoveredLevel1)?.subcategories && 
-               categories.find(cat => cat.id === hoveredLevel1)!.subcategories!.length > 0 && (
-                <div className="mega-menu__level-2 w-72 flex-shrink-0 border-l border-neutral-200 pl-6">
-                  <div className="space-y-1">
-                    {categories
-                      .find(cat => cat.id === hoveredLevel1)
-                      ?.subcategories?.map((subcategory) => (
-                        <div
-                          key={subcategory.id}
-                          onMouseEnter={() => setHoveredLevel2(subcategory.id)}
-                          className="relative"
-                        >
-                          <Link
-                            href={`/${locale}/categories/${subcategory.slug}`}
-                            onClick={() => handleCategorySelect(subcategory)}
-                            className={`block px-4 py-2 text-sm rounded-md transition-colors ${
-                              hoveredLevel2 === subcategory.id
-                                ? 'bg-secondary-50 text-secondary-600 font-medium'
-                                : 'text-neutral-700 hover:bg-neutral-50 hover:text-secondary-600'
-                            }`}
-                          >
-                            {subcategory.name}
-                            {subcategory.productCount > 0 && (
-                              <span className="ml-2 text-xs text-neutral-400 font-normal">
-                                ({subcategory.productCount})
-                              </span>
-                            )}
-                          </Link>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Column 3: Sub-subcategories (Level 3) - Shows only when Level 2 is hovered and has children */}
-              {hoveredLevel2 && hoveredLevel1 && 
-               categories.find(cat => cat.id === hoveredLevel1)
-                 ?.subcategories?.find(sub => sub.id === hoveredLevel2)
-                 ?.subcategories && 
-               categories.find(cat => cat.id === hoveredLevel1)!
-                 .subcategories!.find(sub => sub.id === hoveredLevel2)!
-                 .subcategories!.length > 0 && (
-                <div className="mega-menu__level-3 w-72 flex-shrink-0 border-l border-neutral-200 pl-6">
-                  <div className="space-y-1 max-h-[500px] overflow-y-auto">
-                    {categories
-                      .find(cat => cat.id === hoveredLevel1)
-                      ?.subcategories?.find(sub => sub.id === hoveredLevel2)
-                      ?.subcategories?.map((subSubcategory) => (
-                        <Link
-                          key={subSubcategory.id}
-                          href={`/${locale}/categories/${subSubcategory.slug}`}
-                          onClick={() => handleCategorySelect(subSubcategory)}
-                          className="block px-4 py-2 text-sm text-neutral-600 hover:text-secondary-600 hover:bg-neutral-50 rounded-md transition-colors"
-                        >
-                          {subSubcategory.name}
-                          {subSubcategory.productCount > 0 && (
-                            <span className="ml-2 text-xs text-neutral-400">
-                              ({subSubcategory.productCount})
-                            </span>
-                          )}
-                        </Link>
-                      ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Featured Products Column - Always visible on the right */}
-              <div className="mega-menu__featured-products flex-1 border-l border-neutral-200 pl-6 min-w-[320px]">
-                {/* Featured Products Section Header */}
-                <div className="mb-4">
-                  <h3 className="text-sm font-bold text-neutral-900 uppercase">
-                    {t('featuredProducts')}
-                  </h3>
-                </div>
-
-                {/* Featured Products List or Fallback */}
-                {featuredProducts.length > 0 ? (
-                  <div className="space-y-3">
-                    {featuredProducts.map((product) => (
-                      <FeaturedProductCard
-                        key={product.id}
-                        product={product}
-                        locale={locale}
-                        onClick={handleMenuClose}
-                      />
+                  )}
+                </>
+              ) : (
+                /* Default state - show featured or popular categories */
+                <div>
+                  <h2 className="text-white text-xl font-semibold mb-6">
+                    {t('discoverOurProducts')}
+                  </h2>
+                  <div className="grid grid-cols-3 gap-6">
+                    {categories.slice(0, 6).map((category) => (
+                      <Link
+                        key={category.id}
+                        href={`/${locale}/categories/${category.slug}`}
+                        onClick={() => handleCategorySelect(category)}
+                        onMouseEnter={() => setHoveredLevel1(category.id)}
+                        className="group p-4 bg-secondary-700/50 rounded-lg hover:bg-secondary-700 transition-all"
+                      >
+                        <h3 className="text-white font-semibold text-sm group-hover:text-primary-400 transition-colors">
+                          {category.name}
+                        </h3>
+                        <p className="text-neutral-500 text-xs mt-1">
+                          {category.productCount} {t('products')}
+                        </p>
+                      </Link>
                     ))}
                   </div>
-                ) : (
-                  /* View All Products CTA Fallback */
-                  <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <p className="text-sm text-neutral-600 mb-4">
-                      {featuredProductsError 
-                        ? t('unableToLoadFeaturedProducts')
-                        : t('noFeaturedProductsAvailable')}
-                    </p>
-                    <Link
-                      href={`/${locale}/products`}
-                      onClick={handleMenuClose}
-                      className="inline-flex items-center gap-2 px-6 py-2.5 bg-secondary-600 text-white text-sm font-medium rounded-md hover:bg-secondary-700 transition-colors"
-                    >
-                      {t('viewAllProducts')}
-                    </Link>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

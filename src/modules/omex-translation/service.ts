@@ -1,152 +1,207 @@
 import { MedusaService } from "@medusajs/framework/utils"
+import { ProductTranslation, CategoryTranslation } from "./models/translation"
 
-type Locale = 'pl' | 'en' | 'de'
+type Locale = 'pl' | 'en' | 'de' | 'uk'
 
-interface Translation {
+interface ProductTranslationData {
   title?: string
-  name?: string
   description?: string
+  subtitle?: string
+  material?: string
+  is_auto_translated?: boolean
 }
 
-class OmexTranslationService extends MedusaService({}) {
-  private readonly SUPPORTED_LOCALES: Locale[] = ['pl', 'en', 'de']
+interface CategoryTranslationData {
+  name?: string
+  description?: string
+  is_auto_translated?: boolean
+}
+
+class OmexTranslationService extends MedusaService({
+  ProductTranslation,
+  CategoryTranslation,
+}) {
+  private readonly SUPPORTED_LOCALES: Locale[] = ['pl', 'en', 'de', 'uk']
   private readonly DEFAULT_LOCALE: Locale = 'pl'
   private readonly FALLBACK_LOCALE: Locale = 'en'
 
-  async addProductTranslation(productId: string, locale: Locale, translation: Translation) {
+  // Product Translations
+  async upsertProductTranslation(
+    productId: string,
+    locale: Locale,
+    data: ProductTranslationData
+  ) {
     this.validateLocale(locale)
-    
-    if (!productId) {
-      throw new Error("Product ID is required")
+
+    const existing = await this.listProductTranslations({
+      filters: { product_id: productId, locale },
+      take: 1,
+    })
+
+    if (existing.length > 0) {
+      return this.updateProductTranslations({
+        selector: { id: existing[0].id },
+        data: { ...data, updated_at: new Date() },
+      })
     }
 
-    if (!translation.title) {
-      throw new Error("Title is required for product translation")
-    }
-
-    return {
-      id: `prod_trans_${Date.now()}`,
+    return this.createProductTranslations({
       product_id: productId,
       locale,
-      title: translation.title,
-      description: translation.description,
-      created_at: new Date(),
-    }
+      ...data,
+    })
   }
 
-  async addCategoryTranslation(categoryId: string, locale: Locale, translation: Translation) {
-    this.validateLocale(locale)
-    
-    if (!categoryId) {
-      throw new Error("Category ID is required")
-    }
-
-    if (!translation.name) {
-      throw new Error("Name is required for category translation")
-    }
-
-    return {
-      id: `cat_trans_${Date.now()}`,
-      category_id: categoryId,
-      locale,
-      name: translation.name,
-      description: translation.description,
-      created_at: new Date(),
-    }
+  async getProductTranslations(productId: string) {
+    return this.listProductTranslations({
+      filters: { product_id: productId },
+    })
   }
 
   async getProductTranslation(productId: string, locale: Locale) {
     this.validateLocale(locale)
 
-    if (!productId) {
-      throw new Error("Product ID is required")
+    const translations = await this.listProductTranslations({
+      filters: { product_id: productId, locale },
+      take: 1,
+    })
+
+    if (translations.length > 0) {
+      return translations[0]
     }
 
-    // In real implementation, fetch from product_translation table
-    // If not found, try fallback locale
-    const translation = null // await this.fetchProductTranslation(productId, locale)
-    
-    if (!translation && locale !== this.FALLBACK_LOCALE) {
-      // Try fallback locale
-      return this.getProductTranslation(productId, this.FALLBACK_LOCALE)
+    // Try fallback locale
+    if (locale !== this.FALLBACK_LOCALE) {
+      const fallback = await this.listProductTranslations({
+        filters: { product_id: productId, locale: this.FALLBACK_LOCALE },
+        take: 1,
+      })
+      return fallback[0] || null
     }
 
-    return translation
+    return null
+  }
+
+  async deleteProductTranslation(productId: string, locale: Locale) {
+    const existing = await this.listProductTranslations({
+      filters: { product_id: productId, locale },
+      take: 1,
+    })
+
+    if (existing.length > 0) {
+      await this.deleteProductTranslations(existing[0].id)
+      return true
+    }
+    return false
+  }
+
+  // Category Translations
+  async upsertCategoryTranslation(
+    categoryId: string,
+    locale: Locale,
+    data: CategoryTranslationData
+  ) {
+    this.validateLocale(locale)
+
+    const existing = await this.listCategoryTranslations({
+      filters: { category_id: categoryId, locale },
+      take: 1,
+    })
+
+    if (existing.length > 0) {
+      return this.updateCategoryTranslations({
+        selector: { id: existing[0].id },
+        data: { ...data, updated_at: new Date() },
+      })
+    }
+
+    return this.createCategoryTranslations({
+      category_id: categoryId,
+      locale,
+      ...data,
+    })
+  }
+
+  async getCategoryTranslations(categoryId: string) {
+    return this.listCategoryTranslations({
+      filters: { category_id: categoryId },
+    })
   }
 
   async getCategoryTranslation(categoryId: string, locale: Locale) {
     this.validateLocale(locale)
 
-    if (!categoryId) {
-      throw new Error("Category ID is required")
+    const translations = await this.listCategoryTranslations({
+      filters: { category_id: categoryId, locale },
+      take: 1,
+    })
+
+    if (translations.length > 0) {
+      return translations[0]
     }
 
-    // In real implementation, fetch from category_translation table
-    const translation = null // await this.fetchCategoryTranslation(categoryId, locale)
-    
-    if (!translation && locale !== this.FALLBACK_LOCALE) {
-      // Try fallback locale
-      return this.getCategoryTranslation(categoryId, this.FALLBACK_LOCALE)
+    if (locale !== this.FALLBACK_LOCALE) {
+      const fallback = await this.listCategoryTranslations({
+        filters: { category_id: categoryId, locale: this.FALLBACK_LOCALE },
+        take: 1,
+      })
+      return fallback[0] || null
     }
 
-    return translation
+    return null
   }
 
-  async validateAllLanguagesPresent(entityId: string, entityType: 'product' | 'category'): Promise<boolean> {
-    // Check if translations exist for all supported locales
-    const missingLocales: Locale[] = []
+  async deleteCategoryTranslation(categoryId: string, locale: Locale) {
+    const existing = await this.listCategoryTranslations({
+      filters: { category_id: categoryId, locale },
+      take: 1,
+    })
 
-    for (const locale of this.SUPPORTED_LOCALES) {
-      let translation
-      if (entityType === 'product') {
-        translation = await this.getProductTranslation(entityId, locale)
-      } else {
-        translation = await this.getCategoryTranslation(entityId, locale)
-      }
-
-      if (!translation) {
-        missingLocales.push(locale)
-      }
+    if (existing.length > 0) {
+      await this.deleteCategoryTranslations(existing[0].id)
+      return true
     }
-
-    if (missingLocales.length > 0) {
-      throw new Error(
-        `Missing translations for ${entityType} ${entityId} in languages: ${missingLocales.join(', ')}`
-      )
-    }
-
-    return true
+    return false
   }
 
-  async bulkAddTranslations(
-    entityId: string,
-    entityType: 'product' | 'category',
-    translations: Record<Locale, Translation>
+  // Bulk operations
+  async bulkUpsertProductTranslations(
+    productId: string,
+    translations: Record<Locale, ProductTranslationData>
   ) {
     const results = []
-
-    for (const [locale, translation] of Object.entries(translations)) {
-      try {
-        let result
-        if (entityType === 'product') {
-          result = await this.addProductTranslation(entityId, locale as Locale, translation)
-        } else {
-          result = await this.addCategoryTranslation(entityId, locale as Locale, translation)
-        }
-        results.push(result)
-      } catch (error) {
-        console.error(`Failed to add ${locale} translation:`, error)
-        throw error
-      }
+    for (const [locale, data] of Object.entries(translations)) {
+      const result = await this.upsertProductTranslation(
+        productId,
+        locale as Locale,
+        data
+      )
+      results.push(result)
     }
-
     return results
   }
 
+  async bulkUpsertCategoryTranslations(
+    categoryId: string,
+    translations: Record<Locale, CategoryTranslationData>
+  ) {
+    const results = []
+    for (const [locale, data] of Object.entries(translations)) {
+      const result = await this.upsertCategoryTranslation(
+        categoryId,
+        locale as Locale,
+        data
+      )
+      results.push(result)
+    }
+    return results
+  }
+
+  // Validation
   private validateLocale(locale: string): asserts locale is Locale {
     if (!this.SUPPORTED_LOCALES.includes(locale as Locale)) {
       throw new Error(
-        `Invalid locale: ${locale}. Supported locales are: ${this.SUPPORTED_LOCALES.join(', ')}`
+        `Invalid locale: ${locale}. Supported: ${this.SUPPORTED_LOCALES.join(', ')}`
       )
     }
   }

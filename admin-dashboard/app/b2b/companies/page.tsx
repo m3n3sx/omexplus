@@ -27,7 +27,7 @@ export default function B2BCompaniesPage() {
     try {
       setLoading(true)
       const token = localStorage.getItem("medusa_admin_token")
-      const response = await fetch("http://localhost:9000/admin/b2b/companies", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'https://ooxo.pl'}/admin/b2b/companies`, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"

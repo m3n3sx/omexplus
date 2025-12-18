@@ -11,6 +11,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner"
 import { formatDate, getOrderStatusColor, getPaymentStatusColor } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
 import api from "@/lib/api-client"
+import { useToast } from "@/components/ui/Toast"
 import { Order } from "@/lib/types"
 import { Search, Download, ArrowUpDown, ArrowUp, ArrowDown, Filter, X } from "lucide-react"
 
@@ -37,6 +38,7 @@ type SortDirection = 'asc' | 'desc'
 
 export default function OrdersPage() {
   const router = useRouter()
+  const toast = useToast()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -75,6 +77,7 @@ export default function OrdersPage() {
       setOrders(response.orders as Order[])
     } catch (error) {
       console.error("Error loading orders:", error)
+      toast.error("Błąd podczas ładowania zamówień")
     } finally {
       setLoading(false)
     }
@@ -209,6 +212,7 @@ export default function OrdersPage() {
     a.href = url
     a.download = `zamowienia-${new Date().toISOString().split("T")[0]}.csv`
     a.click()
+    toast.success("Wyeksportowano zamówienia do CSV")
   }
 
   if (loading) {

@@ -28,7 +28,7 @@ export default function InventoryPage() {
     try {
       setLoading(true)
       const token = localStorage.getItem("medusa_admin_token")
-      const response = await fetch("http://localhost:9000/admin/inventory", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'https://ooxo.pl'}/admin/inventory`, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"

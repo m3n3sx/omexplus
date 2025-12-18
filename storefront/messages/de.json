@@ -18,7 +18,10 @@
     "failedToLoadCategories": "Kategorien konnten nicht geladen werden",
     "noCategoriesAvailable": "Keine Kategorien verfügbar",
     "hoverToSeeSubcategories": "Bewegen Sie die Maus über eine Kategorie, um Unterkategorien anzuzeigen",
-    "hoverToSeeSubSubcategories": "Bewegen Sie die Maus über eine Unterkategorie, um Elemente anzuzeigen"
+    "hoverToSeeSubSubcategories": "Bewegen Sie die Maus über eine Unterkategorie, um Elemente anzuzeigen",
+    "viewAllCategories": "Alle Kategorien anzeigen",
+    "viewAll": "Alle anzeigen",
+    "discoverOurProducts": "Entdecken Sie unsere Produkte"
   },
   "products": {
     "title": "Unsere Produkte",

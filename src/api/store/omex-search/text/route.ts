@@ -1,15 +1,18 @@
 /**
  * METHOD 4: Text Search (Natural Language)
  * GET /store/omex-search/text
+ * 
+ * Supports AI-enhanced search with Gemini for better query understanding
  */
 
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import AdvancedSearchService from "../../../../modules/omex-search/advanced-search.service"
+import { GeminiService } from "../../../../services/gemini.service"
 
 export async function GET(
   req: MedusaRequest,
   res: MedusaResponse
-): Promise<void> {
+) {
   const advancedSearchService = new AdvancedSearchService({ container_: req.scope } as any)
 
   try {
@@ -17,7 +20,8 @@ export async function GET(
       q,
       query, 
       language = 'pl', 
-      fuzzy = 'true' 
+      fuzzy = 'true',
+      ai = 'false' // Enable AI-enhanced search
     } = req.query
 
     const searchQuery = (q || query) as string
@@ -36,14 +40,48 @@ export async function GET(
       })
     }
 
+    let enhancedQuery = searchQuery
+    let aiAnalysis: any = null
+
+    // AI-enhanced search
+    if (ai === 'true') {
+      try {
+        const gemini = new GeminiService()
+        const aiResponse = await gemini.chat(
+          `Zoptymalizuj to zapytanie wyszukiwania części do maszyn budowlanych: "${searchQuery}". 
+           Odpowiedz TYLKO zoptymalizowanym zapytaniem, bez wyjaśnień. 
+           Dodaj synonimy i powiązane terminy jeśli to pomoże w wyszukiwaniu.`,
+          [],
+          'Jesteś ekspertem od części do maszyn budowlanych. Optymalizujesz zapytania wyszukiwania.'
+        )
+        
+        if (aiResponse && aiResponse.length < 200) {
+          enhancedQuery = aiResponse.trim()
+          aiAnalysis = {
+            originalQuery: searchQuery,
+            enhancedQuery: enhancedQuery,
+            aiEnhanced: true
+          }
+        }
+      } catch (aiError) {
+        console.error('AI enhancement failed, using original query:', aiError)
+      }
+    }
+
     const result = await advancedSearchService.searchByText({
-      query: searchQuery,
+      query: enhancedQuery,
       language: language as 'pl' | 'en' | 'de' | 'uk',
       fuzzy: fuzzy === 'true',
     })
 
-    res.json(result)
-  } catch (error) {
+    // Add AI analysis to response if available
+    const response = {
+      ...result,
+      ...(aiAnalysis ? { aiAnalysis } : {})
+    }
+
+    res.json(response)
+  } catch (error: any) {
     res.status(500).json({
       error: "Text search failed",
       message: error.message,

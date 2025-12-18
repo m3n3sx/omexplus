@@ -8,18 +8,4 @@ export const medusaClient = new Medusa({
   apiKey: typeof window !== "undefined" ? localStorage.getItem("medusa_admin_token") || undefined : undefined,
 })
 
-// Update client with token when it changes
-if (typeof window !== "undefined") {
-  const originalSetItem = localStorage.setItem
-  localStorage.setItem = function(key: string, value: string) {
-    originalSetItem.apply(this, [key, value])
-    if (key === "medusa_admin_token") {
-      medusaClient.client.request.config.headers = {
-        ...medusaClient.client.request.config.headers,
-        Authorization: `Bearer ${value}`,
-      }
-    }
-  }
-}
-
 export default medusaClient

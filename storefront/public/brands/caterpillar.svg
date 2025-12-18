@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40">
+  <!-- Caterpillar CAT logo - yellow triangle with CAT text -->
+  <polygon points="5,35 20,5 35,35" fill="#FFCD00"/>
+  <text x="42" y="30" font-family="Arial Black, Impact, sans-serif" font-size="26" font-weight="900" fill="#000000" letter-spacing="-1">CAT</text>
+</svg>

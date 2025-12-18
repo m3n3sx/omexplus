@@ -22,15 +22,24 @@
     "test-cms": "node test-cms.js"
   },
   "dependencies": {
-    "@medusajs/framework": "rc",
-    "@medusajs/medusa": "rc",
-    "@medusajs/medusa-cli": "rc",
+    "@medusajs/admin-sdk": "^2.12.2",
+    "@medusajs/cli": "^2.12.2",
+    "@medusajs/dashboard": "^2.12.2",
+    "@medusajs/framework": "^2.12.2",
+    "@medusajs/icons": "^2.12.2",
+    "@medusajs/medusa": "^2.12.2",
+    "@medusajs/workflow-engine-inmemory": "^2.12.2",
+    "@mikro-orm/core": "6.4.16",
+    "@mikro-orm/migrations": "6.4.16",
+    "@mikro-orm/postgresql": "6.4.16",
+    "@opentelemetry/api": "^1.9.0",
     "awilix": "^8.0.1",
-    "pg": "^8.13.1",
-    "dotenv": "^16.3.1"
+    "csv-parse": "^6.1.0",
+    "dotenv": "^16.3.1",
+    "matrix-js-sdk": "^39.4.0-rc.0",
+    "pg": "^8.13.1"
   },
   "devDependencies": {
-    "@medusajs/medusa-cli": "rc",
     "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
@@ -38,10 +47,10 @@
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "jest": "^29.7.0",
-    "medusa-test-utils": "rc",
+    "medusa-test-utils": "^1.1.41",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
-    "vite": "^5.4.8"
+    "vite": "^7.2.7"
   },
   "engines": {
     "node": ">=20"

@@ -118,34 +118,18 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
   }
 
   const FilterSection = ({ title, section, children }: { title: string; section: string; children: React.ReactNode }) => (
-    <div style={{
-      borderBottom: '2px solid #E8F4FE',
-      paddingBottom: '1rem',
-      marginBottom: '1rem',
-    }}>
+    <div className="border-b-2 border-neutral-200 pb-4 mb-4">
       <button
         onClick={() => toggleSection(section)}
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '0.75rem 0',
-          border: 'none',
-          backgroundColor: 'transparent',
-          cursor: 'pointer',
-          fontSize: '1rem',
-          fontWeight: '600',
-          color: '#0554F2',
-        }}
+        className="w-full flex justify-between items-center py-3 border-none bg-transparent cursor-pointer text-base font-semibold text-secondary-700"
       >
         <span>{title}</span>
-        <span style={{ fontSize: '1.25rem', color: '#1675F2' }}>
+        <span className="text-xl text-primary-500">
           {expandedSections[section] ? '−' : '+'}
         </span>
       </button>
       {expandedSections[section] && (
-        <div style={{ paddingTop: '0.75rem' }}>
+        <div className="pt-3">
           {children}
         </div>
       )}
@@ -153,37 +137,16 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
   )
 
   return (
-    <div style={{
-      width: '100%',
-      maxWidth: '320px',
-      backgroundColor: 'white',
-      borderRadius: '16px',
-      padding: '1.5rem',
-      border: '2px solid #D4EBFC',
-    }}>
+    <div className="w-full max-w-xs bg-white rounded-2xl p-6 border-2 border-neutral-200">
       {/* Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '1.5rem',
-      }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#0554F2' }}>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-secondary-700">
           Filtry
         </h2>
         {getActiveFiltersCount() > 0 && (
           <button
             onClick={clearAllFilters}
-            style={{
-              padding: '0.25rem 0.75rem',
-              border: 'none',
-              borderRadius: '8px',
-              backgroundColor: '#A62B0F',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '0.75rem',
-              fontWeight: '600',
-            }}
+            className="px-3 py-1 border-none rounded-lg bg-red-500 text-white cursor-pointer text-xs font-semibold hover:bg-red-600 transition-colors"
           >
             Wyczyść ({getActiveFiltersCount()})
           </button>
@@ -192,44 +155,28 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Categories */}
       <FilterSection title="Kategorie" section="categories">
-        <div style={{ marginBottom: '0.75rem' }}>
-          <label style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            cursor: 'pointer',
-            fontSize: '0.875rem',
-          }}>
+        <div className="mb-3">
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-secondary-700">
             <input
               type="checkbox"
               checked={filters.includeSubcategories}
               onChange={(e) => updateFilter('includeSubcategories', e.target.checked)}
+              className="w-4 h-4 accent-primary-500"
             />
             Uwzględnij podkategorie
           </label>
         </div>
-        <div style={{
-          maxHeight: '200px',
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-        }}>
+        <div className="max-h-48 overflow-y-auto flex flex-col gap-2">
           {categories.slice(0, 10).map((category) => (
             <label
               key={category.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-              }}
+              className="flex items-center gap-2 cursor-pointer text-sm text-secondary-700"
             >
               <input
                 type="checkbox"
                 checked={filters.categoryIds?.includes(category.id) || false}
                 onChange={() => toggleArrayValue('categoryIds', category.id)}
+                className="w-4 h-4 accent-primary-500"
               />
               {category.icon} {category.name}
             </label>
@@ -239,28 +186,17 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Machine Brands */}
       <FilterSection title="Marka maszyny" section="machineBrands">
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-          maxHeight: '200px',
-          overflowY: 'auto',
-        }}>
+        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
           {filterOptions?.machineBrands.map((brand) => (
             <label
               key={brand}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-              }}
+              className="flex items-center gap-2 cursor-pointer text-sm text-secondary-700"
             >
               <input
                 type="checkbox"
                 checked={filters.machineBrands?.includes(brand) || false}
                 onChange={() => toggleArrayValue('machineBrands', brand)}
+                className="w-4 h-4 accent-primary-500"
               />
               {brand}
             </label>
@@ -270,26 +206,17 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Availability */}
       <FilterSection title="Dostępność" section="availability">
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-        }}>
+        <div className="flex flex-col gap-2">
           {filterOptions?.availability.map((option) => (
             <label
               key={option.value}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-              }}
+              className="flex items-center gap-2 cursor-pointer text-sm text-secondary-700"
             >
               <input
                 type="checkbox"
                 checked={filters.availability?.includes(option.value) || false}
                 onChange={() => toggleArrayValue('availability', option.value)}
+                className="w-4 h-4 accent-primary-500"
               />
               {option.label}
             </label>
@@ -299,9 +226,9 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Price Range */}
       <FilterSection title="Zakres cen" section="price">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div className="flex flex-col gap-3">
           <div>
-            <label style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.25rem', display: 'block' }}>
+            <label className="text-xs text-secondary-500 mb-1 block">
               Cena minimalna:
             </label>
             <input
@@ -309,18 +236,11 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               value={filters.minPrice || ''}
               onChange={(e) => updateFilter('minPrice', e.target.value ? Number(e.target.value) : undefined)}
               placeholder="0"
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                border: '2px solid #D4EBFC',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                outline: 'none',
-              }}
+              className="w-full p-2 border-2 border-neutral-200 rounded-lg text-sm text-secondary-700 outline-none focus:border-primary-500"
             />
           </div>
           <div>
-            <label style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.25rem', display: 'block' }}>
+            <label className="text-xs text-secondary-500 mb-1 block">
               Cena maksymalna:
             </label>
             <input
@@ -328,31 +248,17 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               value={filters.maxPrice || ''}
               onChange={(e) => updateFilter('maxPrice', e.target.value ? Number(e.target.value) : undefined)}
               placeholder="50000"
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                border: '2px solid #D4EBFC',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                outline: 'none',
-              }}
+              className="w-full p-2 border-2 border-neutral-200 rounded-lg text-sm text-secondary-700 outline-none focus:border-primary-500"
             />
           </div>
           <div>
-            <label style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.25rem', display: 'block' }}>
+            <label className="text-xs text-secondary-500 mb-1 block">
               Waluta:
             </label>
             <select
               value={filters.currency}
               onChange={(e) => updateFilter('currency', e.target.value as 'PLN' | 'EUR')}
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                border: '2px solid #D4EBFC',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                outline: 'none',
-              }}
+              className="w-full p-2 border-2 border-neutral-200 rounded-lg text-sm text-secondary-700 outline-none focus:border-primary-500"
             >
               <option value="PLN">PLN</option>
               <option value="EUR">EUR</option>
@@ -363,26 +269,17 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Part Types (OEM vs Alternatives) */}
       <FilterSection title="Typ części" section="partTypes">
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-        }}>
+        <div className="flex flex-col gap-2">
           {filterOptions?.partTypes.map((option) => (
             <label
               key={option.value}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-              }}
+              className="flex items-center gap-2 cursor-pointer text-sm text-secondary-700"
             >
               <input
                 type="checkbox"
                 checked={filters.partTypes?.includes(option.value) || false}
                 onChange={() => toggleArrayValue('partTypes', option.value)}
+                className="w-4 h-4 accent-primary-500"
               />
               {option.label}
             </label>
@@ -392,28 +289,17 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Manufacturers */}
       <FilterSection title="Producent" section="manufacturers">
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
-          maxHeight: '200px',
-          overflowY: 'auto',
-        }}>
+        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
           {filterOptions?.manufacturers.map((manufacturer) => (
             <label
               key={manufacturer}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-              }}
+              className="flex items-center gap-2 cursor-pointer text-sm text-secondary-700"
             >
               <input
                 type="checkbox"
                 checked={filters.manufacturers?.includes(manufacturer) || false}
                 onChange={() => toggleArrayValue('manufacturers', manufacturer)}
+                className="w-4 h-4 accent-primary-500"
               />
               {manufacturer}
             </label>
@@ -423,22 +309,15 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Quality/Rating */}
       <FilterSection title="Jakość & Oceny" section="quality">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div className="flex flex-col gap-3">
           <div>
-            <label style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.25rem', display: 'block' }}>
+            <label className="text-xs text-secondary-500 mb-1 block">
               Minimalna ocena:
             </label>
             <select
               value={filters.minRating || ''}
               onChange={(e) => updateFilter('minRating', e.target.value ? Number(e.target.value) : undefined)}
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                border: '2px solid #D4EBFC',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                outline: 'none',
-              }}
+              className="w-full p-2 border-2 border-neutral-200 rounded-lg text-sm text-secondary-700 outline-none focus:border-primary-500"
             >
               <option value="">Wszystkie</option>
               <option value="4">4+ gwiazdki</option>
@@ -447,7 +326,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.25rem', display: 'block' }}>
+            <label className="text-xs text-secondary-500 mb-1 block">
               Minimalna liczba recenzji:
             </label>
             <input
@@ -455,14 +334,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
               value={filters.minReviews || ''}
               onChange={(e) => updateFilter('minReviews', e.target.value ? Number(e.target.value) : undefined)}
               placeholder="0"
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                border: '2px solid #D4EBFC',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                outline: 'none',
-              }}
+              className="w-full p-2 border-2 border-neutral-200 rounded-lg text-sm text-secondary-700 outline-none focus:border-primary-500"
             />
           </div>
         </div>
@@ -473,14 +345,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
         <select
           value={filters.sortBy}
           onChange={(e) => updateFilter('sortBy', e.target.value)}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            border: '2px solid #D4EBFC',
-            borderRadius: '8px',
-            fontSize: '0.875rem',
-            outline: 'none',
-          }}
+          className="w-full p-3 border-2 border-neutral-200 rounded-lg text-sm text-secondary-700 outline-none focus:border-primary-500"
         >
           {filterOptions?.sortBy.map((option) => (
             <option key={option.value} value={option.value}>
@@ -494,19 +359,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
       {onApply && (
         <button
           onClick={onApply}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            border: 'none',
-            borderRadius: '12px',
-            backgroundColor: '#1675F2',
-            color: 'white',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            fontWeight: '600',
-            marginTop: '1rem',
-            boxShadow: '0 4px 12px rgba(22, 117, 242, 0.3)',
-          }}
+          className="w-full py-3 border-none rounded-xl bg-primary-500 text-white cursor-pointer text-base font-semibold mt-4 hover:bg-primary-600 transition-colors shadow-md"
         >
           Zastosuj filtry
         </button>
@@ -514,15 +367,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
 
       {/* Active Filters Summary */}
       {getActiveFiltersCount() > 0 && (
-        <div style={{
-          marginTop: '1rem',
-          padding: '0.75rem',
-          backgroundColor: '#E8F4FE',
-          borderRadius: '12px',
-          fontSize: '0.75rem',
-          color: '#0554F2',
-          border: '2px solid #D4EBFC',
-        }}>
+        <div className="mt-4 p-3 bg-primary-50 rounded-xl text-xs text-primary-600 border-2 border-primary-200">
           Aktywne filtry: <strong>{getActiveFiltersCount()}</strong>
         </div>
       )}

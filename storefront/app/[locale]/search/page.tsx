@@ -14,19 +14,55 @@ import { ProductCardTemplate } from '@/components/product/ProductCardTemplate'
 
 type SearchMethod = 'text' | 'machine' | 'part-number' | 'visual' | 'filters'
 
+const CHAT_SEARCH_RESULTS_KEY = "omex_chat_search_results"
+const CHAT_SEARCH_CONTEXT_KEY = "omex_chat_search_context"
+
 export default function SearchPage() {
   const searchParams = useSearchParams()
   const locale = useLocale()
   const t = useTranslations('templates.search')
   const initialQuery = searchParams?.get('q') || ''
   const initialMethod = (searchParams?.get('method') as SearchMethod) || 'text'
+  const fromChat = searchParams?.get('from') === 'chat'
   
-  const { results, loading, error, searchInfo, search } = useSearch()
-  const displayResults = results || []
+  const { results, loading, error, searchInfo, search, setResults } = useSearch()
+  const [chatContext, setChatContext] = useState<{ brand?: string; model?: string; category?: string } | null>(null)
+  
+  // Deduplicate results by id
+  const displayResults = (results || []).filter((product: any, index: number, self: any[]) => 
+    index === self.findIndex((p) => p.id === product.id)
+  )
 
-  // Initial search if query parameter exists
+  // Load chat results from sessionStorage if coming from chat
   useEffect(() => {
-    if (initialQuery) {
+    if (fromChat) {
+      try {
+        const savedResults = sessionStorage.getItem(CHAT_SEARCH_RESULTS_KEY)
+        const savedContext = sessionStorage.getItem(CHAT_SEARCH_CONTEXT_KEY)
+        
+        if (savedResults) {
+          const parsedResults = JSON.parse(savedResults)
+          if (parsedResults.length > 0) {
+            setResults(parsedResults)
+          }
+          // Clear after loading
+          sessionStorage.removeItem(CHAT_SEARCH_RESULTS_KEY)
+        }
+        
+        if (savedContext) {
+          setChatContext(JSON.parse(savedContext))
+          sessionStorage.removeItem(CHAT_SEARCH_CONTEXT_KEY)
+        }
+      } catch (e) {
+        console.error('Error loading chat search results:', e)
+      }
+    }
+  }, [fromChat, setResults])
+
+  // Initial search if query parameter exists (and not from chat with results)
+  // Only for text search - machine search requires params
+  useEffect(() => {
+    if (initialQuery && initialMethod === 'text' && !(fromChat && displayResults.length > 0)) {
       handleSearch(initialQuery, initialMethod)
     }
   }, [initialQuery, initialMethod])
@@ -72,9 +108,21 @@ export default function SearchPage() {
             {t('resultsFor').replace(':', '')}
           </h1>
           {initialQuery && (
-            <p className="text-xl text-neutral-300 mb-12">
+            <p className="text-xl text-neutral-300 mb-8">
               {t('resultsFor')} <span className="text-secondary-500 font-bold">&quot;{initialQuery}&quot;</span>
             </p>
+          )}
+          {/* Chat context info */}
+          {chatContext && (chatContext.brand || chatContext.model || chatContext.category) && (
+            <div className="bg-blue-600/20 border border-blue-400/30 rounded-xl p-4 mb-8">
+              <p className="text-sm text-blue-200 flex items-center gap-2">
+                <span>💬</span>
+                <span>Wyniki z czatu:</span>
+                {chatContext.brand && <span className="bg-blue-500/30 px-2 py-0.5 rounded">{chatContext.brand}</span>}
+                {chatContext.model && <span className="bg-blue-500/30 px-2 py-0.5 rounded">{chatContext.model}</span>}
+                {chatContext.category && <span className="bg-blue-500/30 px-2 py-0.5 rounded">{chatContext.category}</span>}
+              </p>
+            </div>
           )}
 
           {/* Search Hub */}

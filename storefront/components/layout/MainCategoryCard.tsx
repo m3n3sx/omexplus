@@ -40,18 +40,21 @@ export function MainCategoryCard({ category }: MainCategoryCardProps) {
   return (
     <Link
       href={`/${locale}/categories/${category.handle}`}
-      className="group block bg-white rounded-lg p-6 hover:shadow-lg transition-all duration-300"
+      className="group block bg-white rounded-lg p-6 hover:shadow-xl transition-all duration-300 relative overflow-hidden"
     >
+      {/* Orange accent on hover - Induxter style */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+      
       <div className="mb-4">
-        <h3 className="text-xl font-bold text-neutral-900 mb-2">
+        <h3 className="text-xl font-bold text-secondary-700 mb-2 group-hover:text-primary-500 transition-colors font-heading">
           {category.name}
         </h3>
-        <p className="text-sm text-neutral-600 line-clamp-2">
+        <p className="text-sm text-secondary-500 line-clamp-2">
           {getDescription()}
         </p>
       </div>
       
-      <button className="inline-flex items-center text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors">
+      <button className="inline-flex items-center text-sm font-bold text-primary-500 hover:text-secondary-700 transition-colors font-heading">
         {t('seeMore')}
         <svg 
           className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" 

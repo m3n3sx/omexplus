@@ -265,6 +265,62 @@ export const omexSearchAPI = {
 }
 
 /**
+ * Advanced Search API - Wizard-based search
+ */
+export const advancedSearchApi = {
+  // Autocomplete for wizard steps
+  // step: 1=machineType, 2=manufacturer, 3=model, 4=symptom
+  autocomplete: async (step: number, query: string, context?: { machineTypeId?: string; manufacturerId?: string }) => {
+    const params = new URLSearchParams()
+    params.set('step', step.toString())
+    params.set('q', query)
+    if (context?.machineTypeId) params.set('machine_type_id', context.machineTypeId)
+    if (context?.manufacturerId) params.set('manufacturer_id', context.manufacturerId)
+    
+    return fetchFromBackend(`/store/advanced-search/autocomplete?${params}`)
+  },
+
+  // Analyze query with AI
+  analyzeQuery: async (query: string) => {
+    return fetchFromBackend('/store/advanced-search/analyze', {
+      method: 'POST',
+      body: JSON.stringify({ query }),
+    })
+  },
+
+  // Search products with filters
+  searchProducts: async (filters: {
+    machineType?: string
+    manufacturer?: string
+    model?: string
+    category?: string
+    symptom?: string
+  }) => {
+    return fetchFromBackend('/store/advanced-search/products', {
+      method: 'POST',
+      body: JSON.stringify(filters),
+    })
+  },
+
+  // Get categories for machine/symptom
+  getCategories: async (machineModelId: string, symptom?: string) => {
+    const params = new URLSearchParams()
+    params.set('machine_model_id', machineModelId)
+    if (symptom) params.set('symptom', symptom)
+    
+    return fetchFromBackend(`/store/advanced-search/categories?${params}`)
+  },
+
+  // Validate compatibility
+  validateCompatibility: async (partId: string, machineModelId: string) => {
+    return fetchFromBackend('/store/advanced-search/compatibility', {
+      method: 'POST',
+      body: JSON.stringify({ part_id: partId, machine_model_id: machineModelId }),
+    })
+  },
+}
+
+/**
  * Helper to check if API key is configured
  */
 export function isAPIKeyConfigured(): boolean {

@@ -73,6 +73,12 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/omex-bulk-import",
     },
+    {
+      resolve: "./src/modules/chat",
+    },
+    {
+      resolve: "./src/modules/team",
+    },
   ],
   plugins: [
     // Stripe plugin temporarily disabled - uncomment when needed

@@ -9,38 +9,39 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'sans-serif'],
+        sans: ['Open Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        heading: ['Gilroy', 'Open Sans', 'sans-serif'],
       },
       colors: {
-        // Primary - Yellow/Gold tones (Industrial/Professional)
+        // Primary - Orange (Induxter theme color)
         primary: {
-          50: '#FFFBEB',
-          100: '#FEF3C7',
-          200: '#FDE68A',
-          300: '#FCD34D',
-          400: '#FBBF24',
-          500: '#EBAE34',  // Main yellow/gold
-          600: '#D97706',
-          700: '#B45309',
-          800: '#92400E',
-          900: '#78350F',
+          50: '#FFF5F0',
+          100: '#FFE8DC',
+          200: '#FFD0B8',
+          300: '#FFB08A',
+          400: '#FF8A52',
+          500: '#F9580E',  // Main orange - Induxter theme
+          600: '#E04A08',
+          700: '#B83D06',
+          800: '#8F3005',
+          900: '#6B2404',
         },
-        // Secondary - Dark gray tones (Professional/Industrial)
+        // Secondary - Dark gray tones (Induxter heading color)
         secondary: {
           50: '#F9FAFB',
           100: '#F3F4F6',
           200: '#E5E7EB',
           300: '#D1D5DB',
           400: '#9CA3AF',
-          500: '#6B7280',
+          500: '#626262',  // Induxter text color
           600: '#4B5563',
-          700: '#424242',  // Main dark gray
+          700: '#282828',  // Induxter heading color
           800: '#1F2937',
           900: '#111827',
         },
         // Neutral - Light gray/white tones
         neutral: {
-          50: '#FBF9F6',   // Almost white background
+          50: '#F9F9F9',   // Induxter light bg
           100: '#F5F5F5',
           200: '#E5E5E5',
           300: '#D4D4D4',
@@ -53,14 +54,14 @@ const config: Config = {
           900: '#171717',
         },
         // Status colors
-        success: '#27ae60',  // Green
-        warning: '#F2B90C',  // Yellow
-        danger: '#E61901',   // Red
-        info: '#3498db',     // Blue
+        success: '#27ae60',
+        warning: '#F9580E',
+        danger: '#E61901',
+        info: '#3498db',
         // Accent colors
-        yellow: '#EBAE34',   // For promotions, highlights
-        green: '#70E67F',    // For small accents only
-        red: '#E61901',      // For alerts
+        orange: '#F9580E',
+        green: '#70E67F',
+        red: '#E61901',
       },
       spacing: {
         'xs': '4px',
@@ -73,20 +74,21 @@ const config: Config = {
       fontSize: {
         'xs': ['12px', { lineHeight: '1.5' }],
         'sm': ['14px', { lineHeight: '1.5' }],
-        'base': ['14px', { lineHeight: '1.6' }],
+        'base': ['15px', { lineHeight: '1.87' }],  // Induxter: 15px, line-height 28px
         'lg': ['16px', { lineHeight: '1.6' }],
-        'xl': ['18px', { lineHeight: '1.5' }],
-        '2xl': ['24px', { lineHeight: '1.3' }],
-        '3xl': ['32px', { lineHeight: '1.2' }],
-        '4xl': ['48px', { lineHeight: '1.1' }],
+        'xl': ['19px', { lineHeight: '1.5' }],     // Induxter h5
+        '2xl': ['23px', { lineHeight: '1.3' }],    // Induxter h4
+        '3xl': ['30px', { lineHeight: '1.2' }],    // Induxter h3
+        '4xl': ['50px', { lineHeight: '1.2' }],    // Induxter h2
+        '5xl': ['65px', { lineHeight: '1.1' }],    // Induxter h1
       },
       fontWeight: {
         light: '400',
-        normal: '600',
-        medium: '700',
-        semibold: '800',
-        bold: '900',
-        extrabold: '900',
+        normal: '400',
+        medium: '600',
+        semibold: '700',
+        bold: '700',
+        extrabold: '700',
       },
       letterSpacing: {
         tighter: '-0.02em',
@@ -106,6 +108,7 @@ const config: Config = {
         'sm': '4px',
         'md': '8px',
         'lg': '12px',
+        'full': '28px',  // Induxter button radius
       },
       transitionTimingFunction: {
         'ease-standard': 'cubic-bezier(0.16, 1, 0.3, 1)',
@@ -113,6 +116,7 @@ const config: Config = {
       transitionDuration: {
         '150': '150ms',
         '250': '250ms',
+        '300': '300ms',
         '350': '350ms',
       },
     },

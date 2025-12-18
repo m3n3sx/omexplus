@@ -12,6 +12,23 @@ const nextConfig = {
       enabled: false,
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+        pathname: '/wikipedia/commons/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.caterpillar.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.komatsu.com',
+      },
+    ],
+  },
   trailingSlash: false,
   typescript: {
     ignoreBuildErrors: true,

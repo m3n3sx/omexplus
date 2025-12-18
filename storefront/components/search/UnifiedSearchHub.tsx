@@ -82,16 +82,16 @@ export default function UnifiedSearchHub({ onSearch, locale = 'pl' }: UnifiedSea
 
   return (
     <div className="w-full">
-      {/* Method Tabs */}
-      <div className="w-full flex gap-3 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+      {/* Method Tabs - Induxter style */}
+      <div className="w-full flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
         {searchMethods.map((method) => (
           <button
             key={method.id}
             onClick={() => setActiveMethod(method.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold whitespace-nowrap transition-all font-heading ${
               activeMethod === method.id
-                ? 'bg-secondary-500 text-neutral-900'
-                : 'bg-neutral-600 text-white hover:bg-neutral-500'
+                ? 'bg-primary-500 text-white'
+                : 'bg-neutral-100 text-secondary-700 hover:bg-neutral-200'
             }`}
           >
             {method.icon}
@@ -100,8 +100,8 @@ export default function UnifiedSearchHub({ onSearch, locale = 'pl' }: UnifiedSea
         ))}
       </div>
 
-      {/* Search Content */}
-      <div className="bg-neutral-50 rounded-3xl p-8 border border-neutral-200">
+      {/* Search Content - Induxter style */}
+      <div className="bg-neutral-50 rounded-lg p-8">
         {/* Text Search */}
         {activeMethod === 'text' && (
           <div>
@@ -253,27 +253,27 @@ export default function UnifiedSearchHub({ onSearch, locale = 'pl' }: UnifiedSea
         )}
       </div>
 
-      {/* Help Section */}
-      <div className="mt-8 bg-neutral-700 rounded-2xl p-8">
+      {/* Help Section - Induxter style */}
+      <div className="mt-8 bg-secondary-700 rounded-lg p-8">
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 bg-secondary-500 rounded-full flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5 text-neutral-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+          <div className="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-xl font-bold mb-2 text-white">Nie możesz znaleźć części?</h3>
+            <h3 className="text-xl font-bold mb-2 text-white font-heading">Nie możesz znaleźć części?</h3>
             <p className="text-neutral-300 text-sm mb-6">
               Nasi eksperci pomogą Ci znaleźć dokładnie to, czego potrzebujesz. Wyślij zdjęcie, numer katalogowy lub opis - odpowiemy w 15 minut!
             </p>
             <div className="flex flex-wrap gap-3">
-              <a className="px-6 py-3 bg-secondary-500 text-neutral-900 rounded-lg font-bold hover:bg-secondary-400 transition-all" href="/pl/kontakt">
+              <a className="px-6 py-3 bg-primary-500 text-white rounded-full font-bold hover:bg-secondary-700 hover:border hover:border-primary-500 transition-all" href="/pl/kontakt">
                 Czat na żywo
               </a>
-              <a className="px-6 py-3 bg-neutral-600 text-white rounded-lg font-bold hover:bg-neutral-500 transition-all" href="/pl/kontakt">
+              <a className="px-6 py-3 bg-transparent border border-neutral-500 text-white rounded-full font-bold hover:border-primary-500 hover:text-primary-500 transition-all" href="/pl/kontakt">
                 Wyślij zapytanie
               </a>
-              <a href="tel:+48500169060" className="px-6 py-3 bg-neutral-600 text-white rounded-lg font-bold hover:bg-neutral-500 transition-all flex items-center gap-2">
+              <a href="tel:+48500169060" className="px-6 py-3 bg-transparent border border-neutral-500 text-white rounded-full font-bold hover:border-primary-500 hover:text-primary-500 transition-all flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>

@@ -29,11 +29,11 @@ export default function EnhancedSearchBar({
   const [isOpen, setIsOpen] = useState(false)
   const [searchHistory, setSearchHistory] = useState<string[]>([])
   const [popularSearches] = useState<string[]>([
+    'CAT 320D',
+    'Komatsu PC200',
+    'Hitachi ZX210',
     'pompa hydrauliczna',
     'filtr oleju',
-    'gąsienice gumowe',
-    'cylinder hydrauliczny',
-    'silnik perkins',
   ])
   const searchRef = useRef<HTMLDivElement>(null)
   const { suggestions, loading, getSuggestions, clear } = useAutocomplete()
@@ -46,21 +46,65 @@ export default function EnhancedSearchBar({
     }
   }, [])
 
-  // Debounce autocomplete
+  const [aiAnalysis, setAiAnalysis] = useState<{
+    brand?: string
+    model?: string
+    partType?: string
+    suggestions: string[]
+    refinedQuery?: string
+  } | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+
+  // Debounce autocomplete and AI analysis
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       if (query.length >= 2) {
         getSuggestions(query, 10)
         setIsOpen(true)
+        
+        // AI analysis for longer queries
+        if (query.length >= 4) {
+          setAiLoading(true)
+          try {
+            const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+            const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+            
+            const response = await fetch(`${backendUrl}/store/omex-search/ai-analyze`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(publishableKey ? { 'x-publishable-api-key': publishableKey } : {})
+              },
+              body: JSON.stringify({ query, language: locale })
+            })
+            
+            if (response.ok) {
+              const data = await response.json()
+              if (data.analysis) {
+                setAiAnalysis({
+                  brand: data.analysis.brand,
+                  model: data.analysis.model,
+                  partType: data.analysis.partType,
+                  suggestions: data.analysis.suggestions || [],
+                  refinedQuery: data.analysis.refinedQuery
+                })
+              }
+            }
+          } catch (err) {
+            console.error('AI analysis failed:', err)
+          } finally {
+            setAiLoading(false)
+          }
+        }
       } else {
         clear()
-        // Don't auto-open on empty query - only open when user focuses
+        setAiAnalysis(null)
         setIsOpen(false)
       }
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [query, getSuggestions, clear])
+  }, [query, getSuggestions, clear, locale])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -111,13 +155,32 @@ export default function EnhancedSearchBar({
 
   const getSuggestionIcon = (type: string) => {
     const icons: Record<string, string> = {
-      'product': 'PRD',
-      'category': 'CAT',
-      'brand': 'BRD',
-      'model': 'MDL',
-      'part-number': 'SKU',
+      'product': '📦',
+      'category': '📁',
+      'brand': '🏷️',
+      'model': '🔧',
+      'part-number': '🔢',
+      'machine': '🚜',
+      'manufacturer': '🏭',
+      'serial': '🔢',
+      'engine': '⚙️',
     }
-    return icons[type] || 'ALL'
+    return icons[type] || '🔍'
+  }
+
+  const getSuggestionLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      'product': 'Produkt',
+      'category': 'Kategoria',
+      'brand': 'Marka',
+      'model': 'Model',
+      'part-number': 'Numer',
+      'machine': 'Maszyna',
+      'manufacturer': 'Producent',
+      'serial': 'Nr seryjny',
+      'engine': 'Silnik',
+    }
+    return labels[type] || 'Inne'
   }
 
   return (
@@ -162,10 +225,66 @@ export default function EnhancedSearchBar({
       {/* Dropdown */}
       {isOpen && (
         <div className="absolute top-[calc(100%+0.75rem)] left-0 right-0 bg-white rounded-3xl shadow-xl max-h-[500px] overflow-y-auto z-50 border border-neutral-200">
+          {/* AI Analysis Badge */}
+          {aiAnalysis && (aiAnalysis.brand || aiAnalysis.model || aiAnalysis.partType) && (
+            <div className="px-6 py-3 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-neutral-200">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-bold text-purple-600 flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  AI wykryło:
+                </span>
+                {aiAnalysis.brand && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
+                    {aiAnalysis.brand}
+                  </span>
+                )}
+                {aiAnalysis.model && (
+                  <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
+                    {aiAnalysis.model}
+                  </span>
+                )}
+                {aiAnalysis.partType && (
+                  <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold">
+                    {aiAnalysis.partType}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* AI Suggestions */}
+          {aiAnalysis && aiAnalysis.suggestions && aiAnalysis.suggestions.length > 0 && (
+            <div>
+              <div className="px-6 py-3 text-xs font-bold text-purple-600 uppercase tracking-wider border-b border-neutral-200 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                Sugestie AI
+              </div>
+              {aiAnalysis.suggestions.slice(0, 3).map((suggestion, index) => (
+                <button
+                  key={`ai-${index}`}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className="w-full flex items-center gap-4 px-6 py-4 border-none bg-gradient-to-r from-white to-purple-50 cursor-pointer text-left transition-all duration-300 hover:from-purple-50 hover:to-purple-100 border-b border-neutral-100 last:border-b-0"
+                >
+                  <span className="px-3 py-1.5 bg-purple-100 text-purple-600 rounded-full text-xs font-bold">
+                    AI
+                  </span>
+                  <span className="text-sm font-bold text-secondary-800">{suggestion}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
           {/* Loading State */}
-          {loading && (
-            <div className="p-6 text-center text-secondary-600 text-sm font-bold">
-              Szukam...
+          {(loading || aiLoading) && (
+            <div className="p-6 text-center text-secondary-600 text-sm font-bold flex items-center justify-center gap-2">
+              <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              {aiLoading ? 'Analizuję z AI...' : 'Szukam...'}
             </div>
           )}
 
@@ -178,28 +297,54 @@ export default function EnhancedSearchBar({
               {suggestions.map((suggestion, index) => (
                 <button
                   key={index}
-                  onClick={() => handleSuggestionClick(suggestion.text)}
+                  onClick={() => handleSuggestionClick(
+                    suggestion.type === 'machine' || suggestion.type === 'serial' 
+                      ? suggestion.model || suggestion.text 
+                      : suggestion.text
+                  )}
                   className="w-full flex items-center gap-4 px-6 py-4 border-none bg-white cursor-pointer text-left transition-all duration-300 hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0"
                 >
-                  <span className="px-3 py-1.5 bg-primary-50 text-primary-600 rounded-full text-xs font-bold uppercase tracking-wider">
-                    {getSuggestionIcon(suggestion.type)}
+                  <span className="text-2xl">
+                    {suggestion.icon || getSuggestionIcon(suggestion.type)}
                   </span>
                   <div className="flex-1">
                     <div className="text-sm font-bold text-secondary-800">
                       {suggestion.text}
                     </div>
-                    {suggestion.count !== undefined && (
+                    {/* Machine details */}
+                    {(suggestion.type === 'machine' || suggestion.type === 'serial') && (
+                      <div className="text-xs text-secondary-600 mt-0.5 flex flex-wrap gap-2">
+                        {suggestion.weight && (
+                          <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
+                            ⚖️ {suggestion.weight}
+                          </span>
+                        )}
+                        {suggestion.years && (
+                          <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+                            📅 {suggestion.years}
+                          </span>
+                        )}
+                        {suggestion.engine && (
+                          <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded">
+                            ⚙️ {suggestion.engine}
+                          </span>
+                        )}
+                        {suggestion.serialRange && (
+                          <span className="bg-orange-50 text-orange-700 px-2 py-0.5 rounded">
+                            🔢 {suggestion.serialRange}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {/* Count for manufacturers/engines */}
+                    {suggestion.count !== undefined && suggestion.count > 1 && (
                       <div className="text-xs text-secondary-600 font-bold mt-0.5">
-                        {suggestion.count} {suggestion.count === 1 ? 'wynik' : 'wyników'}
+                        {suggestion.count} {suggestion.count === 1 ? 'model' : 'modeli'}
                       </div>
                     )}
                   </div>
-                  <span className="px-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-full text-xs text-secondary-700 font-bold uppercase tracking-wider">
-                    {suggestion.type === 'product' ? 'Produkt' :
-                     suggestion.type === 'category' ? 'Kategoria' :
-                     suggestion.type === 'brand' ? 'Marka' :
-                     suggestion.type === 'model' ? 'Model' :
-                     suggestion.type === 'part-number' ? 'Numer' : 'Inne'}
+                  <span className="px-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-full text-xs text-secondary-700 font-bold">
+                    {getSuggestionLabel(suggestion.type)}
                   </span>
                 </button>
               ))}

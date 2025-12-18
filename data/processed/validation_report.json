@@ -1,0 +1,77 @@
+{
+  "machines": 49,
+  "oem_parts": 2990,
+  "mappings": 0,
+  "machine_manufacturers": 7,
+  "parts_manufacturers": 6,
+  "top_machine_manufacturers": [
+    {
+      "manufacturer": "CATERPILLAR",
+      "count": 10
+    },
+    {
+      "manufacturer": "KOMATSU",
+      "count": 9
+    },
+    {
+      "manufacturer": "VOLVO",
+      "count": 8
+    },
+    {
+      "manufacturer": "JCB",
+      "count": 7
+    },
+    {
+      "manufacturer": "HITACHI",
+      "count": 7
+    },
+    {
+      "manufacturer": "DOOSAN",
+      "count": 7
+    },
+    {
+      "manufacturer": "nan",
+      "count": 1
+    }
+  ],
+  "top_parts_manufacturers": [
+    {
+      "manufacturer": "KOMATSU",
+      "count": 500
+    },
+    {
+      "manufacturer": "CATERPILLAR",
+      "count": 499
+    },
+    {
+      "manufacturer": "DOOSAN",
+      "count": 498
+    },
+    {
+      "manufacturer": "HITACHI",
+      "count": 498
+    },
+    {
+      "manufacturer": "JCB",
+      "count": 498
+    },
+    {
+      "manufacturer": "VOLVO",
+      "count": 497
+    }
+  ],
+  "recent_imports": [
+    {
+      "source": "777parts",
+      "entity_type": "oem_parts",
+      "count": 2990,
+      "date": "2025-12-17 21:58:01.779072"
+    },
+    {
+      "source": "wikidata",
+      "entity_type": "machines",
+      "count": 91,
+      "date": "2025-12-17 21:58:01.537615"
+    }
+  ]
+}

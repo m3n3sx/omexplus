@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner"
 import { formatDate } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
 import api from "@/lib/api-client"
+import { useToast } from "@/components/ui/Toast"
 import { Search, Download, ArrowUpDown, ArrowUp, ArrowDown, X, UserPlus } from "lucide-react"
 
 type SortField = 'email' | 'first_name' | 'last_name' | 'created_at' | 'company_name' | 'nip'
@@ -17,6 +18,7 @@ type SortDirection = 'asc' | 'desc'
 
 export default function CustomersPage() {
   const router = useRouter()
+  const toast = useToast()
   const [customers, setCustomers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -40,6 +42,7 @@ export default function CustomersPage() {
       setCustomers(response.customers || [])
     } catch (error) {
       console.error("Error loading customers:", error)
+      toast.error("Błąd podczas ładowania klientów")
     } finally {
       setLoading(false)
     }
@@ -137,6 +140,7 @@ export default function CustomersPage() {
     a.href = url
     a.download = `klienci-${new Date().toISOString().split("T")[0]}.csv`
     a.click()
+    toast.success("Wyeksportowano klientów do CSV")
   }
 
   if (loading) {

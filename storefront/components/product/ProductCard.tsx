@@ -30,48 +30,48 @@ export function ProductCard({ product, className = '', ...props }: ProductCardPr
 
   return (
     <div
-      className={`group relative bg-neutral-800 rounded-lg p-6 shadow-lg border border-neutral-700 hover:border-secondary-500 hover:shadow-2xl hover:shadow-secondary-500/10 transition-all duration-300 ${className}`}
+      className={`group relative bg-white rounded-lg p-5 shadow-md hover:shadow-xl transition-all duration-300 ${className}`}
       {...props}
     >
-      {/* Gold accent on hover */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-secondary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-t-lg"></div>
+      {/* Orange accent on hover - Induxter style */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-t-lg"></div>
 
       {/* Product Image */}
-      <div className="text-5xl text-center mb-4 bg-neutral-900 p-6 rounded-lg border border-neutral-700 group-hover:border-secondary-500/30 transition-colors">
+      <div className="text-5xl text-center mb-4 bg-neutral-50 p-6 rounded-lg group-hover:bg-neutral-100 transition-colors">
         📦
       </div>
 
       {/* Product Title */}
-      <h3 className="text-base font-semibold mb-2 text-neutral-100 line-clamp-2 group-hover:text-secondary-500 transition-colors">
+      <h3 className="text-base font-bold mb-2 text-secondary-700 line-clamp-2 group-hover:text-primary-500 transition-colors font-heading">
         {product.title}
       </h3>
 
       {/* SKU */}
-      <p className="text-xs text-neutral-500 mb-2 uppercase tracking-wide">
+      <p className="text-xs text-secondary-500 mb-2 uppercase tracking-wide">
         SKU: {product.sku || 'N/A'}
       </p>
 
       {/* Stock Status */}
-      <div className={`text-xs mb-4 font-bold uppercase tracking-wide ${inStock ? 'text-success' : 'text-warning'}`}>
+      <div className={`text-xs mb-4 font-semibold uppercase tracking-wide ${inStock ? 'text-success' : 'text-primary-500'}`}>
         {inStock ? `✓ ${product.inventory_quantity}x na magazynie` : '⏳ Zamówienie'}
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-neutral-700 mb-4"></div>
+      <div className="h-px bg-neutral-200 mb-4"></div>
 
       {/* Price & Add to Cart */}
       <div className="flex justify-between items-center gap-3">
         <div>
-          <div className="text-xs text-neutral-500 uppercase tracking-wide mb-1">Cena netto</div>
-          <span className="text-xl font-bold text-secondary-500">
+          <div className="text-xs text-secondary-500 uppercase tracking-wide mb-1">Cena netto</div>
+          <span className="text-xl font-bold text-primary-500 font-heading">
             {priceAmount} {currency}
           </span>
         </div>
         <button
-          className={`px-5 py-2.5 rounded-lg text-sm font-bold uppercase tracking-wide transition-all duration-300 ${
+          className={`px-5 py-2.5 rounded-full text-sm font-bold uppercase tracking-wide transition-all duration-300 ${
             inStock
-              ? 'bg-secondary-500 text-neutral-900 hover:bg-secondary-400 hover:shadow-lg hover:shadow-secondary-500/30'
-              : 'bg-neutral-700 text-neutral-500 cursor-not-allowed border border-neutral-600'
+              ? 'bg-primary-500 text-white hover:bg-secondary-700 hover:shadow-lg'
+              : 'bg-neutral-200 text-secondary-500 cursor-not-allowed'
           }`}
           disabled={!inStock}
         >

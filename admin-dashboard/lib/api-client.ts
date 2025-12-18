@@ -254,6 +254,86 @@ export const api = {
       method: "DELETE",
     })
   },
+  
+  // Translations
+  getTranslations: async (type: 'product' | 'category', entityId: string) => {
+    return apiRequest(`/admin/translations?type=${type}&entity_id=${entityId}`)
+  },
+  
+  getTranslation: async (type: 'product' | 'category', entityId: string, locale: string) => {
+    return apiRequest(`/admin/translations?type=${type}&entity_id=${entityId}&locale=${locale}`)
+  },
+  
+  saveTranslation: async (data: {
+    type: 'product' | 'category'
+    entity_id: string
+    locale: string
+    data: any
+  }) => {
+    return apiRequest("/admin/translations", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  autoTranslate: async (data: {
+    type: 'product' | 'category'
+    entity_id: string
+    source_locale?: string
+    target_locales?: string[]
+    source_data: any
+  }) => {
+    return apiRequest("/admin/translations/auto-translate", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  deleteTranslation: async (type: 'product' | 'category', entityId: string, locale: string) => {
+    return apiRequest("/admin/translations", {
+      method: "DELETE",
+      body: { type, entity_id: entityId, locale },
+    })
+  },
+  
+  // Machines
+  getMachines: async (params?: any) => {
+    const query = new URLSearchParams(params).toString()
+    return apiRequest(`/admin/machines${query ? `?${query}` : ""}`)
+  },
+  
+  getMachine: async (id: string) => {
+    return apiRequest(`/admin/machines/${id}`)
+  },
+  
+  createMachine: async (data: any) => {
+    return apiRequest("/admin/machines", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  updateMachine: async (id: string, data: any) => {
+    return apiRequest(`/admin/machines/${id}`, {
+      method: "PUT",
+      body: data,
+    })
+  },
+  
+  deleteMachine: async (id: string) => {
+    return apiRequest(`/admin/machines/${id}`, {
+      method: "DELETE",
+    })
+  },
+}
+
+// Generic HTTP methods for backward compatibility
+export const apiClient = {
+  ...api,
+  get: (endpoint: string) => apiRequest(endpoint),
+  post: (endpoint: string, data?: any) => apiRequest(endpoint, { method: "POST", body: data }),
+  put: (endpoint: string, data?: any) => apiRequest(endpoint, { method: "PUT", body: data }),
+  delete: (endpoint: string) => apiRequest(endpoint, { method: "DELETE" }),
 }
 
 export default api

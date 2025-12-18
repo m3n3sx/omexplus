@@ -129,14 +129,21 @@ export function useSearch() {
 
         case 'machine':
           const machineParams = params as MachineSearchParams
-          // Use main omex-search endpoint for machine search
-          url = `${backendUrl}/store/omex-search?`
-          queryParams.push(`brand=${encodeURIComponent(machineParams.brand)}`)
-          queryParams.push(`machineType=${encodeURIComponent(machineParams.machineType)}`)
-          queryParams.push(`model=${encodeURIComponent(machineParams.model)}`)
-          if (machineParams.series) queryParams.push(`series=${encodeURIComponent(machineParams.series)}`)
-          if (machineParams.frame) queryParams.push(`frame=${encodeURIComponent(machineParams.frame)}`)
-          if (machineParams.engine) queryParams.push(`engine=${encodeURIComponent(machineParams.engine)}`)
+          if (!machineParams || !machineParams.brand) {
+            // If no machine params, return empty result
+            return {
+              products: [],
+              total: 0,
+              page: 1,
+              limit: 20,
+              hasMore: false
+            }
+          }
+          // Use machines search endpoint
+          url = `${backendUrl}/store/omex-search/machines?`
+          queryParams.push(`manufacturer=${encodeURIComponent(machineParams.brand)}`)
+          if (machineParams.model) queryParams.push(`model=${encodeURIComponent(machineParams.model)}`)
+          if (machineParams.engine) queryParams.push(`q=${encodeURIComponent(machineParams.engine)}`)
           break
 
         case 'filters':
@@ -164,7 +171,7 @@ export function useSearch() {
             searchTime: filterData.searchTime || 0
           }
           
-          setResults(filterResult.products)
+          setResults(filterResult.products || [])
           setSearchInfo({
             total: filterResult.total,
             page: filterResult.page,
@@ -230,7 +237,7 @@ export function useSearch() {
       }
 
       // Update state
-      setResults(searchResult.products)
+      setResults(searchResult.products || [])
       setSearchInfo({
         total: searchResult.total,
         page: searchResult.page,
@@ -254,17 +261,20 @@ export function useSearch() {
     error,
     searchInfo,
     search,
+    setResults, // Export for external use (e.g., loading from chat)
   }
 }
 
-// Autocomplete hook
+// Autocomplete hook - searches both products and machines
 export function useAutocomplete() {
   const [suggestions, setSuggestions] = useState<any[]>([])
+  const [machineSuggestions, setMachineSuggestions] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
   const getSuggestions = useCallback(async (query: string, limit: number = 10) => {
     if (!query || query.length < 2) {
       setSuggestions([])
+      setMachineSuggestions([])
       return
     }
 
@@ -273,34 +283,55 @@ export function useAutocomplete() {
       const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
       const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
       
-      // Szukaj produktów przez standardowe API Medusa
-      const response = await fetch(
-        `${backendUrl}/store/products?q=${encodeURIComponent(query)}&limit=${limit}`,
-        {
-          headers: publishableKey ? {
-            'x-publishable-api-key': publishableKey
-          } : {}
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error('Autocomplete failed')
+      const headers: Record<string, string> = {}
+      if (publishableKey) {
+        headers['x-publishable-api-key'] = publishableKey
       }
 
-      const data = await response.json()
+      // Fetch products and machines in parallel
+      const [productsResponse, machinesResponse] = await Promise.all([
+        fetch(
+          `${backendUrl}/store/products?q=${encodeURIComponent(query)}&limit=${limit}`,
+          { headers }
+        ),
+        fetch(
+          `${backendUrl}/store/omex-search/machines/autocomplete?q=${encodeURIComponent(query)}&limit=${limit}`,
+          { headers }
+        )
+      ])
+
+      // Process products
+      let productSuggestions: any[] = []
+      if (productsResponse.ok) {
+        const productsData = await productsResponse.json()
+        productSuggestions = (productsData.products || []).map((product: any) => ({
+          text: product.title,
+          type: 'product',
+          count: 1,
+          id: product.id,
+          icon: '📦'
+        }))
+      }
+
+      // Process machines
+      let machineSuggs: any[] = []
+      if (machinesResponse.ok) {
+        const machinesData = await machinesResponse.json()
+        machineSuggs = machinesData.suggestions || []
+      }
+
+      // Combine: machines first (more specific), then products
+      const combined = [
+        ...machineSuggs.slice(0, 6),
+        ...productSuggestions.slice(0, limit - Math.min(machineSuggs.length, 6))
+      ].slice(0, limit)
       
-      // Przekształć produkty na sugestie
-      const productSuggestions = (data.products || []).map((product: any) => ({
-        text: product.title,
-        type: 'product',
-        count: 1,
-        id: product.id
-      }))
-      
-      setSuggestions(productSuggestions)
+      setSuggestions(combined)
+      setMachineSuggestions(machineSuggs)
     } catch (err) {
       console.error('Autocomplete error:', err)
       setSuggestions([])
+      setMachineSuggestions([])
     } finally {
       setLoading(false)
     }
@@ -308,10 +339,12 @@ export function useAutocomplete() {
 
   const clear = useCallback(() => {
     setSuggestions([])
+    setMachineSuggestions([])
   }, [])
 
   return {
     suggestions,
+    machineSuggestions,
     loading,
     getSuggestions,
     clear,

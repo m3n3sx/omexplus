@@ -1,118 +1,205 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { OMEX_BULK_IMPORT_MODULE } from "../../../../modules/omex-bulk-import"
-import { ImportProgress } from "../../../../modules/omex-bulk-import/types"
+/**
+ * CSV Import API
+ * 
+ * Importuj produkty z CSV - kluczowe dla katalogów dostawców
+ */
 
-export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  const bulkImportService = req.scope.resolve(OMEX_BULK_IMPORT_MODULE)
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { MedusaError } from "@medusajs/framework/utils"
+
+/**
+ * POST /admin/products/import
+ * 
+ * Body (multipart/form-data):
+ * - file: CSV file
+ * - updateMode: 'create_or_update' | 'create_only' | 'update_only'
+ * 
+ * CSV Format:
+ * handle,title,description,price,stock,sku,collection_id,category_id
+ */
+export async function POST(
+  req: MedusaRequest,
+  res: MedusaResponse
+): Promise<void> {
+  const { updateMode = 'create_or_update' } = req.body
+  const file = req.files?.file
+
+  if (!file) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "CSV file is required"
+    )
+  }
 
   try {
-    // Check if file is provided
-    const file = (req as any).file
-    if (!file) {
-      return res.status(400).json({
-        error: {
-          code: 'NO_FILE',
-          message: 'No file provided. Please upload a CSV file.',
-        },
-      })
-    }
-
-    // Validate file type
-    if (!file.originalname.endsWith('.csv')) {
-      return res.status(400).json({
-        error: {
-          code: 'INVALID_FILE_TYPE',
-          message: 'Invalid file type. Only CSV files are allowed.',
-        },
-      })
-    }
-
-    // Validate file size (50MB max)
-    const maxSize = 50 * 1024 * 1024
-    if (file.size > maxSize) {
-      return res.status(400).json({
-        error: {
-          code: 'FILE_TOO_LARGE',
-          message: `File size exceeds maximum allowed size of 50MB.`,
-        },
-      })
-    }
-
-    // Set up SSE headers
-    res.setHeader('Content-Type', 'text/event-stream')
-    res.setHeader('Cache-Control', 'no-cache')
-    res.setHeader('Connection', 'keep-alive')
-
-    // Progress callback
-    const onProgress = (progress: ImportProgress) => {
-      res.write(`data: ${JSON.stringify(progress)}\n\n`)
-    }
-
-    // Start import
-    const result = await bulkImportService.importFromCSV(
-      file.buffer,
-      onProgress
-    )
-
-    // Send final result
-    res.write(`data: ${JSON.stringify(result)}\n\n`)
-    res.end()
-
-  } catch (error: any) {
-    console.error('Import error:', error)
+    const productModuleService = req.scope.resolve("productModuleService")
     
-    const errorResponse = {
-      status: 'failed',
-      total: 0,
-      successful: 0,
-      failed: 0,
-      errors: [{
-        line: 0,
-        field: 'system',
-        reason: error.message,
-      }],
+    // Parse CSV
+    const content = file.data.toString('utf-8')
+    const lines = content.split('\n').filter(line => line.trim())
+    
+    if (lines.length < 2) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "CSV file is empty or invalid"
+      )
     }
 
-    res.write(`data: ${JSON.stringify(errorResponse)}\n\n`)
-    res.end()
+    // Parse header
+    const header = lines[0].split(',').map(h => h.trim())
+    const results = []
+
+    // Process each row
+    for (let i = 1; i < lines.length; i++) {
+      const values = parseCSVLine(lines[i])
+      const record: any = {}
+      
+      header.forEach((key, index) => {
+        record[key] = values[index]?.trim() || ''
+      })
+
+      try {
+        let product
+        let action = 'skipped'
+
+        // Find existing product by handle
+        const existing = await productModuleService.listProducts({
+          handle: record.handle
+        })
+
+        const existingProduct = existing[0]
+
+        if (existingProduct && (updateMode === 'create_or_update' || updateMode === 'update_only')) {
+          // Update existing product
+          product = await productModuleService.updateProducts(existingProduct.id, {
+            title: record.title,
+            description: record.description,
+            status: record.status || 'published',
+          })
+
+          // Update variant
+          if (existingProduct.variants?.[0]) {
+            const variantId = existingProduct.variants[0].id
+            
+            // Update price
+            if (record.price) {
+              await req.scope.resolve("pricingModuleService").updatePrices({
+                id: variantId,
+                prices: [{
+                  amount: Math.round(parseFloat(record.price) * 100),
+                  currency_code: record.currency || 'pln',
+                }]
+              })
+            }
+
+            // Update stock
+            if (record.stock) {
+              await req.scope.resolve("inventoryModuleService").updateInventoryLevels({
+                inventory_item_id: variantId,
+                location_id: 'default',
+                stocked_quantity: parseInt(record.stock),
+              })
+            }
+          }
+
+          action = 'updated'
+        } else if (!existingProduct && (updateMode === 'create_or_update' || updateMode === 'create_only')) {
+          // Create new product
+          product = await productModuleService.createProducts({
+            title: record.title,
+            handle: record.handle,
+            description: record.description,
+            status: record.status || 'published',
+            variants: [{
+              title: 'Default',
+              sku: record.sku || record.handle,
+              prices: [{
+                amount: Math.round(parseFloat(record.price || 0) * 100),
+                currency_code: record.currency || 'pln',
+              }],
+              inventory_quantity: parseInt(record.stock || 0),
+            }],
+            collection_id: record.collection_id || undefined,
+            category_id: record.category_id || undefined,
+          })
+
+          action = 'created'
+        }
+
+        results.push({
+          handle: record.handle,
+          title: record.title,
+          action,
+          success: true,
+        })
+      } catch (error) {
+        results.push({
+          handle: record.handle,
+          title: record.title,
+          action: 'error',
+          success: false,
+          error: error.message,
+        })
+      }
+    }
+
+    // Trigger revalidation
+    if (typeof fetch !== 'undefined') {
+      const storefrontUrl = process.env.NEXT_PUBLIC_STOREFRONT_URL || 'http://localhost:3000'
+      const revalidateSecret = process.env.REVALIDATE_SECRET
+      
+      fetch(`${storefrontUrl}/api/revalidate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tags: ['products', 'categories'],
+          secret: revalidateSecret,
+        }),
+      }).catch(() => {})
+    }
+
+    const successCount = results.filter(r => r.success).length
+    const errorCount = results.filter(r => !r.success).length
+    const createdCount = results.filter(r => r.action === 'created').length
+    const updatedCount = results.filter(r => r.action === 'updated').length
+
+    res.json({
+      success: true,
+      total: results.length,
+      created: createdCount,
+      updated: updatedCount,
+      failed: errorCount,
+      results,
+    })
+  } catch (error) {
+    throw new MedusaError(
+      MedusaError.Types.UNEXPECTED_STATE,
+      `Import failed: ${error.message}`
+    )
   }
 }
 
-// Alternative non-SSE endpoint for simpler clients
-export async function PUT(req: MedusaRequest, res: MedusaResponse) {
-  const bulkImportService = req.scope.resolve(OMEX_BULK_IMPORT_MODULE)
+/**
+ * Parse CSV line handling quoted values
+ */
+function parseCSVLine(line: string): string[] {
+  const result = []
+  let current = ''
+  let inQuotes = false
 
-  try {
-    const file = (req as any).file
-    if (!file) {
-      return res.status(400).json({
-        error: {
-          code: 'NO_FILE',
-          message: 'No file provided. Please upload a CSV file.',
-        },
-      })
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+
+    if (char === '"') {
+      inQuotes = !inQuotes
+    } else if (char === ',' && !inQuotes) {
+      result.push(current)
+      current = ''
+    } else {
+      current += char
     }
-
-    if (!file.originalname.endsWith('.csv')) {
-      return res.status(400).json({
-        error: {
-          code: 'INVALID_FILE_TYPE',
-          message: 'Invalid file type. Only CSV files are allowed.',
-        },
-      })
-    }
-
-    const result = await bulkImportService.importFromCSV(file.buffer)
-
-    res.json(result)
-
-  } catch (error: any) {
-    console.error('Import error:', error)
-    res.status(500).json({
-      error: {
-        code: 'IMPORT_FAILED',
-        message: error.message,
-      },
-    })
   }
+
+  result.push(current)
+  return result
 }

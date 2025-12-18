@@ -1,0 +1,18 @@
+/**
+ * Jobs Loader
+ * 
+ * Inicjalizuje scheduled jobs przy starcie backendu
+ */
+
+import setupJobs from '../jobs'
+
+export default async function jobsLoader({ container }: any) {
+  console.log("🚀 Initializing scheduled jobs...")
+
+  try {
+    await setupJobs(container)
+    console.log("✅ Scheduled jobs initialized successfully")
+  } catch (error) {
+    console.error("❌ Error initializing scheduled jobs:", error)
+  }
+}

@@ -8,6 +8,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import Badge from "@/components/ui/Badge"
 import Button from "@/components/ui/Button"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
+import { useToast } from "@/components/ui/Toast"
 import { formatPrice, formatDate } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
 import api from "@/lib/api-client"
@@ -16,13 +17,47 @@ import { Search, Plus, Edit, Trash2 } from "lucide-react"
 
 export default function ProductsPage() {
   const router = useRouter()
+  const toast = useToast()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const productsPerPage = 20
+
+  const toggleSelectAll = () => {
+    if (selectedProducts.length === filteredProducts.length) {
+      setSelectedProducts([])
+    } else {
+      setSelectedProducts(filteredProducts.map(p => p.id))
+    }
+  }
+
+  const toggleSelectProduct = (productId: string) => {
+    setSelectedProducts(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    )
+  }
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Czy na pewno chcesz usunąć ${selectedProducts.length} produktów?`)) return
+    
+    try {
+      for (const productId of selectedProducts) {
+        await api.deleteProduct(productId)
+      }
+      toast.success(`Usunięto ${selectedProducts.length} produktów`)
+      setSelectedProducts([])
+      await loadProducts()
+    } catch (error) {
+      console.error("Error deleting products:", error)
+      alert("Błąd podczas usuwania produktów")
+    }
+  }
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -58,14 +93,15 @@ export default function ProductsPage() {
   }
 
   const handleDelete = async (productId: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return
+    if (!confirm("Czy na pewno chcesz usunąć ten produkt?")) return
     
     try {
       await api.deleteProduct(productId)
+      toast.success("Produkt został usunięty")
       await loadProducts()
     } catch (error) {
       console.error("Error deleting product:", error)
-      alert("Failed to delete product")
+      toast.error("Błąd podczas usuwania produktu")
     }
   }
 
@@ -94,15 +130,36 @@ export default function ProductsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-            <p className="text-gray-600 mt-1">Manage your product catalog</p>
+            <h1 className="text-2xl font-bold text-gray-900">Produkty</h1>
+            <p className="text-gray-600 mt-1">Zarządzaj katalogiem produktów</p>
           </div>
-          <Link href="/products/new">
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Product
-            </Button>
-          </Link>
+          <div className="flex space-x-2">
+            {selectedProducts.length > 0 && (
+              <>
+                <Link href={`/products/bulk-edit?ids=${selectedProducts.join(',')}`}>
+                  <Button variant="secondary">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edytuj ({selectedProducts.length})
+                  </Button>
+                </Link>
+                <Button variant="danger" onClick={handleBulkDelete}>
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Usuń ({selectedProducts.length})
+                </Button>
+              </>
+            )}
+            <Link href="/products/import">
+              <Button variant="secondary">
+                Import CSV
+              </Button>
+            </Link>
+            <Link href="/products/new">
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Dodaj produkt
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Filters */}
@@ -136,11 +193,19 @@ export default function ProductsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product</TableHead>
+                <TableHead>
+                  <input
+                    type="checkbox"
+                    checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 rounded border-gray-300"
+                  />
+                </TableHead>
+                <TableHead>Produkt</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Inventory</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Created</TableHead>
+                <TableHead>Magazyn</TableHead>
+                <TableHead>Cena</TableHead>
+                <TableHead>Utworzono</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -149,9 +214,18 @@ export default function ProductsPage() {
                 const firstVariant = product.variants?.[0]
                 const price = firstVariant?.prices?.[0]
                 const inventory = firstVariant?.inventory_quantity || 0
+                const isSelected = selectedProducts.includes(product.id)
                 
                 return (
-                  <TableRow key={product.id}>
+                  <TableRow key={product.id} className={isSelected ? "bg-blue-50" : ""}>
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelectProduct(product.id)}
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-3">
                         {product.thumbnail ? (

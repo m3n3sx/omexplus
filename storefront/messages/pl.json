@@ -18,7 +18,10 @@
     "failedToLoadCategories": "Nie udało się załadować kategorii",
     "noCategoriesAvailable": "Brak dostępnych kategorii",
     "hoverToSeeSubcategories": "Najedź na kategorię, aby zobaczyć podkategorie",
-    "hoverToSeeSubSubcategories": "Najedź na podkategorię, aby zobaczyć elementy"
+    "hoverToSeeSubSubcategories": "Najedź na podkategorię, aby zobaczyć elementy",
+    "viewAllCategories": "Zobacz wszystkie kategorie",
+    "viewAll": "Zobacz wszystko",
+    "discoverOurProducts": "Odkryj nasze produkty"
   },
   "products": {
     "title": "Nasze produkty",

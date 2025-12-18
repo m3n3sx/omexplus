@@ -18,7 +18,10 @@
     "failedToLoadCategories": "Не вдалося завантажити категорії",
     "noCategoriesAvailable": "Немає доступних категорій",
     "hoverToSeeSubcategories": "Наведіть курсор на категорію, щоб побачити підкатегорії",
-    "hoverToSeeSubSubcategories": "Наведіть курсор на підкатегорію, щоб побачити елементи"
+    "hoverToSeeSubSubcategories": "Наведіть курсор на підкатегорію, щоб побачити елементи",
+    "viewAllCategories": "Переглянути всі категорії",
+    "viewAll": "Переглянути все",
+    "discoverOurProducts": "Відкрийте наші продукти"
   },
   "products": {
     "title": "Наші продукти",

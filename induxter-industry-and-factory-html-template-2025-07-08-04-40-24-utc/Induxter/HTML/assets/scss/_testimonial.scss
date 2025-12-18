@@ -1,0 +1,310 @@
+
+/*---=======================
+   08. Start Project css 
+===========================---*/
+
+.testimonial-area-v1{
+    background-color: #fbf6f3;
+    @media #{$xm}{
+        padding-bottom: 120px;
+    }
+    & .testimonial-img{
+        margin-left: -150px;
+        @media #{$lg}{
+            margin-left: 0px;
+        }
+        @media #{$xm}{
+            margin-left: 0px;
+            margin-bottom: 60px;
+        }
+    }
+    & .testimonial-item{
+        & .td-content{
+            & p{
+                font-weight: 500;
+                font-size: 22px;
+                line-height: 35px;
+                @media #{$lg}{
+                    font-size: 17px;
+                    line-height: 28px;
+                }
+                @media #{$xm}{
+                    font-size: 17px;
+                    line-height: 28px;
+                }
+            }
+            & .td-author-info{
+                display: flex;
+                & .td-thumb{
+                    min-width: 90px;
+                    max-width: 90px;
+                    height: 90px;
+                    border-radius: 50%;
+                    background-color: rgb(255, 122, 118);
+                }
+                & .td-author{
+                    margin-left: 35px;
+                    & h4{
+                        font-size: 23px;
+                    }
+                    & p.position{
+                        font-size: 15px;
+                    }
+                }
+            }
+        }
+    }
+    & .testimonial-arrows-one{
+        @media #{$lg}{
+            margin-bottom: 50px;
+        }
+        & .slick-arrow{
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 50px;
+            height: 50px;
+            border: 1px solid #f7cab5;
+            border-radius: 50%;
+            line-height: 50px;
+            color: $theme-color;
+            cursor: pointer;
+            text-align: center;
+            z-index: 1;
+            @include transition(.3s);
+            @media #{$lg}{
+                bottom: 60px;
+            }
+            &:hover{
+                background-color: $theme-color;
+                color: $white;
+            }
+            &.prev{
+                right: 60px;
+            }
+        }
+    }
+}
+  
+.testimonial-area-v2{
+    & .testimonial-slider-two{
+        & .slick-arrow{
+            position: absolute;
+            top: 50%;
+            @include transform(translateY(-50%));
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 50%;
+            border: 1px solid #f3aa88;
+            color: #f3aa88;
+            cursor: pointer;
+            z-index: 1;
+            &:hover{
+                border-color: $theme-color;
+                color: $theme-color;
+            }
+            &.prev{
+                left: -12%;
+                @media #{$lp}{
+                    left: -5%;
+                }
+            }
+            &.next{
+                right: -12%;
+                @media #{$lp}{
+                    right: -5%;
+                }
+            }
+        }
+    }
+    & .testimonial-item{
+        padding-left: 120px;
+        position: relative;
+        @media #{$xm}{
+            padding-left: 0px;
+            padding-top: 120px;
+        }
+        & .td-thumb{
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            @media #{$xm}{
+                top: 0;
+            }
+            & .icon{
+                width: 35px;
+                height: 35px;
+                line-height: 35px;
+                border-radius: 50%;
+                background-color: $theme-color;
+                color: $white;
+                font-size: 40px;
+                font-family: $gilory;
+                font-weight: 500;
+                text-align: center;
+                padding-top: 9px;
+                padding-right: 12px;
+            }
+        }
+        & .td-content{
+            position: relative;
+            background-color: #fff1eb;
+            padding: 53px 35px 50px;
+            border-radius: 10px;
+            &:after{
+                position: absolute;
+                top: 57px;
+                left: 35;
+                content: '\efcd';
+                font-family: 'IcoFont';
+                font-size: 60px;
+                color: rgba(254, 90, 14, 0.25);
+            }
+            &:before{
+                position: absolute;
+                top: 20px;
+                left: -10px;
+                content: '';
+                width: 40px;
+                height: 50px;
+                border-radius: 5px;
+                background-color: #fff1eb;
+                @include transform(skewX(-35deg));
+                @media #{$xm}{
+                    top: -10px;
+                    left: 10px;
+                    @include transform(skewY(-35deg));
+                }
+            }
+            & p{
+                margin-bottom: 35px;
+            }
+            & .td-author-info{
+                & .td-author{
+                    & h4.title{
+                        margin-bottom: 10px;
+                    }
+                    & p.position{
+                        margin-bottom: 0px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.testimonial-area-v3{
+    & .testimonial-slider-three{
+        position: relative;
+        z-index: 1;
+        &:before,&:after{
+            position: absolute;
+            content: '';
+            border-radius: 10px;
+            width: 270px;
+            height: 270px;
+            background-color: $theme-color;
+            z-index: -1;
+        }
+        &:before{
+            top: -2px;
+            right: -2px;
+        }
+        &:after{
+            bottom: -2px;
+            left: -2px;
+        }
+       & .slick-arrow{
+           position: absolute;
+           top: 50%;
+           @include transform(translateY(-50%));
+           cursor: pointer;
+           z-index: 1;
+           width: 50px;
+           height: 50px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           border-radius: 50%;
+           border: 1px solid $theme-color;
+           color: $theme-color;
+           @include transition(.3s);
+           &:hover{
+               background-color: $theme-color;
+               color: $white;
+               border-color: transparent;
+           }
+            &.prev{
+               left: -150px;
+            }
+            &.next{
+                right: -150px;
+            }
+       }
+    }
+    & .testimonial-wrapper{
+        position: relative;
+        z-index: 1;
+        &:before,&:after{
+            position: absolute;
+            content: '';
+            border-radius: 10px;
+            width: 270px;
+            height: 270px;
+            background-color: #fff7f3;
+            z-index: -1;
+        }
+        &:before{
+            top: -20px;
+            right: -20px;
+        }
+        &:after{
+            bottom: -20px;
+            left: -20px;
+        }
+    }
+    & .testimonial-item{
+        background-color: #fff1eb;
+        padding: 100px 50px 55px;
+        border-radius: 10px;
+        & .td-content{
+            margin-bottom: 20px;
+            & p{
+                font-size: 20px;
+                font-weight: 500;
+                line-height: 35px;
+                margin-bottom: 20px;
+            }
+        }
+        & .td-thumb-title{
+            & .td-thumb{
+                min-width: 65px;
+                max-width: 65px;
+                height: 65px;
+                object-fit: cover;
+                margin-right: 30px;
+                & img{
+                    width: 100%;
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+}
+ul.rating{
+    & li{
+        display: inline-block;
+        & i{
+            color: #fe5a0e;
+        }
+    }
+}
+
+/*---=======================
+   End Project css 
+===========================---*/

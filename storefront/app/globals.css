@@ -1,4 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* Induxter Theme - Gilroy & Open Sans fonts */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+/* Gilroy font family */
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy/Gilroy-Regular.woff2') format('woff2'),
+       url('/fonts/gilroy/Gilroy-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy/Gilroy-Light.woff2') format('woff2'),
+       url('/fonts/gilroy/Gilroy-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy/Gilroy-Bold.woff2') format('woff2'),
+       url('/fonts/gilroy/Gilroy-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy/Gilroy-ExtraBold.woff2') format('woff2'),
+       url('/fonts/gilroy/Gilroy-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -10,64 +48,151 @@
   }
   
   body {
-    @apply bg-neutral-50 text-secondary-700;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    @apply bg-neutral-50 text-secondary-500;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-size: 15px;
+    line-height: 28px;
+    font-weight: 400;
   }
   
-  /* Industrial/Professional theme - Yellow & Gray */
+  /* Induxter Theme - Orange & Dark Gray */
   :root {
-    --color-primary: #EBAE34;
-    --color-primary-hover: #D97706;
-    --color-secondary: #424242;
-    --color-neutral: #FBF9F6;
+    --color-primary: #F9580E;
+    --color-primary-hover: #282828;
+    --color-secondary: #282828;
+    --color-text: #626262;
+    --color-neutral: #F9F9F9;
     --color-white: #FFFFFF;
+  }
+  
+  /* Headings - Gilroy font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Gilroy', 'Open Sans', sans-serif;
+    @apply text-secondary-700 font-bold;
+    margin: 0;
+  }
+  
+  h1 {
+    font-size: 65px;
+  }
+  
+  h2 {
+    font-size: 50px;
+    line-height: 60px;
+  }
+  
+  h3 {
+    font-size: 30px;
+  }
+  
+  h4 {
+    font-size: 23px;
+  }
+  
+  h5 {
+    font-size: 19px;
+  }
+  
+  h6 {
+    font-size: 16px;
+  }
+  
+  a {
+    @apply text-inherit no-underline transition-all duration-300;
+  }
+  
+  a:hover, a:focus {
+    @apply text-inherit no-underline;
+  }
+  
+  p {
+    @apply text-secondary-500;
+    margin: 0;
   }
 }
 
 @layer components {
   .container {
     @apply mx-auto px-4 w-full;
-    max-width: 1400px;
+    max-width: 1200px;
   }
   
-  /* Industrial/Professional buttons - Yellow accent */
+  /* Induxter Buttons - Orange with rounded corners */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold tracking-tight transition-all duration-300 text-base;
+    @apply inline-flex items-center justify-center gap-2 px-10 py-3.5 rounded-full font-bold transition-all duration-300 text-base;
   }
   
   .btn-primary {
-    @apply bg-primary-500 text-white hover:bg-primary-600 hover:shadow-lg font-bold;
+    @apply bg-primary-500 text-white hover:bg-secondary-700 hover:text-white;
   }
   
   .btn-secondary {
-    @apply bg-secondary-700 text-white hover:bg-secondary-800 font-bold;
+    @apply bg-secondary-700 text-white hover:bg-primary-500;
   }
   
   .btn-outline {
-    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-bold;
+    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white;
+  }
+  
+  /* Induxter Link Button */
+  .btn-link {
+    @apply text-secondary-700 font-bold transition-all duration-300;
+    font-family: 'Gilroy', 'Open Sans', sans-serif;
+  }
+  
+  .btn-link:hover {
+    @apply text-primary-500;
   }
   
   /* Professional cards - White on light background */
   .card {
-    @apply bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border-2 border-neutral-200;
+    @apply bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-all duration-300;
   }
   
-  /* Yellow accent line */
+  /* Orange accent line - Induxter style */
   .accent-line {
-    @apply h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent;
+    @apply h-1 bg-primary-500 rounded-sm;
   }
   
-  /* Strong headings */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-extrabold tracking-tight;
+  /* Section title - Induxter style */
+  .section-title .sub-title {
+    @apply inline-block relative mb-10;
   }
   
-  /* Strong text elements */
-  strong, b {
-    @apply font-extrabold;
+  .section-title .sub-title .title {
+    @apply uppercase text-primary-500 text-base font-bold;
+    font-family: 'Gilroy', 'Open Sans', sans-serif;
+  }
+  
+  .section-title h2 span {
+    @apply text-primary-500;
+  }
+  
+  /* Title span lines - Induxter decorative element */
+  .title-span-line span.line {
+    @apply bg-primary-500 h-1 rounded-sm inline-block;
+  }
+  
+  .title-span-line span.line-1 {
+    width: 40px;
+  }
+  
+  .title-span-line span.line-2 {
+    width: 20px;
+    @apply mx-1;
+  }
+  
+  .title-span-line span.line-3 {
+    width: 40px;
+  }
+  
+  /* Main background */
+  .main-bg {
+    @apply bg-primary-500;
+  }
+  
+  .light-bg {
+    @apply bg-neutral-100;
   }
 }
 
@@ -83,5 +208,12 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  
+  /* Background cover utility */
+  .bg-cover-center {
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 }
