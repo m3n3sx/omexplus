@@ -8,13 +8,13 @@ import RecentOrders from "@/components/dashboard/RecentOrders"
 import SalesChart from "@/components/dashboard/SalesChart"
 import TopProducts from "@/components/dashboard/TopProducts"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
-import WidgetWrapper from "@/components/dashboard/widgets/WidgetWrapper"
 import WidgetConfigPanel from "@/components/dashboard/WidgetConfigPanel"
+import DraggableWidgetGrid from "@/components/dashboard/DraggableWidgetGrid"
 import ChatWidget from "@/components/dashboard/widgets/ChatWidget"
 import QuickActionsWidget from "@/components/dashboard/widgets/QuickActionsWidget"
 import StockAlertsWidget from "@/components/dashboard/widgets/StockAlertsWidget"
 import TasksWidget from "@/components/dashboard/widgets/TasksWidget"
-import { ShoppingCart, DollarSign, Users, Package, Settings2 } from "lucide-react"
+import { ShoppingCart, DollarSign, Users, Package, Settings2, Move, Check, RotateCcw } from "lucide-react"
 import api from "@/lib/api-client"
 import { isAuthenticated, getCurrentUser } from "@/lib/auth"
 import { Order } from "@/lib/types"
@@ -35,6 +35,7 @@ export default function DashboardPage() {
   const { hasPermission } = usePermissions()
   const [loading, setLoading] = useState(true)
   const [showConfig, setShowConfig] = useState(false)
+  const [editMode, setEditMode] = useState(false)
   const [dashboardConfig, setDashboardConfig] = useState<DashboardConfig | null>(null)
   
   const [stats, setStats] = useState({
@@ -81,6 +82,10 @@ export default function DashboardPage() {
       setTopProducts(calculateTopProducts(allOrders).slice(0, 10))
     } catch (error) {
       console.error("Error loading dashboard data:", error)
+      // If we get an auth error, redirect to login
+      if (!isAuthenticated()) {
+        router.push("/login")
+      }
     } finally {
       setLoading(false)
     }
@@ -125,7 +130,7 @@ export default function DashboardPage() {
     setDashboardConfig(newConfig)
   }, [dashboardConfig])
 
-  const renderWidgetContent = (widgetId: WidgetId) => {
+  const renderWidgetContent = (widgetId: string) => {
     switch (widgetId) {
       case 'stats-orders': return <StatsCard title="Zamówienia" value={stats.totalOrders.toLocaleString('pl-PL')} icon={ShoppingCart} compact />
       case 'stats-revenue': return <StatsCard title="Przychód" value={`${(stats.totalRevenue / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2 })} PLN`} icon={DollarSign} iconColor="text-green-600" compact />
@@ -160,29 +165,65 @@ export default function DashboardPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Witaj, {user?.first_name || 'użytkowniku'}!</p>
+            <h1 className="text-2xl font-bold text-theme-primary">Dashboard</h1>
+            <p className="text-theme-secondary mt-1">Witaj, {user?.first_name || 'użytkowniku'}!</p>
           </div>
-          <button onClick={() => setShowConfig(true)} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-            <Settings2 className="w-4 h-4" /> Dostosuj widgety
-          </button>
+          <div className="flex items-center gap-2">
+            {editMode ? (
+              <>
+                <button 
+                  onClick={() => {
+                    if (confirm('Czy na pewno chcesz zresetować układ widgetów do domyślnego?')) {
+                      handleResetConfig()
+                    }
+                  }} 
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 bg-theme-secondary border border-red-200 rounded-lg hover:bg-red-50"
+                >
+                  <RotateCcw className="w-4 h-4" /> Reset
+                </button>
+                <button 
+                  onClick={() => setEditMode(false)} 
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-white btn-accent rounded-lg"
+                >
+                  <Check className="w-4 h-4" /> Gotowe
+                </button>
+              </>
+            ) : (
+              <button 
+                onClick={() => setEditMode(true)} 
+                className="flex items-center gap-2 px-4 py-2 text-sm text-theme-secondary bg-theme-secondary border border-theme rounded-lg hover:bg-theme-hover"
+              >
+                <Move className="w-4 h-4" /> Przeciągaj widgety
+              </button>
+            )}
+            <button 
+              onClick={() => setShowConfig(true)} 
+              className="flex items-center gap-2 px-4 py-2 text-sm text-theme-secondary bg-theme-secondary border border-theme rounded-lg hover:bg-theme-hover"
+            >
+              <Settings2 className="w-4 h-4" /> Ustawienia
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {visibleWidgets.map((widget) => (
-            <div key={widget.id} className={getWidgetGridClass(widget.size)}>
-              <WidgetWrapper config={widget} onToggleCollapse={() => handleUpdateWidget(widget.id, { collapsed: !widget.collapsed })} onToggleVisibility={() => handleUpdateWidget(widget.id, { visible: false })} onChangeSize={(size) => handleUpdateWidget(widget.id, { size })}>
-                {renderWidgetContent(widget.id)}
-              </WidgetWrapper>
-            </div>
-          ))}
-        </div>
+        {editMode && (
+          <div className="bg-accent-light border border-accent rounded-lg px-4 py-3 text-sm text-accent">
+            <strong>Tryb edycji:</strong> Przeciągnij widgety aby zmienić ich kolejność. Kliknij X aby ukryć widget.
+          </div>
+        )}
+
+        <DraggableWidgetGrid
+          widgets={visibleWidgets}
+          onReorder={handleReorderWidgets}
+          onUpdateWidget={handleUpdateWidget}
+          renderContent={renderWidgetContent}
+          editMode={editMode}
+        />
 
         {visibleWidgets.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-lg border border-dashed border-gray-300">
-            <Settings2 className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Brak widocznych widgetów</h3>
-            <button onClick={() => setShowConfig(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Dostosuj widgety</button>
+          <div className="text-center py-12 bg-theme-secondary rounded-lg border border-dashed border-theme">
+            <Settings2 className="w-12 h-12 text-theme-muted mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-theme-primary mb-2">Brak widocznych widgetów</h3>
+            <button onClick={() => setShowConfig(true)} className="px-4 py-2 btn-accent rounded-lg">Dostosuj widgety</button>
           </div>
         )}
       </div>

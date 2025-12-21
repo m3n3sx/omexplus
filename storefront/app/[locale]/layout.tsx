@@ -10,8 +10,9 @@ import ChatWidget from '@/components/chat/ChatWidget'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'OMEX - Części do Maszyn Budowlanych',
-  description: 'Profesjonalny sklep B2B z częściami do maszyn budowlanych',
+  title: 'Części do maszyn budowlanych - OMEX | CAT, Komatsu, JCB',
+  description: 'Wysokiej jakości części do maszyn budowlanych. Oferujemy oryginalne i zamienne części do CAT, Komatsu, DOOSAN, JCB. Szybka dostawa. Zaufaj nam!',
+  keywords: 'części do maszyn budowlanych, części CAT, części Komatsu, części Bobcat, filtry do koparek, wałki obrotu, wieńce obrotu, części DOOSAN, części JCB',
 }
 
 export default async function RootLayout({

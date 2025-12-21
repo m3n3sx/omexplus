@@ -182,14 +182,46 @@ export function useSearch() {
           return filterResult
 
         case 'visual':
-          // Visual search nie jest jeszcze wspierany
-          return {
-            products: [],
-            total: 0,
-            page: 1,
-            limit: 12,
-            hasMore: false
+          const visualParams = params as VisualSearchParams
+          // POST request for visual search
+          const visualResponse = await fetch(`${backendUrl}/store/omex-search/visual`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              image: visualParams.image,
+              imageUrl: visualParams.imageUrl,
+              detectOCR: visualParams.detectOCR ?? true
+            })
+          })
+          
+          if (!visualResponse.ok) {
+            throw new Error(`Visual search failed: ${visualResponse.statusText}`)
           }
+          
+          const visualData = await visualResponse.json()
+          const visualResult: SearchResult = {
+            products: visualData.products || [],
+            ocrResults: visualData.ocr?.partNumbers || [],
+            detectedPartType: visualData.analysis?.detectedPartType,
+            confidence: visualData.analysis?.confidence || 0,
+            suggestions: visualData.search?.suggestedSearchTerms || [],
+            similarParts: visualData.products || [],
+            total: visualData.total || 0,
+            page: 1,
+            limit: 20,
+            hasMore: false,
+            searchTime: 0
+          }
+          
+          setResults(visualResult.products || [])
+          setSearchInfo({
+            total: visualResult.total,
+            page: visualResult.page,
+            limit: visualResult.limit,
+            hasMore: visualResult.hasMore,
+          })
+          
+          return visualResult
 
         default:
           // Fallback to standard search

@@ -23,7 +23,7 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Ostatnie zamówienia</CardTitle>
-        <Link href="/orders" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+        <Link href="/orders" className="text-sm text-accent hover:underline font-medium">
           Zobacz wszystkie
         </Link>
       </CardHeader>
@@ -42,18 +42,18 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
             {orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>
-                  <Link href={`/orders/${order.id}`} className="font-medium text-primary-600 hover:text-primary-700">
+                  <Link href={`/orders/${order.id}`} className="font-medium text-accent hover:underline">
                     #{order.display_id}
                   </Link>
                 </TableCell>
-                <TableCell>{order.email || 'Brak email'}</TableCell>
-                <TableCell className="text-gray-600">{formatDate(order.created_at)}</TableCell>
+                <TableCell className="text-theme-secondary">{order.email || 'Brak email'}</TableCell>
+                <TableCell className="text-theme-muted">{formatDate(order.created_at)}</TableCell>
                 <TableCell>
                   <Badge className={getOrderStatusColor(order.status)}>
                     {statusTranslations[order.status] || order.status}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right font-medium">
+                <TableCell className="text-right font-medium text-theme-primary">
                   {order.total ? `${(order.total / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN` : '0,00 PLN'}
                 </TableCell>
               </TableRow>

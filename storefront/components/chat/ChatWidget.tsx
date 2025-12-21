@@ -304,7 +304,7 @@ export default function ChatWidget() {
       {isOpen && (
         <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col z-50">
           <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
-            <div><h3 className="font-semibold">Czat OMEX</h3><p className="text-xs opacity-90">{conversation?.status === "bot" ? "🤖 Bot AI" : "👤 Konsultant"}</p></div>
+            <div><h3 className="font-semibold">Czat OMEX</h3><p className="text-xs opacity-90">{conversation?.status === "bot" ? "Bot AI" : "Konsultant"}</p></div>
             <div className="flex items-center gap-2">
               <button onClick={toggleSound} className="text-white hover:bg-blue-700 rounded p-1" title={soundEnabled ? "Wyłącz dźwięk" : "Włącz dźwięk"}>
                 {soundEnabled ? <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>

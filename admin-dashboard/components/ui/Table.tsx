@@ -22,7 +22,7 @@ const TableHeader = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTable
     return (
       <thead
         ref={ref}
-        className={cn("bg-gray-50 border-b border-gray-200", className)}
+        className={cn("bg-theme-tertiary border-b border-theme", className)}
         {...props}
       />
     )
@@ -36,7 +36,7 @@ const TableBody = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSe
     return (
       <tbody
         ref={ref}
-        className={cn("divide-y divide-gray-200", className)}
+        className={cn("divide-y divide-theme", className)}
         {...props}
       />
     )
@@ -50,7 +50,7 @@ const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElem
     return (
       <tr
         ref={ref}
-        className={cn("hover:bg-gray-50 transition-colors", className)}
+        className={cn("hover:bg-theme-hover transition-colors", className)}
         {...props}
       />
     )
@@ -64,7 +64,7 @@ const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLTableCel
     return (
       <th
         ref={ref}
-        className={cn("px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider", className)}
+        className={cn("px-6 py-3 text-left text-xs font-medium text-theme-muted uppercase tracking-wider", className)}
         {...props}
       />
     )
@@ -78,7 +78,7 @@ const TableCell = forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLTableCel
     return (
       <td
         ref={ref}
-        className={cn("px-6 py-4 whitespace-nowrap", className)}
+        className={cn("px-6 py-4 whitespace-nowrap text-theme-primary", className)}
         {...props}
       />
     )

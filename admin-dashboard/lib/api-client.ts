@@ -1,5 +1,5 @@
 // Simple API client for Medusa v2
-const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
+const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "https://api.ooxo.pl"
 
 interface RequestOptions {
   method?: string
@@ -32,16 +32,15 @@ async function apiRequest(endpoint: string, options: RequestOptions = {}) {
   console.log(`API Response: ${response.status}`)
   
   if (!response.ok) {
-    // If unauthorized, clear token and redirect to login
-    if (response.status === 401 && typeof window !== "undefined") {
-      localStorage.removeItem("medusa_admin_token")
-      if (!endpoint.includes("/auth/")) {
-        window.location.href = "/login"
-      }
-    }
-    
     const errorText = await response.text()
     console.error(`API Error: ${errorText}`)
+    
+    // If unauthorized, clear token but DON'T auto-redirect
+    // Let the component handle the redirect
+    if (response.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("medusa_admin_token")
+      localStorage.removeItem("admin_user")
+    }
     
     try {
       const error = JSON.parse(errorText)
@@ -296,6 +295,16 @@ export const api = {
     })
   },
   
+  // Chat / Conversations
+  getConversations: async (params?: any) => {
+    const query = new URLSearchParams(params).toString()
+    return apiRequest(`/admin/chat/conversations${query ? `?${query}` : ""}`)
+  },
+
+  getConversation: async (id: string) => {
+    return apiRequest(`/admin/chat/conversations/${id}`)
+  },
+
   // Machines
   getMachines: async (params?: any) => {
     const query = new URLSearchParams(params).toString()

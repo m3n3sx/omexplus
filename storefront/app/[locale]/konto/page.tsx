@@ -16,7 +16,7 @@ export default function AccountPage() {
     email: 'jan.kowalski@example.com',
     company: 'OMEX Sp. z o.o.',
     taxId: 'PL1234567890',
-    phone: '+48 123 456 789'
+    phone: '+48 500 169 060'
   }
 
   const orders = [
@@ -30,9 +30,9 @@ export default function AccountPage() {
       id: 1,
       type: 'Główny',
       name: 'OMEX Sp. z o.o.',
-      street: 'ul. Przemysłowa 15',
-      city: 'Warszawa',
-      postal: '00-001',
+      street: 'ul. Gnieźnieńska 19',
+      city: 'Września',
+      postal: '62-300',
       country: 'Polska'
     },
     {
@@ -81,30 +81,66 @@ export default function AccountPage() {
             </div>
 
             <nav className="space-y-1">
-              {[
-                { id: 'profile', icon: '👤', label: 'Profil' },
-                { id: 'orders', icon: '📦', label: 'Zamówienia' },
-                { id: 'addresses', icon: '📍', label: 'Adresy' },
-                { id: 'favorites', icon: '❤️', label: 'Ulubione' }
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id as any)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-bold transition-all ${
-                    activeTab === item.id
-                      ? 'bg-[#1675F2] text-white shadow-lg shadow-[#1675F2]/30'
-                      : 'text-neutral-700 hover:bg-[#E8F4FE]'
-                  }`}
-                >
-                  <span className="text-lg">{item.icon}</span>
-                  {item.label}
-                </button>
-              ))}
+              <button
+                onClick={() => setActiveTab('profile')}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-bold transition-all ${
+                  activeTab === 'profile'
+                    ? 'bg-[#F9580E] text-white shadow-lg shadow-[#F9580E]/30'
+                    : 'text-neutral-700 hover:bg-[#FEF3EE]'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Profil
+              </button>
+              <button
+                onClick={() => setActiveTab('orders')}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-bold transition-all ${
+                  activeTab === 'orders'
+                    ? 'bg-[#F9580E] text-white shadow-lg shadow-[#F9580E]/30'
+                    : 'text-neutral-700 hover:bg-[#FEF3EE]'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Zamówienia
+              </button>
+              <button
+                onClick={() => setActiveTab('addresses')}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-bold transition-all ${
+                  activeTab === 'addresses'
+                    ? 'bg-[#F9580E] text-white shadow-lg shadow-[#F9580E]/30'
+                    : 'text-neutral-700 hover:bg-[#FEF3EE]'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Adresy
+              </button>
+              <button
+                onClick={() => setActiveTab('favorites')}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-bold transition-all ${
+                  activeTab === 'favorites'
+                    ? 'bg-[#F9580E] text-white shadow-lg shadow-[#F9580E]/30'
+                    : 'text-neutral-700 hover:bg-[#FEF3EE]'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                Ulubione
+              </button>
             </nav>
 
             <div className="mt-6 pt-6 border-t border-neutral-200">
               <button className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg text-[14px] font-medium transition-colors">
-                <span className="text-lg">🚪</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
                 Wyloguj się
               </button>
             </div>
@@ -193,7 +229,7 @@ export default function AccountPage() {
                 </div>
 
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                  <button className="px-6 py-3 bg-[#1675F2] text-white rounded-2xl text-[14px] font-bold hover:bg-[#0554F2] transition-all shadow-lg shadow-[#1675F2]/30">
+                  <button className="px-6 py-3 bg-[#F9580E] text-white rounded-2xl text-[14px] font-bold hover:bg-[#E04D0B] transition-all shadow-lg shadow-[#F9580E]/30">
                     Edytuj profil
                   </button>
                   <button className="px-6 py-3 bg-white text-neutral-900 border border-neutral-300 rounded-lg text-[14px] font-semibold hover:bg-neutral-50 transition-colors">
@@ -327,13 +363,17 @@ export default function AccountPage() {
                 </h2>
 
                 <div className="text-center py-16">
-                  <div className="text-6xl mb-4">❤️</div>
+                  <div className="w-20 h-20 mx-auto mb-4 bg-[#FEF3EE] rounded-full flex items-center justify-center">
+                    <svg className="w-10 h-10 text-[#F9580E]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
                   <p className="text-[14px] text-neutral-600 mb-6">
                     Nie masz jeszcze ulubionych produktów
                   </p>
                   <Link
                     href={`/${locale}/products`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white rounded-lg text-[14px] font-semibold hover:bg-neutral-800 transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#F9580E] text-white rounded-lg text-[14px] font-semibold hover:bg-[#E04D0B] transition-colors"
                   >
                     Przeglądaj produkty
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -25,15 +25,25 @@ export function SymptomSelector({ machineModelId, preSelected, onSelect }: Sympt
   const [aiSuggestions, setAiSuggestions] = useState<Symptom[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
 
+  const symptomIcons = {
+    pump: <svg className="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>,
+    engine: <svg className="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+    fire: <svg className="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" /></svg>,
+    bolt: <svg className="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
+    light: <svg className="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>,
+    battery: <svg className="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8h16a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2zm16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2m16 8v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2" /></svg>,
+    brake: <svg className="w-8 h-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+  }
+
   const commonSymptoms = [
-    { emoji: '💧', text: 'Pump not working', text_pl: 'Pompa nie działa' },
-    { emoji: '💧', text: 'Pump is leaking', text_pl: 'Pompa przecieka' },
-    { emoji: '⚙️', text: 'Engine won\'t start', text_pl: 'Silnik nie odpala' },
-    { emoji: '🔥', text: 'Engine overheating', text_pl: 'Silnik się przegrzewa' },
-    { emoji: '⚡', text: 'No power', text_pl: 'Brak mocy' },
-    { emoji: '💡', text: 'Lights not working', text_pl: 'Światła nie działają' },
-    { emoji: '🔋', text: 'Battery dead', text_pl: 'Akumulator rozładowany' },
-    { emoji: '🛑', text: 'Brake not working', text_pl: 'Hamulec nie działa' },
+    { icon: 'pump', text: 'Pump not working', text_pl: 'Pompa nie działa' },
+    { icon: 'pump', text: 'Pump is leaking', text_pl: 'Pompa przecieka' },
+    { icon: 'engine', text: 'Engine won\'t start', text_pl: 'Silnik nie odpala' },
+    { icon: 'fire', text: 'Engine overheating', text_pl: 'Silnik się przegrzewa' },
+    { icon: 'bolt', text: 'No power', text_pl: 'Brak mocy' },
+    { icon: 'light', text: 'Lights not working', text_pl: 'Światła nie działają' },
+    { icon: 'battery', text: 'Battery dead', text_pl: 'Akumulator rozładowany' },
+    { icon: 'brake', text: 'Brake not working', text_pl: 'Hamulec nie działa' },
   ]
 
   const handleCustomSymptomChange = async (value: string) => {
@@ -74,8 +84,9 @@ export function SymptomSelector({ machineModelId, preSelected, onSelect }: Sympt
 
       {/* Custom Symptom Input (AI-Powered) */}
       <div className="mb-8">
-        <label className="block text-sm font-medium text-neutral-700 mb-2">
-          🤖 Describe your issue:
+        <label className="block text-sm font-medium text-neutral-700 mb-2 flex items-center gap-2">
+          <svg className="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+          Describe your issue:
         </label>
         <div className="relative">
           <textarea
@@ -88,14 +99,15 @@ export function SymptomSelector({ machineModelId, preSelected, onSelect }: Sympt
           />
           
           {loading && (
-            <div className="absolute right-3 top-3 animate-spin">⚙️</div>
+            <svg className="absolute right-3 top-3 animate-spin w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           )}
 
           {/* AI Suggestions Dropdown */}
           {showSuggestions && aiSuggestions.length > 0 && (
             <div className="absolute z-10 w-full mt-2 bg-white border-2 border-primary-500 rounded-lg shadow-xl max-h-64 overflow-y-auto">
-              <div className="p-2 bg-primary-50 border-b border-primary-200 text-sm font-medium text-primary-900">
-                🤖 AI Suggestions:
+              <div className="p-2 bg-primary-50 border-b border-primary-200 text-sm font-medium text-primary-900 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                AI Suggestions:
               </div>
               {aiSuggestions.map((suggestion) => (
                 <button
@@ -156,7 +168,7 @@ export function SymptomSelector({ machineModelId, preSelected, onSelect }: Sympt
             aria-label={`Select ${symptom.text}`}
           >
             <div className="flex items-center gap-3">
-              <div className="text-3xl">{symptom.emoji}</div>
+              <div>{symptomIcons[symptom.icon as keyof typeof symptomIcons]}</div>
               <div>
                 <div className="font-semibold text-neutral-900">{symptom.text}</div>
                 <div className="text-sm text-neutral-600">{symptom.text_pl}</div>
@@ -169,7 +181,7 @@ export function SymptomSelector({ machineModelId, preSelected, onSelect }: Sympt
       {/* Help Text */}
       <div className="mt-6 p-4 bg-info/10 border border-info/30 rounded-lg">
         <div className="flex gap-3">
-          <div className="text-2xl">💡</div>
+          <svg className="w-6 h-6 text-info flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
           <div>
             <div className="font-semibold text-neutral-900 mb-1">
               Not sure what's wrong?

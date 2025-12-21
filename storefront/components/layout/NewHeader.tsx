@@ -121,11 +121,11 @@ export function NewHeader() {
         <div className="container mx-auto px-4 py-2">
           <div className="flex justify-between items-center text-sm">
             <div className="hidden md:flex gap-4">
-              <a href="tel:+48123456789" className="text-secondary-700 hover:text-secondary-800 transition-colors font-medium">
-                ☎ +48 123 456 789
+              <a href="tel:+48500169060" className="text-secondary-700 hover:text-secondary-800 transition-colors font-medium">
+                ☎ +48 500 169 060
               </a>
-              <a href="mailto:kontakt@omex.pl" className="text-secondary-700 hover:text-secondary-800 transition-colors font-medium">
-                ✉ kontakt@omex.pl
+              <a href="mailto:omexplus@gmail.com" className="text-secondary-700 hover:text-secondary-800 transition-colors font-medium">
+                ✉ omexplus@gmail.com
               </a>
             </div>
             <div className="flex gap-4 items-center ml-auto">

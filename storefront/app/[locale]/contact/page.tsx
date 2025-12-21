@@ -14,13 +14,13 @@ export default function ContactPage() {
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-4">📧 Email</h3>
-            <p className="text-gray-600">kontakt@omex.pl</p>
+            <p className="text-gray-600">omexplus@gmail.com</p>
             <p className="text-sm text-gray-500 mt-2">Odpowiadamy w ciągu 24h</p>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-4">📞 Telefon</h3>
-            <p className="text-gray-600">+48 123 456 789</p>
+            <p className="text-gray-600">+48 500 169 060</p>
             <p className="text-sm text-gray-500 mt-2">Pon-Pt: 8:00-16:00</p>
           </div>
 
@@ -34,7 +34,7 @@ export default function ContactPage() {
             <h3 className="text-xl font-semibold mb-4">🏢 Adres</h3>
             <p className="text-gray-600">
               ul. Przykładowa 123<br />
-              00-000 Warszawa<br />
+              62-300 Września<br />
               Polska
             </p>
           </div>

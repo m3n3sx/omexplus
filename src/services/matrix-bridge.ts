@@ -211,6 +211,35 @@ export class MatrixBridgeService {
   }
 
   /**
+   * Wyślij odpowiedź bota (Gemini) do Matrix
+   */
+  async sendBotMessageToMatrix(conversationId: string, message: string) {
+    if (!this.client) return false
+
+    try {
+      const roomId = this.roomMapping.get(conversationId)
+
+      if (!roomId) {
+        console.log(`[Matrix Bridge] Pokój nie istnieje dla ${conversationId}, pomijam wysyłanie odpowiedzi bota`)
+        return false
+      }
+
+      await this.client.sendMessage(roomId, {
+        msgtype: "m.text",
+        body: `🤖 Bot: ${message}`,
+        format: "org.matrix.custom.html",
+        formatted_body: `<strong style="color: #6366f1;">🤖 Bot:</strong> ${message}`,
+      })
+
+      console.log(`[Matrix Bridge] Wysłano odpowiedź bota do pokoju ${roomId}`)
+      return true
+    } catch (error) {
+      console.error("[Matrix Bridge] Błąd wysyłania odpowiedzi bota:", error)
+      return false
+    }
+  }
+
+  /**
    * Wyślij wiadomość agenta z panelu admina do Matrix
    */
   async sendAgentMessageToMatrix(conversationId: string, message: string, agentName: string = "Agent (Web)") {

@@ -66,20 +66,35 @@ export function PartResults({ machineModelId, categoryId, onSelectPart }: PartRe
   const getCompatibilityBadge = (level: string, confidence: number) => {
     switch (level) {
       case 'perfect':
-        return { text: '✅ Perfect Match', color: 'bg-success text-white', score: confidence }
+        return { text: 'Perfect Match', icon: 'check', color: 'bg-success text-white', score: confidence }
       case 'compatible':
-        return { text: '⚠️ Compatible', color: 'bg-warning text-neutral-900', score: confidence }
+        return { text: 'Compatible', icon: 'warning', color: 'bg-warning text-neutral-900', score: confidence }
       case 'check_specs':
-        return { text: '❓ Check Specs', color: 'bg-info text-white', score: confidence }
+        return { text: 'Check Specs', icon: 'question', color: 'bg-info text-white', score: confidence }
       default:
-        return { text: '❌ Not Compatible', color: 'bg-danger text-white', score: 0 }
+        return { text: 'Not Compatible', icon: 'x', color: 'bg-danger text-white', score: 0 }
+    }
+  }
+
+  const BadgeIcon = ({ type }: { type: string }) => {
+    switch (type) {
+      case 'check':
+        return <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+      case 'warning':
+        return <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+      case 'question':
+        return <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      case 'x':
+        return <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+      default:
+        return null
     }
   }
 
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center py-12">
-        <div className="animate-spin text-4xl mb-4">⚙️</div>
+        <svg className="animate-spin w-10 h-10 text-primary-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
         <p className="text-neutral-600">Finding compatible parts...</p>
       </div>
     )
@@ -162,7 +177,7 @@ export function PartResults({ machineModelId, categoryId, onSelectPart }: PartRe
                   {/* Compatibility Badge */}
                   <div className="flex items-center gap-3 mb-3">
                     <span className={`text-sm px-3 py-1 rounded font-semibold ${badge.color}`}>
-                      {badge.text}
+                      <BadgeIcon type={badge.icon} />{badge.text}
                     </span>
                     <span className="text-sm text-neutral-600">
                       {Math.round(badge.score)}% confidence
@@ -195,9 +210,15 @@ export function PartResults({ machineModelId, categoryId, onSelectPart }: PartRe
                       </div>
                       <div className="text-sm text-neutral-600">
                         {part.in_stock ? (
-                          <span className="text-success">✓ In Stock ({part.quantity} available)</span>
+                          <span className="text-success flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                            In Stock ({part.quantity} available)
+                          </span>
                         ) : (
-                          <span className="text-danger">✗ Out of Stock</span>
+                          <span className="text-danger flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            Out of Stock
+                          </span>
                         )}
                       </div>
                     </div>
@@ -219,7 +240,7 @@ export function PartResults({ machineModelId, categoryId, onSelectPart }: PartRe
 
       {sortedParts.length === 0 && (
         <div className="text-center py-12">
-          <div className="text-6xl mb-4">😕</div>
+          <svg className="w-16 h-16 mx-auto mb-4 text-secondary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <h3 className="text-xl font-semibold text-neutral-900 mb-2">
             No compatible parts found
           </h3>

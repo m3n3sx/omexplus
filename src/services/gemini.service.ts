@@ -1,6 +1,6 @@
 /**
  * Gemini AI Service
- * Integration with Google Gemini API for chat functionality
+ * Integration with Google Gemini API for chat and vision functionality
  */
 
 interface ChatMessage {
@@ -16,6 +16,17 @@ interface GeminiResponse {
     }
     finishReason: string
   }>
+}
+
+interface ImageAnalysisResult {
+  detectedPartType?: string
+  partCategory?: string
+  possibleBrands?: string[]
+  ocrText?: string[]
+  partNumbers?: string[]
+  description?: string
+  confidence: number
+  suggestedSearchTerms?: string[]
 }
 
 export class GeminiService {
@@ -34,6 +45,132 @@ export class GeminiService {
       console.warn('Gemini API key not configured. Set GEMINI_API_KEY in .env')
     }
     return key
+  }
+
+  /**
+   * Analyze image of a machine part using Gemini Vision
+   */
+  async analyzePartImage(imageBase64: string, mimeType: string = 'image/jpeg'): Promise<ImageAnalysisResult> {
+    if (!this.apiKey) {
+      throw new Error('Gemini API key is not configured')
+    }
+
+    const url = `${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`
+
+    const systemPrompt = `Jesteś ekspertem od części do maszyn budowlanych (koparki, ładowarki, spycharki, walce).
+Analizujesz zdjęcia części i identyfikujesz je.
+
+TWOJE ZADANIE:
+1. Zidentyfikuj typ części na zdjęciu
+2. Odczytaj wszelkie numery katalogowe, kody, napisy (OCR)
+3. Określ możliwe marki/producentów
+4. Zasugeruj terminy wyszukiwania
+
+ODPOWIEDZ W FORMACIE JSON (bez markdown, tylko czysty JSON):
+{
+  "detectedPartType": "typ części po polsku (np. filtr oleju, pompa hydrauliczna, cylinder, gąsienica)",
+  "partCategory": "kategoria (filters/hydraulics/engine/undercarriage/electrical/cabin)",
+  "possibleBrands": ["lista możliwych marek"],
+  "ocrText": ["wszystkie odczytane teksty z obrazu"],
+  "partNumbers": ["wykryte numery katalogowe w formacie XXX-XXXX lub podobnym"],
+  "description": "krótki opis części po polsku",
+  "confidence": 0.0-1.0,
+  "suggestedSearchTerms": ["sugerowane terminy wyszukiwania po polsku"]
+}
+
+ZNANE MARKI: CAT, Caterpillar, Komatsu, Hitachi, Volvo, JCB, Kobelco, Hyundai, Doosan, Liebherr, Case, Bobcat, Parker, Rexroth, Bosch, Perkins, Yanmar
+
+TYPY CZĘŚCI:
+- Filtry: filtr oleju, filtr paliwa, filtr powietrza, filtr hydrauliczny
+- Hydraulika: pompa hydrauliczna, cylinder hydrauliczny, zawór, rozdzielacz
+- Silnik: turbosprężarka, alternator, rozrusznik, wtryskiwacz
+- Podwozie: gąsienica, rolka, koło napędowe, napinacz
+- Elektryka: czujnik, przekaźnik, wiązka przewodów
+- Kabina: fotel, joystick, panel sterowania`
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: systemPrompt },
+            ]
+          },
+          {
+            role: 'model',
+            parts: [{ text: 'Rozumiem. Przeanalizuję zdjęcie części i zwrócę wynik w formacie JSON.' }]
+          },
+          {
+            role: 'user',
+            parts: [
+              {
+                inlineData: {
+                  mimeType: mimeType,
+                  data: imageBase64
+                }
+              },
+              { text: 'Przeanalizuj to zdjęcie części do maszyny budowlanej. Zidentyfikuj część, odczytaj numery i zasugeruj wyszukiwanie.' }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.3,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        },
+      })
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('Gemini Vision API error:', error)
+      throw new Error(`Gemini Vision API error: ${response.status}`)
+    }
+
+    const data: GeminiResponse = await response.json()
+
+    if (!data.candidates || data.candidates.length === 0) {
+      throw new Error('No response from Gemini Vision')
+    }
+
+    const text = data.candidates[0].content.parts
+      .map(part => part.text)
+      .join('')
+
+    // Parse JSON response
+    try {
+      let cleanResponse = text.trim()
+      if (cleanResponse.startsWith('```json')) {
+        cleanResponse = cleanResponse.slice(7)
+      }
+      if (cleanResponse.startsWith('```')) {
+        cleanResponse = cleanResponse.slice(3)
+      }
+      if (cleanResponse.endsWith('```')) {
+        cleanResponse = cleanResponse.slice(0, -3)
+      }
+      cleanResponse = cleanResponse.trim()
+
+      const parsed = JSON.parse(cleanResponse) as ImageAnalysisResult
+      return {
+        ...parsed,
+        confidence: parsed.confidence || 0.7
+      }
+    } catch (parseError) {
+      console.error('Failed to parse Gemini Vision response:', text)
+      // Return basic result
+      return {
+        description: text.slice(0, 200),
+        confidence: 0.3,
+        suggestedSearchTerms: []
+      }
+    }
   }
 
   /**

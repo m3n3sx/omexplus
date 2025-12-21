@@ -97,7 +97,8 @@
     "next": "Next",
     "home": "Home",
     "continueShopping": "Continue Shopping",
-    "quantity": "Quantity"
+    "quantity": "Quantity",
+    "viewDetails": "View Details"
   },
   "templates": {
     "button": {

@@ -97,7 +97,8 @@
     "next": "Weiter",
     "home": "Startseite",
     "continueShopping": "Weiter einkaufen",
-    "quantity": "Menge"
+    "quantity": "Menge",
+    "viewDetails": "Details ansehen"
   },
   "templates": {
     "button": {

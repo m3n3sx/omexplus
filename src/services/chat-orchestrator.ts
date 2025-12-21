@@ -201,6 +201,21 @@ export class ChatOrchestratorService {
   }
 
   /**
+   * Wyślij odpowiedź bota (Gemini) do Matrix
+   */
+  async sendBotMessageToMatrix(conversationId: string, message: string) {
+    if (!this.matrixBridge) return false
+    
+    try {
+      await this.matrixBridge.sendBotMessageToMatrix(conversationId, message)
+      return true
+    } catch (error) {
+      console.error("[Chat Orchestrator] Błąd wysyłania odpowiedzi bota do Matrix:", error)
+      return false
+    }
+  }
+
+  /**
    * Status integracji
    */
   getStatus() {

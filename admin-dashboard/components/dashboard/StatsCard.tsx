@@ -18,30 +18,30 @@ export default function StatsCard({ title, value, icon: Icon, trend, iconColor =
   if (compact) {
     return (
       <div className="flex items-center gap-3">
-        <div className={cn("p-2 rounded-lg bg-gray-100", iconColor)}>
+        <div className={cn("p-2 rounded-lg bg-theme-tertiary", iconColor)}>
           <Icon className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs text-gray-500">{title}</p>
-          <p className="text-lg font-bold text-gray-900">{value}</p>
+          <p className="text-xs text-theme-muted">{title}</p>
+          <p className="text-lg font-bold text-theme-primary">{value}</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
+    <div className="bg-theme-secondary rounded-lg border border-theme p-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          <p className="text-sm font-medium text-theme-secondary">{title}</p>
+          <p className="text-2xl font-bold text-theme-primary mt-1">{value}</p>
           {trend && (
             <p className={`text-sm mt-1 ${trend.isPositive ? "text-green-600" : "text-red-600"}`}>
               {trend.isPositive ? "↑" : "↓"} {typeof trend.value === 'number' ? trend.value.toFixed(1) : trend.value}{trend.label ? '' : '%'} {trend.label || 'vs poprzedni miesiąc'}
             </p>
           )}
         </div>
-        <div className={cn("p-3 rounded-full bg-gray-100", iconColor)}>
+        <div className={cn("p-3 rounded-full bg-theme-tertiary", iconColor)}>
           <Icon className="w-6 h-6" />
         </div>
       </div>

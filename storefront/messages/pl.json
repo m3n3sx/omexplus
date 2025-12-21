@@ -98,7 +98,8 @@
     "next": "Dalej",
     "home": "Strona główna",
     "continueShopping": "Kontynuuj zakupy",
-    "quantity": "Ilość"
+    "quantity": "Ilość",
+    "viewDetails": "Zobacz szczegóły"
   },
   "order": {
     "orderNumber": "Numer zamówienia",

@@ -13,10 +13,10 @@ interface SalesChartProps {
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-3 border border-gray-200 rounded shadow-lg">
-        <p className="text-sm font-semibold text-gray-900">{payload[0].payload.date}</p>
-        <p className="text-sm text-gray-600">
-          Sprzedaż: <span className="font-bold text-blue-600">{payload[0].value.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN</span>
+      <div className="bg-theme-secondary p-3 border border-theme rounded shadow-lg">
+        <p className="text-sm font-semibold text-theme-primary">{payload[0].payload.date}</p>
+        <p className="text-sm text-theme-secondary">
+          Sprzedaż: <span className="font-bold text-accent">{payload[0].value.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN</span>
         </p>
       </div>
     )
@@ -33,11 +33,11 @@ export default function SalesChart({ data }: SalesChartProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis tickFormatter={(value) => `${value.toLocaleString('pl-PL')} PLN`} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+            <XAxis dataKey="date" stroke="var(--text-muted)" />
+            <YAxis tickFormatter={(value) => `${value.toLocaleString('pl-PL')} PLN`} stroke="var(--text-muted)" />
             <Tooltip content={<CustomTooltip />} />
-            <Line type="monotone" dataKey="sales" stroke="#0ea5e9" strokeWidth={2} />
+            <Line type="monotone" dataKey="sales" stroke="rgb(var(--accent-500))" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>

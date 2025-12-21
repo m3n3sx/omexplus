@@ -9,9 +9,10 @@ export async function POST(
 
   try {
     if (!email || !password) {
-      return res.status(400).json({
+      res.status(400).json({
         message: "Email and password are required",
       })
+      return
     }
 
     const knex = req.scope.resolve(ContainerRegistrationKeys.PG_CONNECTION)
@@ -22,9 +23,10 @@ export async function POST(
       .first()
 
     if (existingCustomer) {
-      return res.status(400).json({
-        message: "Customer with this email already exists",
+      res.status(400).json({
+        message: "Klient z tym adresem email już istnieje",
       })
+      return
     }
 
     // Store password hash (in production, use bcrypt)

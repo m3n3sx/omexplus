@@ -157,8 +157,8 @@ export function EnhancedFooter() {
                 </svg>
                 <div>
                   <div className="text-sm text-neutral-400">Telefon</div>
-                  <a href="tel:+48123456789" className="text-white hover:text-primary-400 transition-colors font-semibold">
-                    +48 123 456 789
+                  <a href="tel:+48500169060" className="text-white hover:text-primary-400 transition-colors font-semibold">
+                    +48 500 169 060
                   </a>
                 </div>
               </li>
@@ -168,8 +168,8 @@ export function EnhancedFooter() {
                 </svg>
                 <div>
                   <div className="text-sm text-neutral-400">Email</div>
-                  <a href="mailto:kontakt@omex.pl" className="text-white hover:text-primary-400 transition-colors font-semibold">
-                    kontakt@omex.pl
+                  <a href="mailto:omexplus@gmail.com" className="text-white hover:text-primary-400 transition-colors font-semibold">
+                    omexplus@gmail.com
                   </a>
                 </div>
               </li>

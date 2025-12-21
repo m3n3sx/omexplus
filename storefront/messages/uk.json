@@ -97,7 +97,8 @@
     "next": "Далі",
     "home": "Головна",
     "continueShopping": "Продовжити покупки",
-    "quantity": "Кількість"
+    "quantity": "Кількість",
+    "viewDetails": "Переглянути деталі"
   },
   "templates": {
     "button": {

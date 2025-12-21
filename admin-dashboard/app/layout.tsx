@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import { ToastProvider } from "@/components/ui/Toast"
+import { ThemeProvider } from "@/contexts/ThemeContext"
 
 export const metadata: Metadata = {
   title: "OMEX Admin Dashboard",
@@ -13,11 +14,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="pl" suppressHydrationWarning>
       <body>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -105,10 +105,15 @@ const config: Config = {
         'xl': '0 20px 25px rgba(0, 0, 0, 0.1)',
       },
       borderRadius: {
-        'sm': '4px',
-        'md': '8px',
-        'lg': '12px',
-        'full': '28px',  // Induxter button radius
+        'none': '0',
+        'sm': '8px',
+        'DEFAULT': '12px',
+        'md': '16px',
+        'lg': '20px',
+        'xl': '24px',
+        '2xl': '3rem',
+        '3xl': '40px',
+        'full': '9999px',
       },
       transitionTimingFunction: {
         'ease-standard': 'cubic-bezier(0.16, 1, 0.3, 1)',

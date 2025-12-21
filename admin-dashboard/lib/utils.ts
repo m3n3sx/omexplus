@@ -22,6 +22,13 @@ export function formatDate(date: string | Date): string {
   }).format(new Date(date))
 }
 
+export function formatCurrency(amount: number, currency: string = "PLN"): string {
+  return new Intl.NumberFormat("pl-PL", {
+    style: "currency",
+    currency: currency,
+  }).format(amount)
+}
+
 export function formatShortDate(date: string | Date): string {
   return new Intl.DateTimeFormat("pl-PL", {
     year: "numeric",

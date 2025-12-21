@@ -2,18 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    @apply border-gray-200;
-  }
-  body {
-    @apply bg-gray-50 text-gray-900;
-  }
+/* Theme colors using CSS variables */
+:root {
+  --bg-primary: #f9fafb;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f3f4f6;
+  --bg-hover: #e5e7eb;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --border-color: #e5e7eb;
+  
+  /* Accent colors */
+  --accent-50: 239 246 255;
+  --accent-100: 219 234 254;
+  --accent-500: 59 130 246;
+  --accent-600: 37 99 235;
+  --accent-700: 29 78 216;
+  --accent-900: 30 58 138;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #030712;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1f2937;
+  --bg-hover: #374151;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #6b7280;
+  --border-color: #374151;
+}
+
+/* Accent color variants */
+[data-accent="blue"] {
+  --accent-50: 239 246 255;
+  --accent-100: 219 234 254;
+  --accent-500: 59 130 246;
+  --accent-600: 37 99 235;
+  --accent-700: 29 78 216;
+  --accent-900: 30 58 138;
+}
+
+[data-accent="green"] {
+  --accent-50: 236 253 245;
+  --accent-100: 209 250 229;
+  --accent-500: 16 185 129;
+  --accent-600: 5 150 105;
+  --accent-700: 4 120 87;
+  --accent-900: 6 78 59;
+}
+
+[data-accent="purple"] {
+  --accent-50: 245 243 255;
+  --accent-100: 237 233 254;
+  --accent-500: 139 92 246;
+  --accent-600: 124 58 237;
+  --accent-700: 109 40 217;
+  --accent-900: 76 29 149;
+}
+
+[data-accent="orange"] {
+  --accent-50: 255 247 237;
+  --accent-100: 255 237 213;
+  --accent-500: 249 115 22;
+  --accent-600: 234 88 12;
+  --accent-700: 194 65 12;
+  --accent-900: 124 45 18;
+}
+
+[data-accent="rose"] {
+  --accent-50: 255 241 242;
+  --accent-100: 255 228 230;
+  --accent-500: 244 63 94;
+  --accent-600: 225 29 72;
+  --accent-700: 190 18 60;
+  --accent-900: 136 19 55;
+}
+
+/* Apply theme colors */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 @layer utilities {
+  /* Theme-aware utilities */
+  .bg-theme-primary { background-color: var(--bg-primary); }
+  .bg-theme-secondary { background-color: var(--bg-secondary); }
+  .bg-theme-tertiary { background-color: var(--bg-tertiary); }
+  .bg-theme-hover { background-color: var(--bg-hover); }
+  .text-theme-primary { color: var(--text-primary); }
+  .text-theme-secondary { color: var(--text-secondary); }
+  .text-theme-muted { color: var(--text-muted); }
+  .border-theme { border-color: var(--border-color); }
+  .divide-theme > :not([hidden]) ~ :not([hidden]) { border-color: var(--border-color); }
+  
+  /* Accent utilities */
+  .bg-accent { background-color: rgb(var(--accent-600)); }
+  .bg-accent-hover:hover { background-color: rgb(var(--accent-700)); }
+  .bg-accent-light { background-color: rgb(var(--accent-50)); }
+  .text-accent { color: rgb(var(--accent-600)); }
+  .border-accent { border-color: rgb(var(--accent-500)); }
+  .ring-accent { --tw-ring-color: rgb(var(--accent-500)); }
+  
   .animate-slide-in {
     animation: slideIn 0.3s ease-out;
+  }
+  
+  /* Scrollbar styling */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 9999px;
+  }
+}
+
+@layer components {
+  .btn-accent {
+    background-color: rgb(var(--accent-600));
+    color: white;
+    transition: background-color 0.2s;
+  }
+  .btn-accent:hover {
+    background-color: rgb(var(--accent-700));
   }
 }
 

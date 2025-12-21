@@ -21,25 +21,25 @@ export default function TopProducts({ products }: TopProductsProps) {
       <CardContent>
         <div className="space-y-4">
           {products.length === 0 ? (
-            <p className="text-sm text-gray-500 text-center py-4">Brak danych o produktach</p>
+            <p className="text-sm text-theme-muted text-center py-4">Brak danych o produktach</p>
           ) : (
             products.map((product, index) => (
               <div key={product.id} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="flex-shrink-0 w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <div className="flex-shrink-0 w-10 h-10 bg-theme-tertiary rounded-lg flex items-center justify-center">
                     {product.thumbnail ? (
                       <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover rounded-lg" />
                     ) : (
-                      <span className="text-gray-500 font-medium">{index + 1}</span>
+                      <span className="text-theme-muted font-medium">{index + 1}</span>
                     )}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{product.title}</p>
-                    <p className="text-xs text-gray-500">{product.sales} sprzedanych</p>
+                    <p className="text-sm font-medium text-theme-primary">{product.title}</p>
+                    <p className="text-xs text-theme-muted">{product.sales} sprzedanych</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-theme-primary">
                     {(product.revenue / 100).toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN
                   </p>
                 </div>

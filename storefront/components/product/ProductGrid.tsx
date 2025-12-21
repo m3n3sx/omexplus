@@ -31,7 +31,7 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-8">
-        <span className="text-6xl mb-4 opacity-50" aria-hidden="true">📦</span>
+        <svg className="w-16 h-16 mb-4 opacity-50 text-secondary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
         <h2 className="text-2xl font-semibold text-gray-900 mb-2">
           Nie znaleziono produktów
         </h2>

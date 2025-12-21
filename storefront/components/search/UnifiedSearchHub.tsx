@@ -101,7 +101,7 @@ export default function UnifiedSearchHub({ onSearch, locale = 'pl' }: UnifiedSea
       </div>
 
       {/* Search Content - Induxter style */}
-      <div className="bg-neutral-50 rounded-lg p-8">
+      <div className="bg-neutral-50 p-8" style={{ borderRadius: '3rem' }}>
         {/* Text Search */}
         {activeMethod === 'text' && (
           <div>
@@ -254,7 +254,7 @@ export default function UnifiedSearchHub({ onSearch, locale = 'pl' }: UnifiedSea
       </div>
 
       {/* Help Section - Induxter style */}
-      <div className="mt-8 bg-secondary-700 rounded-lg p-8">
+      <div className="mt-8 bg-secondary-700 p-8" style={{ borderRadius: '3rem' }}>
         <div className="flex items-start gap-4 mb-6">
           <div className="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

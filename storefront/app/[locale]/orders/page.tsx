@@ -127,7 +127,7 @@ export default function OrdersPage() {
                 padding: '0.5rem 1rem',
                 borderRadius: '0.5rem',
                 border: 'none',
-                backgroundColor: filterStatus === status ? '#3b82f6' : '#f3f4f6',
+                backgroundColor: filterStatus === status ? '#F9580E' : '#f3f4f6',
                 color: filterStatus === status ? 'white' : '#6b7280',
                 fontSize: '0.875rem',
                 fontWeight: '600',
@@ -143,7 +143,20 @@ export default function OrdersPage() {
         {/* Orders List */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+            <div style={{ 
+              width: '80px', 
+              height: '80px', 
+              margin: '0 auto 1rem', 
+              backgroundColor: '#FEF3EE', 
+              borderRadius: '50%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center' 
+            }}>
+              <svg style={{ width: '40px', height: '40px', color: '#F9580E', animation: 'spin 1s linear infinite' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </div>
             <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>{t('common.loading')}</p>
           </div>
         ) : filteredOrders.length === 0 ? (
@@ -153,7 +166,20 @@ export default function OrdersPage() {
             padding: '4rem 2rem',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📦</div>
+            <div style={{ 
+              width: '100px', 
+              height: '100px', 
+              margin: '0 auto 1rem', 
+              backgroundColor: '#FEF3EE', 
+              borderRadius: '50%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center' 
+            }}>
+              <svg style={{ width: '50px', height: '50px', color: '#F9580E' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>
               Brak zamówień
             </h3>
@@ -162,7 +188,7 @@ export default function OrdersPage() {
             </p>
             <Link href={`/${locale}/products`}>
               <button style={{
-                backgroundColor: '#3b82f6',
+                backgroundColor: '#F9580E',
                 color: 'white',
                 padding: '0.75rem 1.5rem',
                 border: 'none',
@@ -189,7 +215,7 @@ export default function OrdersPage() {
                     border: '2px solid transparent'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#3b82f6'
+                    e.currentTarget.style.borderColor = '#F9580E'
                     e.currentTarget.style.transform = 'translateY(-2px)'
                   }}
                   onMouseLeave={(e) => {
@@ -243,14 +269,14 @@ export default function OrdersPage() {
                       <div style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.25rem' }}>
                         {t('cart.total')}
                       </div>
-                      <div style={{ fontWeight: '600', color: '#3b82f6' }}>
+                      <div style={{ fontWeight: '600', color: '#F9580E' }}>
                         {(order.total / 100).toFixed(2)} PLN
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <button style={{
-                        backgroundColor: '#f3f4f6',
-                        color: '#3b82f6',
+                        backgroundColor: '#FEF3EE',
+                        color: '#F9580E',
                         padding: '0.5rem 1rem',
                         border: 'none',
                         borderRadius: '0.375rem',

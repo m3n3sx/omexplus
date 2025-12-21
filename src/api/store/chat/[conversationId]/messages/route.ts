@@ -174,6 +174,13 @@ ${productContext}`
         sender_type: 'bot',
         content: botResponse
       })
+      
+      // Send bot response to Matrix so agents can see it
+      try {
+        await orch.sendBotMessageToMatrix(conversationId, botResponse)
+      } catch (matrixErr) {
+        console.error('[Chat Messages] Matrix bot send error:', matrixErr)
+      }
     }
 
     // Check if should escalate

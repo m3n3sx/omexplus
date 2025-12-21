@@ -95,7 +95,7 @@ export function CTASection({
                 </svg>
                 <div>
                   <div className="text-sm text-white/60">Telefon</div>
-                  <div className="font-semibold">+48 123 456 789</div>
+                  <div className="font-semibold">+48 500 169 060</div>
                 </div>
               </div>
 
@@ -105,7 +105,7 @@ export function CTASection({
                 </svg>
                 <div>
                   <div className="text-sm text-white/60">Email</div>
-                  <div className="font-semibold">kontakt@omex.pl</div>
+                  <div className="font-semibold">omexplus@gmail.com</div>
                 </div>
               </div>
 

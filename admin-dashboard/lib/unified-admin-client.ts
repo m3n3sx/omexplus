@@ -5,7 +5,7 @@
  * Automatycznie invaliduje cache po zmianach
  */
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'https://api.ooxo.pl'
 
 export class AdminAPIError extends Error {
   constructor(
