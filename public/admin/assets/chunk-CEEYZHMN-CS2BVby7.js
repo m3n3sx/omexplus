@@ -1,0 +1,1 @@
+import{aE as y,j as K}from"./index-DX2a82HP.js";var d=y.forwardRef(({onSubmit:a,onKeyDown:o,...s},f)=>{const e=r=>{r.preventDefault(),a==null||a(r)},t=r=>{r.key==="Enter"&&(r.preventDefault(),(r.metaKey||r.ctrlKey)&&e(r))};return K.jsx("form",{...s,onSubmit:e,onKeyDown:o??t,ref:f})});d.displayName="KeyboundForm";export{d as K};

@@ -164,7 +164,7 @@ export function ProductCard({ product, locale = 'pl', onAddToCart, className = '
     <>
       <Link
         href={`/${locale}/products/${product.handle || product.id}`}
-        className={`group relative bg-white rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 block ${className}`}
+        className={`group relative bg-white rounded-lg p-5 shadow-md hover:shadow-xl transition-all duration-300 block ${className}`}
       >
         {/* Orange accent on hover - Induxter style */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-t-2xl"></div>

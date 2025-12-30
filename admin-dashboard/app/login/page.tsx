@@ -4,9 +4,10 @@ import { useState, FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import Input from "@/components/ui/Input"
 import Button from "@/components/ui/Button"
-import { login } from "@/lib/auth"
+import { login, loginWithGoogle } from "@/lib/auth"
 import { ROLE_LABELS, ROLE_COLORS, ROLE_DESCRIPTIONS, Role } from "@/lib/roles"
 import { Shield, Info } from "lucide-react"
+import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton"
 
 // Demo accounts for testing
 const DEMO_ACCOUNTS = [
@@ -42,6 +43,25 @@ export default function LoginPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleGoogleSuccess = async (user: any, token: string) => {
+    try {
+      // Zapisz dane logowania
+      if (loginWithGoogle) {
+        await loginWithGoogle(token, user)
+      } else {
+        localStorage.setItem('admin_token', token)
+        localStorage.setItem('admin_user', JSON.stringify(user))
+      }
+      router.push("/")
+    } catch (err: any) {
+      setError(err.message || "Błąd logowania przez Google")
+    }
+  }
+
+  const handleGoogleError = (errorMsg: string) => {
+    setError(errorMsg)
   }
 
   const quickLogin = (account: typeof DEMO_ACCOUNTS[0]) => {
@@ -96,6 +116,25 @@ export default function LoginPage() {
             {loading ? 'Logowanie...' : 'Zaloguj się'}
           </Button>
         </form>
+
+        {/* Google Login */}
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gray-50 text-gray-500">lub</span>
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <GoogleLoginButton 
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+            />
+          </div>
+        </div>
 
         {/* Demo Accounts Info */}
         <div className="mt-6">

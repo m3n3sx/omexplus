@@ -1,4 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { getDbConnection } from "../../../../lib/db"
 
 // GET /store/cms/menus - Publiczne menu dla frontendu
 export const GET = async (
@@ -6,27 +7,28 @@ export const GET = async (
   res: MedusaResponse
 ) => {
   try {
-    const manager = req.scope.resolve("manager")
+    const client = await getDbConnection()
     const { key, position, locale = 'pl' } = req.query
     
     let query = `SELECT * FROM cms_menu WHERE is_active = true AND locale = $1`
     const params: any[] = [locale]
+    let paramIndex = 2
     
     if (key) {
       params.push(key)
-      query += ` AND key = $${params.length}`
+      query += ` AND key = $${paramIndex++}`
     }
     
     if (position) {
       params.push(position)
-      query += ` AND position = $${params.length}`
+      query += ` AND position = $${paramIndex++}`
     }
     
-    const result = await manager.query(query, params)
+    const result = await client.query(query, params)
     
     // Pobierz items dla każdego menu
     for (const menu of result.rows) {
-      const items = await manager.query(
+      const items = await client.query(
         `SELECT * FROM cms_menu_item 
          WHERE menu_id = $1 AND is_active = true 
          ORDER BY sort_order, label`,
@@ -55,6 +57,8 @@ export const GET = async (
       
       menu.items = rootItems
     }
+    
+    client.release()
     
     // Jeśli szukamy po key, zwróć pojedyncze menu
     if (key && result.rows.length > 0) {

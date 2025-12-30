@@ -107,9 +107,9 @@ export function EnquiryModal({ product, isOpen, onClose }: EnquiryModalProps) {
       />
       
       {/* Modal */}
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-neutral-200 px-6 py-4 rounded-t-3xl">
+        <div className="sticky top-0 bg-white border-b border-neutral-200 px-6 py-4 rounded-t-xl">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-secondary-800">
               Zapytaj o produkt

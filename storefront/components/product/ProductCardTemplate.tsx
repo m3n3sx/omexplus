@@ -88,13 +88,13 @@ export function ProductCardTemplate({ product, locale = 'pl' }: ProductCardTempl
     <>
       <Link
         href={`/${locale}/products/${product.handle}`}
-        className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 block"
+        className="group relative bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 block"
       >
         {/* Orange accent on hover - Induxter style */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 z-10"></div>
         
         {/* Availability Badge */}
-        <div className={`absolute top-3 right-3 z-10 px-2 py-1 rounded-full text-xs font-semibold ${availabilityInfo.bgColor} ${availabilityInfo.color}`}>
+        <div className={`absolute top-3 right-3 z-10 px-2 py-1 rounded-md text-xs font-semibold ${availabilityInfo.bgColor} ${availabilityInfo.color}`}>
           {availabilityInfo.icon} {availabilityInfo.label}
         </div>
         
@@ -142,7 +142,7 @@ export function ProductCardTemplate({ product, locale = 'pl' }: ProductCardTempl
             
             {/* Action Button */}
             {availabilityInfo.canAddToCart ? (
-              <div className="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+              <div className="w-10 h-10 rounded-lg bg-primary-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
@@ -150,7 +150,7 @@ export function ProductCardTemplate({ product, locale = 'pl' }: ProductCardTempl
             ) : (
               <button
                 onClick={handleEnquiryClick}
-                className="px-4 py-2 rounded-xl bg-secondary-700 text-white text-sm font-semibold hover:bg-secondary-800 transition-colors flex items-center gap-2"
+                className="px-4 py-2 rounded-lg bg-secondary-700 text-white text-sm font-semibold hover:bg-secondary-800 transition-colors flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />

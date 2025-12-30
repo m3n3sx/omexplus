@@ -58,6 +58,34 @@ export async function login(email: string, password: string): Promise<AuthUser> 
   }
 }
 
+export async function loginWithGoogle(token: string, googleUser: any): Promise<AuthUser> {
+  try {
+    // Store token
+    localStorage.setItem("medusa_admin_token", token)
+    
+    // Determine role based on email
+    const role: Role = USER_ROLES[googleUser.email?.toLowerCase()] || googleUser.role || 'content'
+    
+    const user: AuthUser = {
+      id: googleUser.id || "google_user",
+      email: googleUser.email,
+      first_name: googleUser.first_name || googleUser.given_name || "",
+      last_name: googleUser.last_name || googleUser.family_name || "",
+      role: role,
+      avatar: googleUser.picture,
+      created_at: new Date().toISOString(),
+    }
+    
+    // Store user data
+    localStorage.setItem("admin_user", JSON.stringify(user))
+    
+    return user
+  } catch (error: any) {
+    console.error("Google login error:", error)
+    throw new Error(error.message || "Google login failed")
+  }
+}
+
 export async function logout(): Promise<void> {
   localStorage.removeItem("medusa_admin_token")
   localStorage.removeItem("admin_user")

@@ -1,38 +1,37 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { MedusaError } from "@medusajs/framework/utils"
+import { getDbConnection } from "../../../../lib/db"
 
-export async function GET(
+// GET /store/cms/pages - Publiczne strony CMS dla frontendu
+export const GET = async (
   req: MedusaRequest,
   res: MedusaResponse
-): Promise<void> {
-  const { slug } = req.query
-  const query = req.scope.resolve("query")
-  
+) => {
   try {
+    const client = await getDbConnection()
+    const { slug, locale = 'pl' } = req.query
+    
+    let query = `SELECT * FROM cms_page WHERE status = 'published' AND locale = $1`
+    const params: any[] = [locale]
+    let paramIndex = 2
+    
     if (slug) {
-      const { data: pages } = await query.graph({
-        entity: "cms_page",
-        fields: ["*"],
-        filters: { slug: slug as string, status: "published" }
-      })
-      
-      if (!pages || pages.length === 0) {
-        res.status(404).json({ message: "Page not found" })
-        return
-      }
-      
-      res.json({ page: pages[0] })
-    } else {
-      const { data: pages } = await query.graph({
-        entity: "cms_page",
-        fields: ["*"],
-        filters: { status: "published" }
-      })
-      
-      res.json({ pages: pages || [] })
+      params.push(slug)
+      query += ` AND slug = $${paramIndex++}`
     }
+    
+    query += ` ORDER BY updated_at DESC`
+    
+    const result = await client.query(query, params)
+    client.release()
+    
+    // Jeśli szukamy po slug, zwróć pojedynczą stronę
+    if (slug && result.rows.length > 0) {
+      return res.json({ page: result.rows[0] })
+    }
+    
+    res.json({ pages: result.rows })
   } catch (error) {
-    console.error("Error fetching pages:", error)
-    res.status(500).json({ message: "Internal server error" })
+    console.error('CMS Pages Store API Error:', error)
+    res.status(500).json({ error: 'Failed to fetch CMS pages' })
   }
 }

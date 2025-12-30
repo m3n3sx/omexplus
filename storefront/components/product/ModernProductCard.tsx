@@ -28,9 +28,9 @@ export function ModernProductCard({ product }: ModernProductCardProps) {
   return (
     <div className="group relative">
       {/* Card */}
-      <div className={`${randomColor} rounded-3xl p-5 transition-all duration-300 hover:scale-105 hover:shadow-2xl`}>
+      <div className={`${randomColor} rounded-xl p-5 transition-all duration-300 hover:scale-105 hover:shadow-2xl`}>
         {/* Image Container */}
-        <Link href={`/pl/products/${product.handle}`} className="block relative aspect-square rounded-2xl overflow-hidden bg-white mb-4">
+        <Link href={`/pl/products/${product.handle}`} className="block relative aspect-square rounded-lg overflow-hidden bg-white mb-4">
           <Image
             src={imageError ? '/placeholder.svg' : thumbnail}
             alt={product.title}

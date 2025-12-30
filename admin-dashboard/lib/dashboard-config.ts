@@ -17,6 +17,7 @@ export type WidgetId =
   | 'stock-alerts'
   | 'calendar-widget'
   | 'tasks-widget'
+  | 'currency-widget'
 
 export interface WidgetConfig {
   id: WidgetId
@@ -48,6 +49,7 @@ export const DEFAULT_WIDGETS: WidgetConfig[] = [
   { id: 'quick-actions', title: 'Szybkie akcje', description: 'Często używane funkcje', size: 'small', order: 9, visible: true, collapsed: false },
   { id: 'stock-alerts', title: 'Alerty magazynowe', description: 'Niskie stany', size: 'medium', order: 10, visible: true, collapsed: false, permission: 'inventory.view' },
   { id: 'tasks-widget', title: 'Moje zadania', description: 'Lista zadań do wykonania', size: 'medium', order: 11, visible: true, collapsed: false },
+  { id: 'currency-widget', title: 'Kursy walut', description: 'EUR, USD, GBP z NBP', size: 'small', order: 12, visible: true, collapsed: false },
 ]
 
 const STORAGE_KEY = 'omex_dashboard_config'

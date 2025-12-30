@@ -63,6 +63,25 @@
     --color-text: #626262;
     --color-neutral: #F9F9F9;
     --color-white: #FFFFFF;
+    
+    /* Unified border radius system */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-3xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Component-specific radius */
+    --radius-button: 8px;
+    --radius-card: 12px;
+    --radius-input: 8px;
+    --radius-badge: 6px;
+    --radius-modal: 16px;
+    --radius-image: 8px;
   }
   
   /* Headings - Gilroy font */
@@ -117,9 +136,10 @@
     max-width: 1200px;
   }
   
-  /* Induxter Buttons - Orange with rounded corners */
+  /* Induxter Buttons - Orange with consistent rounded corners */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-10 py-3.5 rounded-full font-bold transition-all duration-300 text-base;
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3 font-bold transition-all duration-300 text-base;
+    border-radius: var(--radius-button);
   }
   
   .btn-primary {
@@ -134,6 +154,11 @@
     @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white;
   }
   
+  .btn-pill {
+    @apply btn;
+    border-radius: var(--radius-full);
+  }
+  
   /* Induxter Link Button */
   .btn-link {
     @apply text-secondary-700 font-bold transition-all duration-300;
@@ -146,12 +171,26 @@
   
   /* Professional cards - White on light background */
   .card {
-    @apply bg-white rounded-lg p-6 shadow-md hover:shadow-xl transition-all duration-300;
+    @apply bg-white p-6 shadow-md hover:shadow-xl transition-all duration-300;
+    border-radius: var(--radius-card);
+  }
+  
+  /* Input fields */
+  .input {
+    @apply w-full px-4 py-3 border border-neutral-200 focus:border-primary-500 focus:outline-none transition-colors;
+    border-radius: var(--radius-input);
+  }
+  
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-1 text-xs font-medium;
+    border-radius: var(--radius-badge);
   }
   
   /* Orange accent line - Induxter style */
   .accent-line {
-    @apply h-1 bg-primary-500 rounded-sm;
+    @apply h-1 bg-primary-500;
+    border-radius: var(--radius-xs);
   }
   
   /* Section title - Induxter style */
@@ -170,7 +209,8 @@
   
   /* Title span lines - Induxter decorative element */
   .title-span-line span.line {
-    @apply bg-primary-500 h-1 rounded-sm inline-block;
+    @apply bg-primary-500 h-1 inline-block;
+    border-radius: var(--radius-xs);
   }
   
   .title-span-line span.line-1 {
@@ -193,6 +233,17 @@
   
   .light-bg {
     @apply bg-neutral-100;
+  }
+  
+  /* Image containers */
+  .img-rounded {
+    border-radius: var(--radius-image);
+    overflow: hidden;
+  }
+  
+  /* Modal/Dialog */
+  .modal {
+    border-radius: var(--radius-modal);
   }
 }
 

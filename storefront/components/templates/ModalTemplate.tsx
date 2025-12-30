@@ -69,7 +69,7 @@ export function ModalTemplate({
       {/* Modal */}
       <div
         className={`
-          relative bg-white rounded-2xl shadow-2xl w-full ${sizeStyles[size]}
+          relative bg-white rounded-xl shadow-2xl w-full ${sizeStyles[size]}
           max-h-[90vh] flex flex-col
           animate-in fade-in zoom-in duration-200
         `}

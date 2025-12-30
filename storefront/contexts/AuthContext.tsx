@@ -12,6 +12,7 @@ interface AuthContextType {
   loading: boolean
   error: string | null
   login: (email: string, password: string) => Promise<void>
+  loginWithToken: (token: string, user: any) => Promise<void>
   register: (data: RegisterData) => Promise<void>
   logout: () => Promise<void>
   updateCustomer: (data: Partial<Customer>) => Promise<void>
@@ -129,6 +130,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const loginWithToken = async (token: string, user: any) => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      // Store token
+      localStorage.setItem('medusa_auth_token', token)
+      
+      // Set customer data from Google user
+      const customerData: Customer = {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        has_account: true,
+        metadata: {
+          picture: user.picture,
+          google_auth: true
+        }
+      } as Customer
+      
+      setCustomer(customerData)
+      console.log('Google login successful:', customerData)
+    } catch (err: any) {
+      console.error('Google login error:', err)
+      setError(err.message || 'Google login failed')
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const register = async (data: RegisterData) => {
     try {
       setLoading(true)
@@ -238,6 +271,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         error,
         login,
+        loginWithToken,
         register,
         logout,
         updateCustomer,

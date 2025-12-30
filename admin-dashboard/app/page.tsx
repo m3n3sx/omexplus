@@ -14,6 +14,7 @@ import ChatWidget from "@/components/dashboard/widgets/ChatWidget"
 import QuickActionsWidget from "@/components/dashboard/widgets/QuickActionsWidget"
 import StockAlertsWidget from "@/components/dashboard/widgets/StockAlertsWidget"
 import TasksWidget from "@/components/dashboard/widgets/TasksWidget"
+import CurrencyWidget from "@/components/dashboard/widgets/CurrencyWidget"
 import { ShoppingCart, DollarSign, Users, Package, Settings2, Move, Check, RotateCcw } from "lucide-react"
 import api from "@/lib/api-client"
 import { isAuthenticated, getCurrentUser } from "@/lib/auth"
@@ -143,6 +144,7 @@ export default function DashboardPage() {
       case 'quick-actions': return <QuickActionsWidget />
       case 'stock-alerts': return <StockAlertsWidget />
       case 'tasks-widget': return <TasksWidget />
+      case 'currency-widget': return <CurrencyWidget />
       default: return <div className="text-gray-500">Widget niedostępny</div>
     }
   }

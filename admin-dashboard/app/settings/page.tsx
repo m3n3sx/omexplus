@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import DashboardLayout from "@/components/layout/DashboardLayout"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card"
 import Input from "@/components/ui/Input"
 import Button from "@/components/ui/Button"
 import { isAuthenticated } from "@/lib/auth"
-import { Store, CreditCard, Truck, DollarSign, Mail } from "lucide-react"
+import { Store, CreditCard, Truck, DollarSign, Mail, Palette, Users, Shield, Bell, Globe } from "lucide-react"
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -22,11 +23,16 @@ export default function SettingsPage() {
   }, [router])
 
   const tabs = [
-    { id: "store", label: "Store Settings", icon: Store },
-    { id: "payment", label: "Payment", icon: CreditCard },
-    { id: "shipping", label: "Shipping", icon: Truck },
-    { id: "tax", label: "Tax", icon: DollarSign },
+    { id: "store", label: "Sklep", icon: Store },
+    { id: "appearance", label: "Wygląd", icon: Palette, href: "/settings/appearance" },
+    { id: "payment", label: "Płatności", icon: CreditCard },
+    { id: "shipping", label: "Wysyłka", icon: Truck },
+    { id: "tax", label: "Podatki", icon: DollarSign },
     { id: "email", label: "Email", icon: Mail },
+    { id: "notifications", label: "Powiadomienia", icon: Bell },
+    { id: "users", label: "Użytkownicy", icon: Users, href: "/users" },
+    { id: "security", label: "Bezpieczeństwo", icon: Shield },
+    { id: "localization", label: "Lokalizacja", icon: Globe },
   ]
 
   const handleSave = async () => {
@@ -41,8 +47,8 @@ export default function SettingsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-1">Manage your store configuration</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ustawienia</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Zarządzaj konfiguracją sklepu</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -53,14 +59,26 @@ export default function SettingsPage() {
                 <nav className="space-y-1">
                   {tabs.map((tab) => {
                     const Icon = tab.icon
+                    if (tab.href) {
+                      return (
+                        <Link
+                          key={tab.id}
+                          href={tab.href}
+                          className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        >
+                          <Icon className="w-5 h-5 mr-3" />
+                          {tab.label}
+                        </Link>
+                      )
+                    }
                     return (
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                           activeTab === tab.id
-                            ? "bg-primary-50 text-primary-700"
-                            : "text-gray-700 hover:bg-gray-50"
+                            ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                         }`}
                       >
                         <Icon className="w-5 h-5 mr-3" />

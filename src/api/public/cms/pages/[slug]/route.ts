@@ -1,45 +1,32 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { Client } from "pg"
+import { getDbConnection } from "../../../../../lib/db"
 
+// GET /public/cms/pages/:slug - Pobierz stronę po slug
 export async function GET(
   req: MedusaRequest,
   res: MedusaResponse
 ): Promise<void> {
-  const { slug } = req.params
-  
   try {
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL
-    })
+    const { slug } = req.params
+    const locale = (req.query.locale as string) || 'pl'
+    const client = await getDbConnection()
     
-    await client.connect()
-    const result = await client.query(`
-      SELECT 
-        id, slug, title, meta_description, meta_keywords,
-        content, template, status, locale, published_at, 
-        seo_title, seo_image, metadata,
-        created_at, updated_at
-      FROM cms_page
-      WHERE slug = $1 AND status = 'published'
-    `, [slug])
-    await client.end()
+    // Sprawdź w cms_page
+    const result = await client.query(
+      `SELECT * FROM cms_page WHERE slug = $1 AND locale = $2 AND status = 'published'`,
+      [slug, locale]
+    )
     
-    if (result.rows.length === 0) {
-      res.status(404).json({ message: "Page not found" })
+    client.release()
+    
+    if (result.rows.length > 0) {
+      res.json({ page: result.rows[0] })
       return
     }
     
-    const page = {
-      ...result.rows[0],
-      is_published: result.rows[0].status === 'published'
-    }
-    
-    res.json({ page })
-  } catch (error: any) {
-    console.error("Error fetching CMS page by slug:", error)
-    res.status(500).json({ 
-      message: "Internal server error", 
-      error: error?.message || String(error) 
-    })
+    res.json({ page: null })
+  } catch (error) {
+    console.error("Error fetching CMS page:", error)
+    res.json({ page: null })
   }
 }

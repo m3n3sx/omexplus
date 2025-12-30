@@ -186,16 +186,26 @@ export const api = {
   },
   
   createPage: async (data: any) => {
+    // Map is_published to status
+    const payload = {
+      ...data,
+      status: data.is_published ? 'published' : 'draft'
+    }
     return apiRequest("/admin/cms/pages", {
       method: "POST",
-      body: data,
+      body: payload,
     })
   },
   
   updatePage: async (id: string, data: any) => {
+    // Map is_published to status
+    const payload = {
+      ...data,
+      status: data.is_published ? 'published' : 'draft'
+    }
     return apiRequest(`/admin/cms/pages/${id}`, {
       method: "POST",
-      body: data,
+      body: payload,
     })
   },
   
@@ -254,13 +264,13 @@ export const api = {
     })
   },
   
-  // Translations
+  // Translations (using public endpoints - no auth required)
   getTranslations: async (type: 'product' | 'category', entityId: string) => {
-    return apiRequest(`/admin/translations?type=${type}&entity_id=${entityId}`)
+    return apiRequest(`/public/translations?type=${type}&entity_id=${entityId}`)
   },
   
   getTranslation: async (type: 'product' | 'category', entityId: string, locale: string) => {
-    return apiRequest(`/admin/translations?type=${type}&entity_id=${entityId}&locale=${locale}`)
+    return apiRequest(`/public/translations?type=${type}&entity_id=${entityId}&locale=${locale}`)
   },
   
   saveTranslation: async (data: {
@@ -269,7 +279,7 @@ export const api = {
     locale: string
     data: any
   }) => {
-    return apiRequest("/admin/translations", {
+    return apiRequest("/public/translations", {
       method: "POST",
       body: data,
     })
@@ -282,14 +292,14 @@ export const api = {
     target_locales?: string[]
     source_data: any
   }) => {
-    return apiRequest("/admin/translations/auto-translate", {
+    return apiRequest("/public/translations/auto-translate", {
       method: "POST",
       body: data,
     })
   },
   
   deleteTranslation: async (type: 'product' | 'category', entityId: string, locale: string) => {
-    return apiRequest("/admin/translations", {
+    return apiRequest("/public/translations", {
       method: "DELETE",
       body: { type, entity_id: entityId, locale },
     })
@@ -298,11 +308,31 @@ export const api = {
   // Chat / Conversations
   getConversations: async (params?: any) => {
     const query = new URLSearchParams(params).toString()
-    return apiRequest(`/admin/chat/conversations${query ? `?${query}` : ""}`)
+    // Use store API for chat conversations (no admin auth required)
+    const url = `${BACKEND_URL}/store/chat/conversations${query ? `?${query}` : ""}`
+    const response = await fetch(url, {
+      headers: {
+        "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "",
+      },
+    })
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.status}`)
+    }
+    return response.json()
   },
 
   getConversation: async (id: string) => {
-    return apiRequest(`/admin/chat/conversations/${id}`)
+    // Use store API for chat conversations
+    const url = `${BACKEND_URL}/store/chat/conversations/${id}`
+    const response = await fetch(url, {
+      headers: {
+        "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "",
+      },
+    })
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.status}`)
+    }
+    return response.json()
   },
 
   // Machines
@@ -332,6 +362,12 @@ export const api = {
   deleteMachine: async (id: string) => {
     return apiRequest(`/admin/machines/${id}`, {
       method: "DELETE",
+    })
+  },
+
+  enrichMachine: async (id: string) => {
+    return apiRequest(`/admin/machines/${id}/enrich`, {
+      method: "POST",
     })
   },
 }

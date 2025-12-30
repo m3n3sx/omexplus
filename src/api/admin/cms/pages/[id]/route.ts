@@ -1,32 +1,25 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { Client } from "pg"
+import { getDbConnection } from "../../../../../lib/db"
 
-export async function GET(
+// GET /admin/cms/pages/:id - Pobierz pojedynczą stronę
+export const GET = async (
   req: MedusaRequest,
   res: MedusaResponse
-): Promise<void> {
-  const { id } = req.params
-  
+) => {
   try {
-    const { Client } = require('pg')
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL
-    })
+    const { id } = req.params
+    const client = await getDbConnection()
     
-    await client.connect()
-    const result = await client.query(`
-      SELECT 
-        id, slug, title, meta_description, content, 
-        template, status, locale, published_at, 
-        created_at, updated_at
-      FROM cms_page
-      WHERE id = $1
-    `, [id])
-    await client.end()
+    // Try to find by ID or slug
+    const result = await client.query(
+      `SELECT * FROM cms_page WHERE id = $1 OR slug = $1`,
+      [id]
+    )
+    
+    client.release()
     
     if (result.rows.length === 0) {
-      res.status(404).json({ message: "Page not found" })
-      return
+      return res.status(404).json({ error: "Page not found" })
     }
     
     const page = {
@@ -35,118 +28,99 @@ export async function GET(
     }
     
     res.json({ page })
-  } catch (error: any) {
-    console.error("Error fetching CMS page:", error)
-    res.status(500).json({ 
-      message: "Internal server error", 
-      error: error?.message || String(error) 
-    })
+  } catch (error) {
+    console.error('CMS Page Get Error:', error)
+    res.status(500).json({ error: 'Failed to fetch page' })
   }
 }
 
-export async function POST(
+// POST /admin/cms/pages/:id - Aktualizuj stronę (używamy POST zamiast PUT dla kompatybilności)
+export const POST = async (
   req: MedusaRequest,
   res: MedusaResponse
-): Promise<void> {
-  const { id } = req.params
-  const data = req.body
-  
+) => {
   try {
-    const { Client } = require('pg')
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL
-    })
+    const { id } = req.params
+    const { 
+      slug, title, meta_description, meta_keywords, content, 
+      template, status, locale, seo_title, seo_image, metadata 
+    } = req.body as any
+    const client = await getDbConnection()
     
-    await client.connect()
+    // Check if status changed to published
+    const currentPage = await client.query(`SELECT status FROM cms_page WHERE id = $1 OR slug = $1`, [id])
+    const wasPublished = currentPage.rows[0]?.status === 'published'
+    const isNowPublished = status === 'published'
     
-    // Check if page exists
-    const checkResult = await client.query('SELECT id FROM cms_page WHERE id = $1', [id])
-    if (checkResult.rows.length === 0) {
-      await client.end()
-      res.status(404).json({ message: "Page not found" })
-      return
-    }
-    
-    // Build update query
-    const updates = []
-    const values = []
-    let paramIndex = 1
-    
-    if (data.slug) {
-      updates.push(`slug = $${paramIndex++}`)
-      values.push(data.slug)
-    }
-    if (data.title) {
-      updates.push(`title = $${paramIndex++}`)
-      values.push(data.title)
-    }
-    if (data.content !== undefined) {
-      updates.push(`content = $${paramIndex++}::jsonb`)
-      values.push(JSON.stringify(data.content))
-    }
-    if (data.is_published !== undefined) {
-      updates.push(`status = $${paramIndex++}`)
-      values.push(data.is_published ? 'published' : 'draft')
-      updates.push(`published_at = $${paramIndex++}`)
-      values.push(data.is_published ? new Date() : null)
-    }
-    if (data.locale) {
-      updates.push(`locale = $${paramIndex++}`)
-      values.push(data.locale)
-    }
-    if (data.description !== undefined) {
-      updates.push(`meta_description = $${paramIndex++}`)
-      values.push(data.description)
-    }
-    
-    updates.push(`updated_at = NOW()`)
-    values.push(id)
-    
-    await client.query(
-      `UPDATE cms_page SET ${updates.join(', ')} WHERE id = $${paramIndex}`,
-      values
+    const result = await client.query(
+      `UPDATE cms_page SET 
+        slug = COALESCE($2, slug),
+        title = COALESCE($3, title),
+        meta_description = COALESCE($4, meta_description),
+        meta_keywords = COALESCE($5, meta_keywords),
+        content = COALESCE($6, content),
+        template = COALESCE($7, template),
+        status = COALESCE($8, status),
+        locale = COALESCE($9, locale),
+        seo_title = COALESCE($10, seo_title),
+        seo_image = COALESCE($11, seo_image),
+        metadata = COALESCE($12, metadata),
+        published_at = CASE WHEN $8 = 'published' AND status != 'published' THEN NOW() ELSE published_at END,
+        updated_at = NOW()
+       WHERE id = $1 OR slug = $1
+       RETURNING *`,
+      [
+        id,
+        slug,
+        title,
+        meta_description,
+        meta_keywords,
+        content ? JSON.stringify(content) : null,
+        template,
+        status,
+        locale,
+        seo_title,
+        seo_image,
+        metadata ? JSON.stringify(metadata) : null
+      ]
     )
     
-    // Fetch updated page
-    const result = await client.query('SELECT * FROM cms_page WHERE id = $1', [id])
-    await client.end()
+    client.release()
     
-    const page = {
-      ...result.rows[0],
-      is_published: result.rows[0].status === 'published'
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Page not found" })
     }
     
-    res.json({ page, message: "Page updated successfully" })
-  } catch (error: any) {
-    console.error("Error updating page:", error)
-    res.status(500).json({ 
-      message: "Internal server error", 
-      error: error?.message || String(error) 
-    })
+    res.json({ page: result.rows[0] })
+  } catch (error) {
+    console.error('CMS Page Update Error:', error)
+    res.status(500).json({ error: 'Failed to update page' })
   }
 }
 
-export async function DELETE(
+// DELETE /admin/cms/pages/:id - Usuń stronę
+export const DELETE = async (
   req: MedusaRequest,
   res: MedusaResponse
-): Promise<void> {
-  const { id } = req.params
-  
+) => {
   try {
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL
-    })
+    const { id } = req.params
+    const client = await getDbConnection()
     
-    await client.connect()
-    await client.query('DELETE FROM cms_page WHERE id = $1', [id])
-    await client.end()
+    const result = await client.query(
+      `DELETE FROM cms_page WHERE id = $1 OR slug = $1 RETURNING id`,
+      [id]
+    )
     
-    res.json({ message: "Page deleted successfully" })
-  } catch (error: any) {
-    console.error("Error deleting page:", error)
-    res.status(500).json({ 
-      message: "Internal server error", 
-      error: error?.message || String(error) 
-    })
+    client.release()
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Page not found" })
+    }
+    
+    res.json({ success: true, id: result.rows[0].id })
+  } catch (error) {
+    console.error('CMS Page Delete Error:', error)
+    res.status(500).json({ error: 'Failed to delete page' })
   }
 }

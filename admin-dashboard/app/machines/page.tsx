@@ -10,7 +10,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner"
 import { useToast } from "@/components/ui/Toast"
 import { isAuthenticated } from "@/lib/auth"
 import { apiClient } from "@/lib/api-client"
-import { Search, Plus, Edit, Trash2, Truck, Filter, X, Check } from "lucide-react"
+import { Search, Plus, Edit, Trash2, Truck, Filter, X, Check, Eye } from "lucide-react"
 
 interface Machine {
   id: string
@@ -251,6 +251,14 @@ export default function MachinesPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => router.push(`/machines/${machine.id}`)}
+                        title="Szczegóły"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
                       <Button
                         size="sm"
                         variant="ghost"

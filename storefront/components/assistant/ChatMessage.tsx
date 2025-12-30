@@ -127,7 +127,7 @@ export function ChatMessage({ message, language }: ChatMessageProps) {
 
         {/* Message Bubble */}
         <div>
-          <div className={`px-4 py-3 rounded-2xl ${
+          <div className={`px-4 py-3 rounded-lg ${
             isUser 
               ? 'bg-primary-600 text-white rounded-tr-none' 
               : 'bg-white border border-neutral-200 text-neutral-900 rounded-tl-none'

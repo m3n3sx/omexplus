@@ -163,7 +163,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all ${
+          className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
             dragActive 
               ? 'border-primary-500 bg-primary-50' 
               : 'border-neutral-300 bg-white hover:border-primary-400 hover:bg-neutral-50'
@@ -213,17 +213,17 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
       ) : (
         <div>
           {/* Image Preview with Analysis */}
-          <div className="border-2 border-primary-200 rounded-3xl p-6 bg-white mb-6">
+          <div className="border-2 border-primary-200 rounded-xl p-6 bg-white mb-6">
             <div className="flex gap-6 items-start">
               {/* Image */}
               <div className="relative">
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="w-48 h-48 object-contain rounded-2xl border-2 border-neutral-200"
+                  className="w-48 h-48 object-contain rounded-lg border-2 border-neutral-200"
                 />
                 {analysis && (
-                  <div className="absolute -bottom-2 -right-2 bg-primary-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <div className="absolute -bottom-2 -right-2 bg-primary-500 text-white text-xs font-bold px-2 py-1 rounded-md">
                     {Math.round(analysis.confidence * 100)}%
                   </div>
                 )}
@@ -305,7 +305,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
         <div className="mt-6 space-y-6">
           {/* AI Analysis Results */}
           {analysis && (
-            <div className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-2xl">
+            <div className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg">
               <div className="flex items-center gap-2 mb-4">
                 <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -347,7 +347,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
 
           {/* OCR Results */}
           {ocrResults && ocrResults.partNumbers.length > 0 && (
-            <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl">
+            <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg">
               <div className="flex items-center gap-2 mb-4">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
@@ -378,7 +378,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
 
           {/* Search Suggestions */}
           {searchResults.suggestions && searchResults.suggestions.length > 0 && (
-            <div className="p-6 bg-neutral-50 border-2 border-neutral-200 rounded-2xl">
+            <div className="p-6 bg-neutral-50 border-2 border-neutral-200 rounded-lg">
               <h4 className="text-sm font-bold text-secondary-700 mb-3">Sugerowane wyszukiwania:</h4>
               <div className="flex gap-2 flex-wrap">
                 {searchResults.suggestions.map((term: string, index: number) => (
@@ -405,7 +405,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
                   <a
                     key={index}
                     href={`/pl/products/${part.handle}`}
-                    className="p-4 border-2 border-neutral-200 rounded-2xl bg-white hover:border-primary-300 hover:shadow-md transition-all group"
+                    className="p-4 border-2 border-neutral-200 rounded-lg bg-white hover:border-primary-300 hover:shadow-md transition-all group"
                   >
                     {part.thumbnail && (
                       <img
@@ -436,7 +436,7 @@ export default function VisualSearch({ onSearch }: VisualSearchProps) {
           {/* No Results */}
           {(!searchResults.similarParts || searchResults.similarParts.length === 0) && 
            (!ocrResults || ocrResults.partNumbers.length === 0) && (
-            <div className="p-8 text-center bg-neutral-50 rounded-2xl">
+            <div className="p-8 text-center bg-neutral-50 rounded-lg">
               <svg className="w-16 h-16 mx-auto mb-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>

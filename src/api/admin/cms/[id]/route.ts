@@ -1,4 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { getDbConnection } from "../../../../lib/db"
 
 // GET /admin/cms/:id - Pobierz pojedynczy element
 export const GET = async (
@@ -7,12 +8,14 @@ export const GET = async (
 ) => {
   try {
     const { id } = req.params
-    const manager = req.scope.resolve("manager")
+    const client = await getDbConnection()
     
-    const result = await manager.query(
+    const result = await client.query(
       `SELECT * FROM cms_content WHERE id = $1`,
       [id]
     )
+    
+    client.release()
     
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Content not found" })
@@ -32,21 +35,38 @@ export const PUT = async (
 ) => {
   try {
     const { id } = req.params
-    const updates = req.body
-    const manager = req.scope.resolve("manager")
+    const { key, type, name, description, content, is_active, sort_order, locale, metadata } = req.body as any
+    const client = await getDbConnection()
     
-    // Build update query dynamically
-    const fields = Object.keys(updates)
-    const values = Object.values(updates).map(v => 
-      typeof v === 'object' ? JSON.stringify(v) : v
+    const result = await client.query(
+      `UPDATE cms_content SET 
+        key = COALESCE($2, key),
+        type = COALESCE($3, type),
+        name = COALESCE($4, name),
+        description = COALESCE($5, description),
+        content = COALESCE($6, content),
+        is_active = COALESCE($7, is_active),
+        sort_order = COALESCE($8, sort_order),
+        locale = COALESCE($9, locale),
+        metadata = COALESCE($10, metadata),
+        updated_at = NOW()
+       WHERE id = $1 
+       RETURNING *`,
+      [
+        id,
+        key,
+        type,
+        name,
+        description,
+        content ? JSON.stringify(content) : null,
+        is_active,
+        sort_order,
+        locale,
+        metadata ? JSON.stringify(metadata) : null
+      ]
     )
     
-    const setClause = fields.map((field, i) => `${field} = $${i + 2}`).join(', ')
-    
-    const result = await manager.query(
-      `UPDATE cms_content SET ${setClause}, updated_at = NOW() WHERE id = $1 RETURNING *`,
-      [id, ...values]
-    )
+    client.release()
     
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Content not found" })
@@ -66,12 +86,14 @@ export const DELETE = async (
 ) => {
   try {
     const { id } = req.params
-    const manager = req.scope.resolve("manager")
+    const client = await getDbConnection()
     
-    const result = await manager.query(
+    const result = await client.query(
       `DELETE FROM cms_content WHERE id = $1 RETURNING id`,
       [id]
     )
+    
+    client.release()
     
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Content not found" })

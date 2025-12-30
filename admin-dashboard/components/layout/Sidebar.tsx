@@ -30,7 +30,8 @@ import {
   Truck,
   ChevronLeft,
   ChevronRight,
-  ChevronDown
+  ChevronDown,
+  Megaphone
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getCurrentUser, getRoleLabel } from "@/lib/auth"
@@ -55,6 +56,7 @@ const navigationSections: NavSection[] = [
     items: [
       { name: "Dashboard", href: "/", icon: LayoutDashboard },
       { name: "Analityka", href: "/analytics", icon: BarChart3, permission: 'analytics.view' },
+      { name: "Marketing", href: "/marketing", icon: Megaphone, permission: 'analytics.view' },
     ]
   },
   {
