@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { isAuthenticated } from '@/lib/auth'
 import { 
   Search, Globe, FileText, TrendingUp, Settings, Save, 
   RefreshCw, ExternalLink, CheckCircle, AlertCircle, Info,
   Edit, Eye, Tag, Image, Link2, BarChart3, Sparkles,
-  ChevronRight, Package, FolderTree, FileQuestion
+  ChevronRight, Package, FolderTree, FileQuestion, Wand2
 } from 'lucide-react'
 
 const STOREFRONT_URL = process.env.NEXT_PUBLIC_STOREFRONT_URL || 'https://ooxo.pl'
@@ -199,11 +200,11 @@ export default function SEOPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-5 text-white">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl p-5 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-sm">SEO Score</p>
+                <p className="text-purple-100 text-sm">SEO Score</p>
                 <p className="text-4xl font-bold mt-1">{seoScore}%</p>
               </div>
               <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
@@ -250,6 +251,23 @@ export default function SEOPage() {
               </div>
             </div>
           </div>
+
+          {/* AI Bulk Generator Card */}
+          <Link 
+            href="/seo/bulk-generate"
+            className="bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 rounded-xl p-5 border border-purple-200 dark:border-purple-800 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg">
+                <Wand2 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-purple-700 dark:text-purple-300 text-sm font-medium">AI Generator</p>
+                <p className="text-lg font-bold">Bulk SEO</p>
+                <p className="text-xs text-purple-600">Generuj masowo →</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* Tabs & Search */}
@@ -404,14 +422,40 @@ function SEOEditModal({ item, onClose, onSave }: { item: SEOData, onClose: () =>
   const generateWithAI = async () => {
     setAiLoading(true)
     try {
-      // Simulate AI generation
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      setData({
-        ...data,
-        title: `${item.name} - Części do maszyn budowlanych | OMEX`,
-        description: `Sprawdź ${item.name.toLowerCase()} w sklepie OMEX. Wysokiej jakości części zamienne do maszyn budowlanych. Szybka dostawa, konkurencyjne ceny. Zamów teraz!`,
-        keywords: `${item.name.toLowerCase()}, części zamienne, maszyny budowlane, OMEX`
+      const action = item.type === 'product' 
+        ? 'generateProductSEO' 
+        : item.type === 'category' 
+          ? 'generateCategorySEO' 
+          : 'generatePageSEO'
+
+      const response = await fetch('/api/ai-seo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,
+          data: {
+            title: item.name,
+            description: data.description,
+            category: item.type === 'product' ? 'Części do maszyn' : undefined,
+          }
+        })
       })
+
+      const result = await response.json()
+
+      if (result.success && result.result) {
+        setData({
+          ...data,
+          title: result.result.metaTitle || data.title,
+          description: result.result.metaDescription || data.description,
+          keywords: result.result.keywords?.join(', ') || data.keywords,
+        })
+      } else {
+        throw new Error(result.error || 'Błąd generowania')
+      }
+    } catch (error) {
+      console.error('AI generation error:', error)
+      alert('Błąd generowania AI. Sprawdź konfigurację GEMINI_API_KEY.')
     } finally {
       setAiLoading(false)
     }

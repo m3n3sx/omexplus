@@ -6,6 +6,7 @@ import { logout, getCurrentUser } from "@/lib/auth"
 import Link from "next/link"
 import api from "@/lib/api-client"
 import ThemeSwitcher from "./ThemeSwitcher"
+import GlobalSearch from "./GlobalSearch"
 
 interface Notification {
   id: string
@@ -55,9 +56,10 @@ export default function Header() {
       const readIds = JSON.parse(localStorage.getItem(NOTIFICATIONS_KEY) || '[]')
       const notifs: Notification[] = []
 
+      // Wrap in try-catch to handle network errors gracefully
       try {
         const ordersRes = await api.getOrders({ limit: 10 })
-        const recentOrders = (ordersRes.orders || []).filter((o: any) => {
+        const recentOrders = (ordersRes?.orders || []).filter((o: any) => {
           const created = new Date(o.created_at)
           const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
           return created > dayAgo
@@ -75,7 +77,8 @@ export default function Header() {
           })
         })
       } catch (e) {
-        console.error('Failed to load orders for notifications:', e)
+        // Silently fail - backend might not be available
+        console.warn('Failed to load orders for notifications:', e)
       }
 
       try {
@@ -155,14 +158,7 @@ export default function Header() {
     <header className="bg-theme-secondary border-b border-theme h-16">
       <div className="flex items-center justify-between h-full px-6">
         <div className="flex items-center flex-1 max-w-2xl">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-muted" />
-            <input
-              type="text"
-              placeholder="Szukaj zamówień, produktów, klientów..."
-              className="w-full pl-10 pr-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-            />
-          </div>
+          <GlobalSearch />
         </div>
         
         <div className="flex items-center space-x-2 ml-6">

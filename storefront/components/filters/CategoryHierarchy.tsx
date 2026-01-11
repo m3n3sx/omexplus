@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useLocale, useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Category {
   id: string
@@ -15,18 +15,20 @@ interface Category {
 
 interface CategoryHierarchyProps {
   currentCategory: Category
+  rootCategory: Category
   allSubcategories: Category[]
   onCategorySelect?: (categoryId: string) => void
 }
 
 export function CategoryHierarchy({ 
   currentCategory, 
+  rootCategory,
   allSubcategories,
   onCategorySelect 
 }: CategoryHierarchyProps) {
   const locale = useLocale()
   const t = useTranslations('templates.category')
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([currentCategory.id]))
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([rootCategory.id, currentCategory.id]))
 
   // Build hierarchy tree
   const buildHierarchy = (categories: Category[], parentId: string | null = null): Category[] => {
@@ -108,20 +110,43 @@ export function CategoryHierarchy({
     )
   }
 
-  // Build the hierarchy starting from current category
-  const hierarchy = buildHierarchy(allSubcategories, currentCategory.id)
+  // Build the hierarchy starting from root category (not current)
+  const hierarchy = buildHierarchy(allSubcategories, rootCategory.id)
+
+  // Auto-expand path to current category
+  useEffect(() => {
+    const newExpanded = new Set<string>([rootCategory.id])
+    
+    // Find and expand all ancestors of current category
+    const findAncestors = (categoryId: string) => {
+      const cat = allSubcategories.find(c => c.id === categoryId)
+      if (cat?.parent_category_id) {
+        newExpanded.add(cat.parent_category_id)
+        findAncestors(cat.parent_category_id)
+      }
+    }
+    
+    findAncestors(currentCategory.id)
+    newExpanded.add(currentCategory.id)
+    setExpandedCategories(newExpanded)
+  }, [currentCategory.id, rootCategory.id, allSubcategories])
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <h3 className="text-lg font-bold text-neutral-900 mb-4">{t('categories')}</h3>
       
-      {/* Current category */}
+      {/* Root category */}
       <div className="mb-2">
-        <div className="py-2 px-3 bg-secondary-50 rounded-md">
-          <div className="text-sm font-bold text-secondary-700">
-            {currentCategory.name}
-          </div>
-        </div>
+        <Link
+          href={`/${locale}/categories/${rootCategory.slug}`}
+          className={`block py-2 px-3 rounded-md transition-colors ${
+            currentCategory.id === rootCategory.id
+              ? 'bg-secondary-50 text-secondary-700 font-bold'
+              : 'hover:bg-neutral-50 text-neutral-700 font-semibold'
+          }`}
+        >
+          {rootCategory.name}
+        </Link>
       </div>
 
       {/* Subcategories */}

@@ -1,8 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { Cart, LineItem } from '@/types'
-import medusaClient from '@/lib/medusa'
+import { Cart } from '@/types'
 
 interface CartContextType {
   cart: Cart | null
@@ -22,26 +21,71 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
+// API helper for cart operations
+// Hardcoded for reliability - env vars can be undefined in client components
+const BACKEND_URL = 'http://localhost:9000'
+const API_KEY = 'pk_c70e4aeb4dfff475873e37bbeb633670a95b4246e07eb7fa7e10beecfdf66cf0'
+const REGION_ID = 'reg_01KBDXHQAFG1GS7F3WH2680KP0'
+
+async function cartApi(endpoint: string, options: RequestInit = {}) {
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    'x-publishable-api-key': API_KEY,
+    ...options.headers,
+  }
+
+  const url = `${BACKEND_URL}${endpoint}`
+  console.log(`🛒 Cart API: ${options.method || 'GET'} ${url}`)
+  console.log(`🔑 API Key: ${API_KEY ? API_KEY.substring(0, 20) + '...' : 'MISSING'}`)
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    })
+
+    const responseText = await response.text()
+    console.log(`📦 Cart API Response (${response.status}):`, responseText.substring(0, 300))
+
+    if (!response.ok) {
+      let errorMsg = `HTTP ${response.status}`
+      try {
+        const error = JSON.parse(responseText)
+        errorMsg = error.message || error.error || errorMsg
+      } catch {}
+      console.error(`❌ Cart API Error:`, errorMsg)
+      throw new Error(errorMsg)
+    }
+
+    try {
+      return JSON.parse(responseText)
+    } catch {
+      return {}
+    }
+  } catch (fetchError: any) {
+    console.error(`❌ Fetch Error:`, fetchError.message)
+    throw fetchError
+  }
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
 
-  // Set mounted state
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Load cart on mount
   useEffect(() => {
-    // Only run on client side after mount
     if (!mounted || typeof window === 'undefined') return
     
     const cartId = localStorage.getItem('cart_id')
     if (cartId) {
       loadCart(cartId).catch((err) => {
         console.log('Cart load failed, will create new cart on first add:', err.message)
+        localStorage.removeItem('cart_id')
       })
     }
   }, [mounted])
@@ -50,18 +94,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true)
       setError(null)
-      const response = await medusaClient.carts.retrieve(cartId)
-      setCart(response.cart as Cart)
+      const data = await cartApi(`/store/carts/${cartId}`)
+      setCart(data.cart as Cart)
     } catch (err: any) {
       console.error('Failed to load cart:', err)
-      // If cart not found or network error, clear localStorage
-      if (err.response?.status === 404 || err.message?.includes('Network')) {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('cart_id')
-        }
-        setCart(null)
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('cart_id')
       }
-      setError(err.message)
+      setCart(null)
+      throw err
     } finally {
       setLoading(false)
     }
@@ -69,10 +110,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const createCart = async () => {
     try {
-      const response = await medusaClient.carts.create({
-        region_id: 'reg_01KBDXHQAFG1GS7F3WH2680KP0' // Europe region with Poland
+      const data = await cartApi('/store/carts', {
+        method: 'POST',
+        body: JSON.stringify({ region_id: REGION_ID }),
       })
-      const newCart = response.cart as Cart
+      
+      const newCart = data.cart as Cart
       setCart(newCart)
       if (typeof window !== 'undefined') {
         localStorage.setItem('cart_id', newCart.id)
@@ -95,12 +138,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
         currentCart = await createCart()
       }
 
-      const response = await medusaClient.carts.lineItems.create(currentCart.id, {
-        variant_id: variantId,
-        quantity,
+      const data = await cartApi(`/store/carts/${currentCart.id}/line-items`, {
+        method: 'POST',
+        body: JSON.stringify({
+          variant_id: variantId,
+          quantity,
+        }),
       })
 
-      setCart(response.cart as Cart)
+      setCart(data.cart as Cart)
     } catch (err: any) {
       console.error('Failed to add item:', err)
       setError(err.message)
@@ -117,11 +163,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setLoading(true)
       setError(null)
 
-      const response = await medusaClient.carts.lineItems.update(cart.id, lineId, {
-        quantity,
+      const data = await cartApi(`/store/carts/${cart.id}/line-items/${lineId}`, {
+        method: 'POST',
+        body: JSON.stringify({ quantity }),
       })
 
-      setCart(response.cart as Cart)
+      setCart(data.cart as Cart)
     } catch (err: any) {
       console.error('Failed to update item:', err)
       setError(err.message)
@@ -138,8 +185,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setLoading(true)
       setError(null)
 
-      const response = await medusaClient.carts.lineItems.delete(cart.id, lineId)
-      setCart(response.cart as Cart)
+      const data = await cartApi(`/store/carts/${cart.id}/line-items/${lineId}`, {
+        method: 'DELETE',
+      })
+      
+      setCart(data.cart as Cart)
     } catch (err: any) {
       console.error('Failed to remove item:', err)
       setError(err.message)
@@ -151,7 +201,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setCart(null)
-    localStorage.removeItem('cart_id')
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cart_id')
+    }
   }
 
   const refreshCart = async () => {
@@ -165,10 +217,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setLoading(true)
-      const response = await medusaClient.carts.update(cart.id, {
-        shipping_address: address,
+      const data = await cartApi(`/store/carts/${cart.id}`, {
+        method: 'POST',
+        body: JSON.stringify({ shipping_address: address }),
       })
-      setCart(response.cart as Cart)
+      setCart(data.cart as Cart)
     } catch (err: any) {
       console.error('Failed to set shipping address:', err)
       setError(err.message)
@@ -183,10 +236,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setLoading(true)
-      const response = await medusaClient.carts.update(cart.id, {
-        billing_address: address,
+      const data = await cartApi(`/store/carts/${cart.id}`, {
+        method: 'POST',
+        body: JSON.stringify({ billing_address: address }),
       })
-      setCart(response.cart as Cart)
+      setCart(data.cart as Cart)
     } catch (err: any) {
       console.error('Failed to set billing address:', err)
       setError(err.message)
@@ -201,10 +255,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setLoading(true)
-      const response = await medusaClient.carts.addShippingMethod(cart.id, {
-        option_id: optionId,
+      const data = await cartApi(`/store/carts/${cart.id}/shipping-methods`, {
+        method: 'POST',
+        body: JSON.stringify({ option_id: optionId }),
       })
-      setCart(response.cart as Cart)
+      setCart(data.cart as Cart)
     } catch (err: any) {
       console.error('Failed to add shipping method:', err)
       setError(err.message)
@@ -219,12 +274,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     try {
       setLoading(true)
-      const response = await medusaClient.carts.complete(cart.id)
+      const data = await cartApi(`/store/carts/${cart.id}/complete`, {
+        method: 'POST',
+      })
       
-      // Clear cart after successful completion
       clearCart()
-      
-      return response
+      return data
     } catch (err: any) {
       console.error('Failed to complete cart:', err)
       setError(err.message)

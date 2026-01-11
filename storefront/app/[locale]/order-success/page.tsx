@@ -3,231 +3,276 @@
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useCartContext } from '@/contexts/CartContext'
+
+interface OrderData {
+  id: string
+  display_id?: number
+  email?: string
+  total?: number
+  shipping_address?: {
+    first_name?: string
+    last_name?: string
+    address_1?: string
+    city?: string
+    postal_code?: string
+  }
+  items?: Array<{
+    id: string
+    title: string
+    quantity: number
+    unit_price: number
+  }>
+  created_at?: string
+}
 
 export default function OrderSuccessPage() {
   const t = useTranslations()
   const locale = useLocale()
+  const searchParams = useSearchParams()
+  const { clearCart } = useCartContext()
+  
   const [mounted, setMounted] = useState(false)
+  const [order, setOrder] = useState<OrderData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [orderNumber, setOrderNumber] = useState<string>('')
+  const [estimatedDelivery, setEstimatedDelivery] = useState<string>('')
 
-  // Mock order data - in real app, this would come from URL params or API
-  const [orderNumber, setOrderNumber] = useState('ORD-2024-XXXX')
-  const [estimatedDelivery, setEstimatedDelivery] = useState('...')
+  const orderId = searchParams.get('order')
 
   useEffect(() => {
     setMounted(true)
-    // Generate order number and date only on client side
-    setOrderNumber('ORD-2024-' + Math.floor(Math.random() * 10000))
-    setEstimatedDelivery(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('pl-PL'))
-  }, [])
+    
+    // Clear cart on order success
+    clearCart()
+    
+    // Set order number (client-side only to avoid hydration mismatch)
+    if (orderId && orderId !== 'success') {
+      setOrderNumber(orderId.slice(0, 12).toUpperCase())
+      fetchOrderDetails(orderId)
+    } else {
+      setOrderNumber(`ORD-${Date.now().toString().slice(-6)}`)
+      setLoading(false)
+    }
+    
+    // Set estimated delivery date (client-side only)
+    const deliveryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+    setEstimatedDelivery(deliveryDate.toLocaleDateString('pl-PL', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    }))
+  }, [orderId])
+
+  // Update order number when order data is loaded
+  useEffect(() => {
+    if (order?.display_id) {
+      setOrderNumber(`ORD-${order.display_id}`)
+    }
+  }, [order])
+
+  const fetchOrderDetails = async (id: string) => {
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+      const apiKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ''
+      
+      const response = await fetch(`${backendUrl}/store/orders/${id}`, {
+        headers: {
+          'x-publishable-api-key': apiKey,
+        },
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setOrder(data.order || data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch order:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Show loading state until mounted to avoid hydration issues
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-neutral-600">Ładowanie...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-<div style={{ maxWidth: '800px', margin: '0 auto', padding: '4rem 2rem' }}>
+    <div className="min-h-screen bg-neutral-50">
+      <div className="max-w-3xl mx-auto px-4 py-16">
         {/* Success Icon */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            width: '100px',
-            height: '100px',
-            borderRadius: '50%',
-            backgroundColor: '#10b981',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 1.5rem',
-            fontSize: '3rem'
-          }}>
+        <div className="text-center mb-8">
+          <div className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-6 text-white text-5xl shadow-lg">
             ✓
           </div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#1f2937' }}>
+          <h1 className="text-3xl font-bold text-neutral-900 mb-2">
             Dziękujemy za zamówienie!
           </h1>
-          <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>
+          <p className="text-lg text-neutral-600">
             Twoje zamówienie zostało pomyślnie złożone
           </p>
         </div>
 
         {/* Order Details Card */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '1rem',
-          padding: '2rem',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-          marginBottom: '2rem'
-        }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200 mb-6">
+          <div className="grid grid-cols-2 gap-6 mb-6">
             <div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
-                {t('order.orderNumber')}
-              </div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>
-                {orderNumber}
-              </div>
+              <div className="text-sm text-neutral-500 mb-1">Numer zamówienia</div>
+              <div className="text-2xl font-bold text-primary-600">{orderNumber || '...'}</div>
             </div>
             <div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
-                {t('order.estimatedDelivery')}
-              </div>
-              <div style={{ fontSize: '1.125rem', fontWeight: '600' }}>
-                {estimatedDelivery}
-              </div>
+              <div className="text-sm text-neutral-500 mb-1">Przewidywana dostawa</div>
+              <div className="text-lg font-semibold text-neutral-900">{estimatedDelivery || '...'}</div>
             </div>
           </div>
 
-          <div style={{
-            padding: '1.5rem',
-            backgroundColor: '#f9fafb',
-            borderRadius: '0.5rem',
-            marginBottom: '1.5rem'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '2rem' }}>📧</div>
+          {/* Order total if available */}
+          {order?.total && (
+            <div className="p-4 bg-neutral-50 rounded-xl mb-6">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-600">Suma zamówienia:</span>
+                <span className="text-xl font-bold text-neutral-900">
+                  {(order.total / 100).toFixed(2)} zł
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Email confirmation */}
+          <div className="p-4 bg-blue-50 rounded-xl mb-6">
+            <div className="flex items-center gap-4">
+              <div className="text-3xl">📧</div>
               <div>
-                <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                <div className="font-semibold text-neutral-900 mb-1">
                   Potwierdzenie wysłane
                 </div>
-                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                  Sprawdź swoją skrzynkę email, aby zobaczyć szczegóły zamówienia
+                <div className="text-sm text-neutral-600">
+                  {order?.email 
+                    ? `Wysłaliśmy potwierdzenie na adres ${order.email}`
+                    : 'Sprawdź swoją skrzynkę email, aby zobaczyć szczegóły zamówienia'
+                  }
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Shipping address if available */}
+          {order?.shipping_address && (
+            <div className="p-4 bg-neutral-50 rounded-xl mb-6">
+              <div className="flex items-start gap-4">
+                <div className="text-2xl">📍</div>
+                <div>
+                  <div className="font-semibold text-neutral-900 mb-1">Adres dostawy</div>
+                  <div className="text-sm text-neutral-600">
+                    <p>{order.shipping_address.first_name} {order.shipping_address.last_name}</p>
+                    <p>{order.shipping_address.address_1}</p>
+                    <p>{order.shipping_address.postal_code} {order.shipping_address.city}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Tracking Info Placeholder */}
-          <div style={{
-            padding: '1.5rem',
-            border: '2px dashed #d1d5db',
-            borderRadius: '0.5rem',
-            textAlign: 'center'
-          }}>
-            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📦</div>
-            <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>
+          <div className="p-6 border-2 border-dashed border-neutral-300 rounded-xl text-center">
+            <div className="text-3xl mb-2">📦</div>
+            <div className="font-semibold text-neutral-900 mb-1">
               Numer śledzenia będzie dostępny wkrótce
             </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+            <div className="text-sm text-neutral-500">
               Otrzymasz powiadomienie email, gdy Twoja przesyłka zostanie wysłana
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-          <Link href={`/${locale}/orders`}>
-            <button style={{
-              width: '100%',
-              padding: '1rem',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.5rem',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
-            >
-              {t('order.orderHistory')}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <Link href={`/${locale}/zamowienia`} className="block">
+            <button className="w-full py-4 px-6 bg-primary-500 text-white rounded-xl font-semibold hover:bg-primary-600 transition-colors">
+              Moje zamówienia
             </button>
           </Link>
-          <Link href={`/${locale}/products`}>
-            <button style={{
-              width: '100%',
-              padding: '1rem',
-              backgroundColor: 'white',
-              color: '#3b82f6',
-              border: '2px solid #3b82f6',
-              borderRadius: '0.5rem',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}>
-              {t('common.continueShopping')}
+          <Link href={`/${locale}/products`} className="block">
+            <button className="w-full py-4 px-6 bg-white text-primary-600 border-2 border-primary-500 rounded-xl font-semibold hover:bg-primary-50 transition-colors">
+              Kontynuuj zakupy
             </button>
           </Link>
         </div>
 
         {/* What's Next */}
-        <div style={{ backgroundColor: 'white', borderRadius: '1rem', padding: '2rem' }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-            Co dalej?
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: '#3b82f6',
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold',
-                flexShrink: 0
-              }}>
-                1
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200">
+          <h2 className="text-xl font-bold text-neutral-900 mb-6">Co dalej?</h2>
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold flex-shrink-0">
+                ✓
               </div>
               <div>
-                <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
-                  Przetwarzamy Twoje zamówienie
-                </div>
-                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                  Nasz zespół przygotowuje Twoje produkty do wysyłki
+                <div className="font-semibold text-neutral-900 mb-1">Zamówienie przyjęte</div>
+                <div className="text-sm text-neutral-500">
+                  Twoje zamówienie zostało zarejestrowane w naszym systemie
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: '#e5e7eb',
-                color: '#6b7280',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold',
-                flexShrink: 0
-              }}>
+            <div className="flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold flex-shrink-0 animate-pulse">
                 2
               </div>
               <div>
-                <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
-                  Wysyłka
-                </div>
-                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                  Otrzymasz numer śledzenia przesyłki
+                <div className="font-semibold text-neutral-900 mb-1">Przygotowujemy zamówienie</div>
+                <div className="text-sm text-neutral-500">
+                  Nasz zespół kompletuje Twoje produkty do wysyłki
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: '#e5e7eb',
-                color: '#6b7280',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold',
-                flexShrink: 0
-              }}>
+            <div className="flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-neutral-200 text-neutral-500 flex items-center justify-center font-bold flex-shrink-0">
                 3
               </div>
               <div>
-                <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
-                  Dostawa
+                <div className="font-semibold text-neutral-900 mb-1">Wysyłka</div>
+                <div className="text-sm text-neutral-500">
+                  Otrzymasz email z numerem śledzenia przesyłki
                 </div>
-                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                  Twoja przesyłka dotrze w ciągu {estimatedDelivery}
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="w-10 h-10 rounded-full bg-neutral-200 text-neutral-500 flex items-center justify-center font-bold flex-shrink-0">
+                4
+              </div>
+              <div>
+                <div className="font-semibold text-neutral-900 mb-1">Dostawa</div>
+                <div className="text-sm text-neutral-500">
+                  Przewidywana data dostawy: {estimatedDelivery || '...'}
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Contact info */}
+        <div className="mt-8 text-center text-sm text-neutral-500">
+          <p>Masz pytania? Skontaktuj się z nami:</p>
+          <p className="mt-1">
+            <a href="mailto:omexplus@gmail.com" className="text-primary-600 hover:underline">
+              omexplus@gmail.com
+            </a>
+            {' • '}
+            <a href="tel:+48500169060" className="text-primary-600 hover:underline">
+              +48 500 169 060
+            </a>
+          </p>
+        </div>
       </div>
-</div>
+    </div>
   )
 }

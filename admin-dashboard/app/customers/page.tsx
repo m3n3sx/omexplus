@@ -257,7 +257,7 @@ export default function CustomersPage() {
               <Download className="w-4 h-4 mr-2" />
               Eksportuj CSV
             </Button>
-            <Button>
+            <Button onClick={() => router.push('/customers/new')}>
               <UserPlus className="w-4 h-4 mr-2" />
               Dodaj klienta
             </Button>

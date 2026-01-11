@@ -230,8 +230,8 @@ export default function OrdersPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Zamówienia</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold text-theme-primary">Zamówienia</h1>
+            <p className="text-theme-secondary mt-1">
               Znaleziono {sortedOrders.length} zamówień
             </p>
           </div>
@@ -248,23 +248,23 @@ export default function OrdersPage() {
         </div>
 
         {/* Basic Filters */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-theme-secondary rounded-lg border border-theme p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-muted" />
               <input
                 type="text"
                 placeholder="Szukaj po email, numerze..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                className="w-full pl-10 pr-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
               />
             </div>
             
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+              className="px-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
             >
               <option value="all">Wszystkie statusy</option>
               <option value="pending">Oczekujące</option>
@@ -278,7 +278,7 @@ export default function OrdersPage() {
             <select
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+              className="px-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
             >
               <option value="all">Wszystkie płatności</option>
               <option value="captured">Opłacone</option>
@@ -296,45 +296,45 @@ export default function OrdersPage() {
 
         {/* Advanced Filters */}
         {showAdvancedFilters && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Zaawansowane filtry</h3>
+          <div className="bg-theme-secondary rounded-lg border border-theme p-4">
+            <h3 className="text-sm font-semibold text-theme-primary mb-4">Zaawansowane filtry</h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Data od</label>
+                <label className="block text-xs font-medium text-theme-secondary mb-1">Data od</label>
                 <input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                  className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Data do</label>
+                <label className="block text-xs font-medium text-theme-secondary mb-1">Data do</label>
                 <input
                   type="date"
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                  className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Kwota min (PLN)</label>
+                <label className="block text-xs font-medium text-theme-secondary mb-1">Kwota min (PLN)</label>
                 <input
                   type="number"
                   placeholder="0.00"
                   value={minAmount}
                   onChange={(e) => setMinAmount(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                  className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Kwota max (PLN)</label>
+                <label className="block text-xs font-medium text-theme-secondary mb-1">Kwota max (PLN)</label>
                 <input
                   type="number"
                   placeholder="10000.00"
                   value={maxAmount}
                   onChange={(e) => setMaxAmount(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                  className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                 />
               </div>
             </div>
@@ -342,14 +342,14 @@ export default function OrdersPage() {
         )}
 
         {/* Orders Table */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-theme-secondary rounded-lg border border-theme overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>
                   <button
                     onClick={() => handleSort('display_id')}
-                    className="flex items-center hover:text-gray-900 font-semibold"
+                    className="flex items-center hover:text-theme-primary font-semibold"
                   >
                     Nr {getSortIcon('display_id')}
                   </button>
@@ -357,7 +357,7 @@ export default function OrdersPage() {
                 <TableHead>
                   <button
                     onClick={() => handleSort('email')}
-                    className="flex items-center hover:text-gray-900 font-semibold"
+                    className="flex items-center hover:text-theme-primary font-semibold"
                   >
                     Klient {getSortIcon('email')}
                   </button>
@@ -365,7 +365,7 @@ export default function OrdersPage() {
                 <TableHead>
                   <button
                     onClick={() => handleSort('created_at')}
-                    className="flex items-center hover:text-gray-900 font-semibold"
+                    className="flex items-center hover:text-theme-primary font-semibold"
                   >
                     Data {getSortIcon('created_at')}
                   </button>
@@ -373,7 +373,7 @@ export default function OrdersPage() {
                 <TableHead>
                   <button
                     onClick={() => handleSort('status')}
-                    className="flex items-center hover:text-gray-900 font-semibold"
+                    className="flex items-center hover:text-theme-primary font-semibold"
                   >
                     Status {getSortIcon('status')}
                   </button>
@@ -382,7 +382,7 @@ export default function OrdersPage() {
                 <TableHead className="text-right">
                   <button
                     onClick={() => handleSort('total')}
-                    className="flex items-center ml-auto hover:text-gray-900 font-semibold"
+                    className="flex items-center ml-auto hover:text-theme-primary font-semibold"
                   >
                     Wartość {getSortIcon('total')}
                   </button>
@@ -393,7 +393,7 @@ export default function OrdersPage() {
             <TableBody>
               {paginatedOrders.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={7} className="text-center py-8 text-theme-muted">
                     Nie znaleziono zamówień spełniających kryteria
                   </TableCell>
                 </TableRow>
@@ -401,12 +401,12 @@ export default function OrdersPage() {
                 paginatedOrders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell>
-                      <Link href={`/orders/${order.id}`} className="font-medium text-primary-600 hover:text-primary-700">
+                      <Link href={`/orders/${order.id}`} className="font-medium text-accent hover:underline">
                         #{order.display_id}
                       </Link>
                     </TableCell>
                     <TableCell>{order.email || 'Brak email'}</TableCell>
-                    <TableCell className="text-gray-600">{formatDate(order.created_at)}</TableCell>
+                    <TableCell className="text-theme-secondary">{formatDate(order.created_at)}</TableCell>
                     <TableCell>
                       <Badge className={getOrderStatusColor(order.status)}>
                         {statusTranslations[order.status] || order.status}
@@ -435,7 +435,7 @@ export default function OrdersPage() {
         {/* Pagination */}
         {totalPagesCalculated > 1 && (
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-theme-secondary">
               Strona {currentPage} z {totalPagesCalculated} • Wyświetlanie {paginatedOrders.length} z {sortedOrders.length} zamówień
             </p>
             <div className="flex space-x-2">

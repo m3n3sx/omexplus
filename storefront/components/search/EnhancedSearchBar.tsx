@@ -192,7 +192,7 @@ export default function EnhancedSearchBar({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={placeholder}
-            className="w-full px-6 py-4 pr-28 border-2 border-neutral-200 rounded-full text-sm font-bold outline-none transition-all duration-300 bg-white hover:border-primary-500 focus:border-primary-500 focus:shadow-lg placeholder:text-neutral-400 placeholder:font-normal"
+            className="w-full px-6 py-4 pr-28 border-2 border-neutral-200 rounded-full text-sm font-bold outline-none transition-all duration-300 bg-white text-secondary-700 hover:border-primary-500 focus:border-primary-500 focus:shadow-lg placeholder:text-neutral-400 placeholder:font-normal"
             onFocus={() => setIsOpen(true)}
           />
           

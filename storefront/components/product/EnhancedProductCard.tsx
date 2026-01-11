@@ -38,8 +38,9 @@ export function EnhancedProductCard({ product, onAddToCart, onQuickView }: Enhan
 
   const stockStatus = getStockStatus(product.inventory_quantity || 0)
   const price = product.variants?.[0]?.prices?.[0]
-  const priceAmount = price ? (price.amount / 100).toFixed(2) : '0.00'
+  const priceAmount = price && price.amount > 0 ? (price.amount / 100).toFixed(2) : null
   const currency = price?.currency_code === 'pln' ? 'PLN' : price?.currency_code?.toUpperCase() || 'PLN'
+  const hasPrice = priceAmount !== null
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -104,10 +105,17 @@ export function EnhancedProductCard({ product, onAddToCart, onQuickView }: Enhan
                 
                 <button
                   onClick={handleAddToCart}
-                  disabled={stockStatus.outOfStock || isAddingToCart}
+                  disabled={stockStatus.outOfStock || isAddingToCart || !hasPrice}
                   className="px-4 py-2 bg-secondary-500 text-white rounded-lg font-semibold hover:bg-secondary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg"
                 >
-                  {isAddingToCart ? (
+                  {!hasPrice ? (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      Zapytaj
+                    </>
+                  ) : isAddingToCart ? (
                     <>
                       <span className="inline-block animate-spin">⟳</span>
                       Dodawanie...
@@ -174,13 +182,15 @@ export function EnhancedProductCard({ product, onAddToCart, onQuickView }: Enhan
 
           {/* Price */}
           <div className="flex items-baseline gap-2 pt-2 border-t border-neutral-200">
-            <div className="text-2xl font-bold text-primary-600">
-              {priceAmount} {currency}
-            </div>
-            {/* Optional: Show discount */}
-            {/* <div className="text-sm text-neutral-500 line-through">
-              {(parseFloat(priceAmount) * 1.2).toFixed(2)} {currency}
-            </div> */}
+            {hasPrice ? (
+              <div className="text-2xl font-bold text-primary-600">
+                {priceAmount} {currency}
+              </div>
+            ) : (
+              <div className="text-lg font-bold text-secondary-700">
+                Zapytaj o cenę
+              </div>
+            )}
           </div>
 
           {/* Stock info */}

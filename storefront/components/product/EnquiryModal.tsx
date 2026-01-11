@@ -7,21 +7,29 @@
 
 import { useState } from 'react'
 
+interface ProductVariant {
+  id: string
+  title?: string
+  sku?: string
+}
+
 interface Product {
   id: string
   title: string
   handle?: string
   sku?: string
   thumbnail?: string
+  variants?: ProductVariant[]
 }
 
 interface EnquiryModalProps {
   product: Product
+  selectedVariant?: ProductVariant | null
   isOpen: boolean
   onClose: () => void
 }
 
-export function EnquiryModal({ product, isOpen, onClose }: EnquiryModalProps) {
+export function EnquiryModal({ product, selectedVariant, isOpen, onClose }: EnquiryModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -33,6 +41,10 @@ export function EnquiryModal({ product, isOpen, onClose }: EnquiryModalProps) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Użyj SKU z wariantu jeśli dostępny
+  const displaySku = selectedVariant?.sku || product.variants?.[0]?.sku || product.sku
+  const displayVariantTitle = selectedVariant?.title
 
   if (!isOpen) return null
 
@@ -52,7 +64,9 @@ export function EnquiryModal({ product, isOpen, onClose }: EnquiryModalProps) {
         body: JSON.stringify({
           product_id: product.id,
           product_title: product.title,
-          product_sku: product.sku,
+          product_sku: displaySku,
+          variant_id: selectedVariant?.id,
+          variant_title: displayVariantTitle,
           customer_name: formData.name,
           customer_email: formData.email,
           customer_phone: formData.phone,
@@ -139,8 +153,11 @@ export function EnquiryModal({ product, isOpen, onClose }: EnquiryModalProps) {
             </div>
             <div>
               <h3 className="font-bold text-secondary-800 line-clamp-2">{product.title}</h3>
-              {product.sku && (
-                <p className="text-xs text-secondary-500 mt-1">SKU: {product.sku}</p>
+              {displayVariantTitle && (
+                <p className="text-sm text-primary-600 font-medium mt-0.5">Wariant: {displayVariantTitle}</p>
+              )}
+              {displaySku && (
+                <p className="text-xs text-secondary-500 mt-1">SKU: {displaySku}</p>
               )}
             </div>
           </div>

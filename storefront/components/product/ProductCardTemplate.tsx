@@ -20,6 +20,7 @@ interface Product {
   variants: Array<{
     id?: string
     sku?: string
+    inventory_quantity?: number
     prices: Array<{
       amount: number
       currency_code: string
@@ -41,7 +42,10 @@ function getAvailabilityStatus(product: Product): AvailabilityStatus {
     return product.availability
   }
   
-  const qty = product.inventory_quantity ?? 0
+  // Check inventory from variant first, then product level
+  const variantQty = product.variants?.[0]?.inventory_quantity
+  const qty = product.inventory_quantity ?? variantQty ?? 10 // Default to 10 if not set
+  
   if (qty > 10) return 'in-stock'
   if (qty > 0) return 'low-stock'
   return 'on-order'

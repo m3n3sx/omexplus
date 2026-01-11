@@ -102,12 +102,12 @@ export default function SettingsPage() {
                   <Input label="Store Name" defaultValue="OMEX Store" />
                   <Input label="Store URL" defaultValue="https://omex-store.com" />
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Store Description
                     </label>
                     <textarea
                       rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                       defaultValue="Your one-stop shop for quality products"
                     />
                   </div>
@@ -125,17 +125,17 @@ export default function SettingsPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked className="rounded" />
-                      <span className="text-sm font-medium">Enable Stripe</span>
+                      <input type="checkbox" defaultChecked className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">Enable Stripe</span>
                     </label>
                   </div>
                   <Input label="Stripe Publishable Key" placeholder="pk_test_..." />
                   <Input label="Stripe Secret Key" type="password" placeholder="sk_test_..." />
                   
-                  <div className="pt-4 border-t">
+                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <label className="flex items-center space-x-2">
-                      <input type="checkbox" className="rounded" />
-                      <span className="text-sm font-medium">Enable PayPal</span>
+                      <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">Enable PayPal</span>
                     </label>
                   </div>
                   <Input label="PayPal Client ID" placeholder="Your PayPal client ID" />
@@ -153,16 +153,16 @@ export default function SettingsPage() {
                   <Input label="Free Shipping Threshold" type="number" step="0.01" defaultValue="50.00" />
                   <Input label="Processing Time (days)" type="number" defaultValue="2" />
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Shipping Zones
                     </label>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-sm">United States - $5.00</span>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <span className="text-sm text-gray-900 dark:text-white">United States - $5.00</span>
                         <Button size="sm" variant="ghost">Edit</Button>
                       </div>
-                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-sm">International - $15.00</span>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <span className="text-sm text-gray-900 dark:text-white">International - $15.00</span>
                         <Button size="sm" variant="ghost">Edit</Button>
                       </div>
                     </div>
@@ -179,22 +179,22 @@ export default function SettingsPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <label className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked className="rounded" />
-                      <span className="text-sm font-medium">Enable automatic tax calculation</span>
+                      <input type="checkbox" defaultChecked className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">Enable automatic tax calculation</span>
                     </label>
                   </div>
                   <Input label="Default Tax Rate (%)" type="number" step="0.01" defaultValue="8.5" />
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Tax Regions
                     </label>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-sm">California - 8.5%</span>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <span className="text-sm text-gray-900 dark:text-white">California - 8.5%</span>
                         <Button size="sm" variant="ghost">Edit</Button>
                       </div>
-                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-sm">New York - 7.0%</span>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <span className="text-sm text-gray-900 dark:text-white">New York - 7.0%</span>
                         <Button size="sm" variant="ghost">Edit</Button>
                       </div>
                     </div>
@@ -212,19 +212,19 @@ export default function SettingsPage() {
                   <Input label="From Email" type="email" defaultValue="noreply@omex-store.com" />
                   <Input label="From Name" defaultValue="OMEX Store" />
                   
-                  <div className="pt-4 border-t">
-                    <h4 className="font-medium text-gray-900 mb-3">Email Templates</h4>
+                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <h4 className="font-medium text-gray-900 dark:text-white mb-3">Email Templates</h4>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-sm">Order Confirmation</span>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <span className="text-sm text-gray-900 dark:text-white">Order Confirmation</span>
                         <Button size="sm" variant="ghost">Edit</Button>
                       </div>
-                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-sm">Shipping Notification</span>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <span className="text-sm text-gray-900 dark:text-white">Shipping Notification</span>
                         <Button size="sm" variant="ghost">Edit</Button>
                       </div>
-                      <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-sm">Refund Confirmation</span>
+                      <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <span className="text-sm text-gray-900 dark:text-white">Refund Confirmation</span>
                         <Button size="sm" variant="ghost">Edit</Button>
                       </div>
                     </div>

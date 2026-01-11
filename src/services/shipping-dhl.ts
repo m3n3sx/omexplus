@@ -36,14 +36,14 @@ export class DHLShippingProvider extends ShippingProviderBase {
     const rates: ShippingRate[] = [];
     const weightSurcharge = this.calculateWeightSurcharge(parcel.weight);
 
-    // DHL Parcel
-    if (!serviceType || serviceType === "parcel") {
+    // DHL Standard
+    if (!serviceType || serviceType === "standard") {
       rates.push({
         provider: "dhl",
-        method: "parcel",
-        price: 8.99 + weightSurcharge,
+        method: "standard",
+        price: 19.99 + weightSurcharge,
         delivery_days: 3,
-        currency: "USD",
+        currency: "PLN",
       });
     }
 
@@ -52,9 +52,20 @@ export class DHLShippingProvider extends ShippingProviderBase {
       rates.push({
         provider: "dhl",
         method: "express",
-        price: 14.99 + weightSurcharge,
+        price: 34.99 + weightSurcharge,
         delivery_days: 1,
-        currency: "USD",
+        currency: "PLN",
+      });
+    }
+
+    // DHL Economy (międzynarodowa)
+    if (!serviceType || serviceType === "economy") {
+      rates.push({
+        provider: "dhl",
+        method: "economy",
+        price: 29.99 + weightSurcharge,
+        delivery_days: 5,
+        currency: "PLN",
       });
     }
 

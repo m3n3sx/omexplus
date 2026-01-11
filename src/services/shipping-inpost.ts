@@ -100,9 +100,9 @@ export class InPostShippingProvider extends ShippingProviderBase {
       rates.push({
         provider: "inpost",
         method: "paczkomat_24_7",
-        price: 4.99 + weightSurcharge,
+        price: 13.99 + weightSurcharge,
         delivery_days: 2,
-        currency: "USD",
+        currency: "PLN",
       });
     }
 
@@ -111,9 +111,9 @@ export class InPostShippingProvider extends ShippingProviderBase {
       rates.push({
         provider: "inpost",
         method: "courier",
-        price: 7.99 + weightSurcharge,
-        delivery_days: 2,
-        currency: "USD",
+        price: 18.99 + weightSurcharge,
+        delivery_days: 1,
+        currency: "PLN",
       });
     }
 
@@ -122,9 +122,9 @@ export class InPostShippingProvider extends ShippingProviderBase {
       rates.push({
         provider: "inpost",
         method: "parcel_locker",
-        price: 3.99 + weightSurcharge,
-        delivery_days: 2,
-        currency: "USD",
+        price: 12.99 + weightSurcharge,
+        delivery_days: 3,
+        currency: "PLN",
       });
     }
 

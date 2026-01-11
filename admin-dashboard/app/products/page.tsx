@@ -13,7 +13,9 @@ import { formatPrice, formatDate } from "@/lib/utils"
 import { isAuthenticated } from "@/lib/auth"
 import api from "@/lib/api-client"
 import { Product } from "@/lib/types"
-import { Search, Plus, Edit, Trash2 } from "lucide-react"
+import { Search, Plus, Edit, Trash2, Archive, RotateCcw, Package } from "lucide-react"
+
+type ViewMode = "active" | "archive"
 
 export default function ProductsPage() {
   const router = useRouter()
@@ -21,10 +23,12 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
+  const [viewMode, setViewMode] = useState<ViewMode>("active")
+  const [supplierFilter, setSupplierFilter] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
+  const [counts, setCounts] = useState({ active: 0, archive: 0 })
   const productsPerPage = 20
 
   const toggleSelectAll = () => {
@@ -59,13 +63,83 @@ export default function ProductsPage() {
     }
   }
 
+  const handleArchive = async (productId: string) => {
+    try {
+      await api.updateProduct(productId, { status: "draft" })
+      toast.success("Produkt został zarchiwizowany")
+      await loadProducts()
+    } catch (error) {
+      console.error("Error archiving product:", error)
+      toast.error("Błąd podczas archiwizacji")
+    }
+  }
+
+  const handleRestore = async (productId: string) => {
+    try {
+      await api.updateProduct(productId, { status: "published" })
+      toast.success("Produkt został przywrócony")
+      await loadProducts()
+    } catch (error) {
+      console.error("Error restoring product:", error)
+      toast.error("Błąd podczas przywracania")
+    }
+  }
+
+  const handleBulkArchive = async () => {
+    if (!confirm(`Czy na pewno chcesz zarchiwizować ${selectedProducts.length} produktów?`)) return
+    
+    try {
+      for (const productId of selectedProducts) {
+        await api.updateProduct(productId, { status: "draft" })
+      }
+      toast.success(`Zarchiwizowano ${selectedProducts.length} produktów`)
+      setSelectedProducts([])
+      await loadProducts()
+    } catch (error) {
+      console.error("Error archiving products:", error)
+      toast.error("Błąd podczas archiwizacji")
+    }
+  }
+
+  const handleBulkRestore = async () => {
+    if (!confirm(`Czy na pewno chcesz przywrócić ${selectedProducts.length} produktów?`)) return
+    
+    try {
+      for (const productId of selectedProducts) {
+        await api.updateProduct(productId, { status: "published" })
+      }
+      toast.success(`Przywrócono ${selectedProducts.length} produktów`)
+      setSelectedProducts([])
+      await loadProducts()
+    } catch (error) {
+      console.error("Error restoring products:", error)
+      toast.error("Błąd podczas przywracania")
+    }
+  }
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push("/login")
       return
     }
     loadProducts()
-  }, [router, currentPage, statusFilter])
+    loadCounts()
+  }, [router, currentPage, viewMode, supplierFilter])
+
+  const loadCounts = async () => {
+    try {
+      const [activeRes, archiveRes] = await Promise.all([
+        api.getProducts({ status: "published", limit: 1 }),
+        api.getProducts({ status: "draft", limit: 1 })
+      ])
+      setCounts({
+        active: activeRes.count || 0,
+        archive: archiveRes.count || 0
+      })
+    } catch (error) {
+      console.error("Error loading counts:", error)
+    }
+  }
 
   const loadProducts = async () => {
     try {
@@ -75,15 +149,21 @@ export default function ProductsPage() {
       const params: any = {
         limit: productsPerPage,
         offset,
-      }
-      
-      if (statusFilter !== "all") {
-        params.status = statusFilter
+        status: viewMode === "active" ? "published" : "draft"
       }
       
       // Use api-client instead of medusaClient
       const response = await api.getProducts(params)
-      setProducts(response.products as Product[])
+      
+      // Filter by supplier if needed
+      let filteredProducts = response.products as Product[]
+      if (supplierFilter !== "all") {
+        filteredProducts = filteredProducts.filter(p => 
+          (p as any).metadata?.supplier === supplierFilter
+        )
+      }
+      
+      setProducts(filteredProducts)
       setTotalPages(Math.ceil((response.count || 0) / productsPerPage))
     } catch (error) {
       console.error("Error loading products:", error)
@@ -130,18 +210,23 @@ export default function ProductsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Produkty</h1>
-            <p className="text-gray-600 mt-1">Zarządzaj katalogiem produktów</p>
+            <h1 className="text-2xl font-bold text-theme-primary">Produkty</h1>
+            <p className="text-theme-secondary mt-1">Zarządzaj katalogiem produktów</p>
           </div>
           <div className="flex space-x-2">
             {selectedProducts.length > 0 && (
               <>
-                <Link href={`/products/bulk-edit?ids=${selectedProducts.join(',')}`}>
-                  <Button variant="secondary">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edytuj ({selectedProducts.length})
+                {viewMode === "active" ? (
+                  <Button variant="secondary" onClick={handleBulkArchive}>
+                    <Archive className="w-4 h-4 mr-2" />
+                    Archiwizuj ({selectedProducts.length})
                   </Button>
-                </Link>
+                ) : (
+                  <Button variant="secondary" onClick={handleBulkRestore}>
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Przywróć ({selectedProducts.length})
+                  </Button>
+                )}
                 <Button variant="danger" onClick={handleBulkDelete}>
                   <Trash2 className="w-4 h-4 mr-2" />
                   Usuń ({selectedProducts.length})
@@ -162,34 +247,62 @@ export default function ProductsPage() {
           </div>
         </div>
 
+        {/* View Mode Tabs */}
+        <div className="flex space-x-1 bg-theme-tertiary p-1 rounded-lg w-fit">
+          <button
+            onClick={() => { setViewMode("active"); setCurrentPage(1); setSelectedProducts([]); }}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-2 ${
+              viewMode === "active" 
+                ? "bg-theme-secondary text-theme-primary shadow-sm" 
+                : "text-theme-secondary hover:text-theme-primary"
+            }`}
+          >
+            <Package className="w-4 h-4" />
+            <span>Aktywne</span>
+            <span className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full text-xs">{counts.active}</span>
+          </button>
+          <button
+            onClick={() => { setViewMode("archive"); setCurrentPage(1); setSelectedProducts([]); }}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-2 ${
+              viewMode === "archive" 
+                ? "bg-theme-secondary text-theme-primary shadow-sm" 
+                : "text-theme-secondary hover:text-theme-primary"
+            }`}
+          >
+            <Archive className="w-4 h-4" />
+            <span>Archiwum</span>
+            <span className="bg-theme-hover text-theme-muted px-2 py-0.5 rounded-full text-xs">{counts.archive}</span>
+          </button>
+        </div>
+
         {/* Filters */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-theme-secondary rounded-lg border border-theme p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-muted" />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Szukaj produktów..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full pl-10 pr-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
               />
             </div>
             
             <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              value={supplierFilter}
+              onChange={(e) => { setSupplierFilter(e.target.value); setCurrentPage(1); }}
+              className="px-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
             >
-              <option value="all">All Status</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
+              <option value="all">Wszyscy dostawcy</option>
+              <option value="omexplus">Omexplus</option>
+              <option value="kolaiwalki">Kolaiwalki</option>
             </select>
           </div>
         </div>
 
         {/* Products Table */}
-        <div className="bg-white rounded-lg border border-gray-200">
+        <div className="bg-theme-secondary rounded-lg border border-theme">
           <Table>
             <TableHeader>
               <TableRow>
@@ -198,11 +311,11 @@ export default function ProductsPage() {
                     type="checkbox"
                     checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 rounded border-gray-300"
+                    className="w-4 h-4 rounded border-theme"
                   />
                 </TableHead>
                 <TableHead>Produkt</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Dostawca</TableHead>
                 <TableHead>Magazyn</TableHead>
                 <TableHead>Cena</TableHead>
                 <TableHead>Utworzono</TableHead>
@@ -215,15 +328,16 @@ export default function ProductsPage() {
                 const price = firstVariant?.prices?.[0]
                 const inventory = firstVariant?.inventory_quantity || 0
                 const isSelected = selectedProducts.includes(product.id)
+                const supplier = (product as any).metadata?.supplier
                 
                 return (
-                  <TableRow key={product.id} className={isSelected ? "bg-blue-50" : ""}>
+                  <TableRow key={product.id} className={isSelected ? "bg-accent/10" : ""}>
                     <TableCell>
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleSelectProduct(product.id)}
-                        className="w-4 h-4 rounded border-gray-300"
+                        className="w-4 h-4 rounded border-theme"
                       />
                     </TableCell>
                     <TableCell>
@@ -231,41 +345,56 @@ export default function ProductsPage() {
                         {product.thumbnail ? (
                           <img src={product.thumbnail} alt={product.title} className="w-12 h-12 object-cover rounded" />
                         ) : (
-                          <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                            <span className="text-gray-400 text-xs">No image</span>
+                          <div className="w-12 h-12 bg-theme-tertiary rounded flex items-center justify-center">
+                            <span className="text-theme-muted text-xs">Brak</span>
                           </div>
                         )}
                         <div>
-                          <Link href={`/products/${product.id}`} className="font-medium text-primary-600 hover:text-primary-700">
+                          <Link href={`/products/${product.id}`} className="font-medium text-accent hover:underline">
                             {product.title}
                           </Link>
-                          <p className="text-sm text-gray-600">{product.handle}</p>
+                          <p className="text-sm text-theme-secondary">{product.handle}</p>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={product.status === "published" ? "success" : "default"}>
-                        {product.status}
-                      </Badge>
+                      {supplier ? (
+                        <Badge variant={supplier === "omexplus" ? "info" : "default"}>
+                          {supplier}
+                        </Badge>
+                      ) : (
+                        <span className="text-theme-muted">-</span>
+                      )}
                     </TableCell>
                     <TableCell>
-                      <span className={inventory > 0 ? "text-green-600" : "text-red-600"}>
-                        {inventory} in stock
+                      <span className={inventory > 0 ? "text-green-600 dark:text-green-400" : "text-theme-muted"}>
+                        {inventory > 0 ? `${inventory} szt.` : "-"}
                       </span>
                     </TableCell>
                     <TableCell>
-                      {price ? formatPrice(price.amount, price.currency_code) : "N/A"}
+                      {price && price.amount > 0 ? formatPrice(price.amount, price.currency_code) : (
+                        <span className="text-orange-500 dark:text-orange-400 text-sm">Zapytaj</span>
+                      )}
                     </TableCell>
-                    <TableCell className="text-gray-600">{formatDate(product.created_at)}</TableCell>
+                    <TableCell className="text-theme-secondary">{formatDate(product.created_at)}</TableCell>
                     <TableCell>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-1">
                         <Link href={`/products/${product.id}`}>
-                          <Button size="sm" variant="ghost">
+                          <Button size="sm" variant="ghost" title="Edytuj">
                             <Edit className="w-4 h-4" />
                           </Button>
                         </Link>
-                        <Button size="sm" variant="ghost" onClick={() => handleDelete(product.id)}>
-                          <Trash2 className="w-4 h-4 text-red-600" />
+                        {viewMode === "active" ? (
+                          <Button size="sm" variant="ghost" onClick={() => handleArchive(product.id)} title="Archiwizuj">
+                            <Archive className="w-4 h-4 text-theme-muted" />
+                          </Button>
+                        ) : (
+                          <Button size="sm" variant="ghost" onClick={() => handleRestore(product.id)} title="Przywróć">
+                            <RotateCcw className="w-4 h-4 text-green-600 dark:text-green-400" />
+                          </Button>
+                        )}
+                        <Button size="sm" variant="ghost" onClick={() => handleDelete(product.id)} title="Usuń">
+                          <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
                         </Button>
                       </div>
                     </TableCell>
@@ -279,8 +408,8 @@ export default function ProductsPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages}
+            <p className="text-sm text-theme-secondary">
+              Strona {currentPage} z {totalPages}
             </p>
             <div className="flex space-x-2">
               <Button
@@ -289,7 +418,7 @@ export default function ProductsPage() {
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
-                Previous
+                Poprzednia
               </Button>
               <Button
                 variant="secondary"
@@ -297,7 +426,7 @@ export default function ProductsPage() {
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
               >
-                Next
+                Następna
               </Button>
             </div>
           </div>

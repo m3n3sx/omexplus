@@ -67,6 +67,7 @@ export default function PartNumberSearch({ onSearch }: PartNumberSearchProps) {
             fontSize: '1rem',
             outline: 'none',
             backgroundColor: 'white',
+            color: '#282828',
           }}
         />
         <button

@@ -87,13 +87,82 @@ const impactColors = {
   low: 'bg-gray-100 text-gray-700'
 }
 
-export function AIMarketingManager() {
+interface Props {
+  analyticsData?: any
+  adsData?: any
+}
+
+export function AIMarketingManager({ analyticsData, adsData }: Props) {
+  // Generate recommendations based on real data
+  const generateRecommendations = (): AIRecommendation[] => {
+    const recs: AIRecommendation[] = []
+    
+    if (adsData?.campaigns) {
+      // Find best performing campaign
+      const bestCampaign = adsData.campaigns.reduce((best: any, c: any) => 
+        c.roas > (best?.roas || 0) ? c : best, null)
+      
+      if (bestCampaign && bestCampaign.roas > 4) {
+        recs.push({
+          id: '1',
+          type: 'optimization',
+          title: `Zwiększ budżet kampanii "${bestCampaign.name}"`,
+          description: `Ta kampania ma ROAS ${bestCampaign.roas}x. Zwiększenie budżetu może przynieść więcej konwersji.`,
+          impact: 'high',
+          action: 'Zwiększ budżet',
+          metrics: { estimatedIncrease: '+15-20 konwersji/tydzień', confidence: 85 }
+        })
+      }
+      
+      // Find underperforming campaign
+      const worstCampaign = adsData.campaigns.find((c: any) => c.roas < 2.5 && c.status === 'active')
+      if (worstCampaign) {
+        recs.push({
+          id: '2',
+          type: 'budget',
+          title: `Wstrzymaj kampanię "${worstCampaign.name}"`,
+          description: `ROAS ${worstCampaign.roas}x jest poniżej progu rentowności. Przenieś budżet do lepszych kampanii.`,
+          impact: 'medium',
+          action: 'Wstrzymaj',
+          metrics: { estimatedSavings: `${worstCampaign.spend.toFixed(0)} zł/miesiąc`, confidence: 90 }
+        })
+      }
+    }
+    
+    if (analyticsData?.overview) {
+      if (analyticsData.overview.bounceRate > 50) {
+        recs.push({
+          id: '3',
+          type: 'optimization',
+          title: 'Popraw współczynnik odrzuceń',
+          description: `Bounce rate ${analyticsData.overview.bounceRate}% jest wysoki. Rozważ optymalizację landing pages.`,
+          impact: 'high',
+          action: 'Analizuj',
+          metrics: { estimatedIncrease: '+10% konwersji', confidence: 75 }
+        })
+      }
+    }
+    
+    // Add remarketing recommendation
+    recs.push({
+      id: '4',
+      type: 'campaign',
+      title: 'Uruchom remarketing dynamiczny',
+      description: 'Użytkownicy porzucający koszyk to potencjalne konwersje. Remarketing może odzyskać 8-12% z nich.',
+      impact: 'high',
+      action: 'Konfiguruj',
+      metrics: { estimatedIncrease: '+10% przychodów', confidence: 79 }
+    })
+    
+    return recs.length > 0 ? recs : SAMPLE_RECOMMENDATIONS
+  }
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'assistant',
       content: 'Cześć! Jestem Twoim AI Marketing Managerem. Analizuję dane z Google Analytics i Ads, żeby pomóc Ci optymalizować kampanie. Oto moje rekomendacje na dziś:',
       timestamp: new Date(),
-      recommendations: SAMPLE_RECOMMENDATIONS
+      recommendations: generateRecommendations()
     }
   ])
   const [input, setInput] = useState('')

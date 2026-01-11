@@ -23,8 +23,10 @@ interface Category {
 
 interface CategoryResponse {
   category: Category
+  rootCategory: Category
   subcategories: Category[]
   allSubcategories: Category[]
+  rootSubcategories: Category[]
   breadcrumb: Array<{ id: string; name: string; slug: string }>
   subcategoryCount: number
 }
@@ -63,7 +65,9 @@ export default function CategoryPage() {
   const slug = params.slug as string
 
   const [category, setCategory] = useState<Category | null>(null)
+  const [rootCategory, setRootCategory] = useState<Category | null>(null)
   const [allSubcategories, setAllSubcategories] = useState<Category[]>([])
+  const [rootSubcategories, setRootSubcategories] = useState<Category[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [productsLoading, setProductsLoading] = useState(false)
@@ -94,7 +98,9 @@ export default function CategoryPage() {
 
         const data: CategoryResponse = await response.json()
         setCategory(data.category)
+        setRootCategory(data.rootCategory || data.category)
         setAllSubcategories(data.allSubcategories || [])
+        setRootSubcategories(data.rootSubcategories || data.allSubcategories || [])
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load category'
         setError(errorMessage)
@@ -211,7 +217,8 @@ export default function CategoryPage() {
             <div className="sticky top-24">
               <CategoryHierarchy
                 currentCategory={category}
-                allSubcategories={allSubcategories}
+                rootCategory={rootCategory || category}
+                allSubcategories={rootSubcategories}
               />
             </div>
           </div>

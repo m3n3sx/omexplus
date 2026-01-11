@@ -134,6 +134,7 @@ export function CategoryNavigation({ onCategorySelect }: CategoryNavigationProps
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [hoveredLevel1, setHoveredLevel1] = useState<string | null>(null)
   const [hoveredLevel2, setHoveredLevel2] = useState<string | null>(null)
+  const [closeTimeout, setCloseTimeout] = useState<NodeJS.Timeout | null>(null)
 
   // Fetch full category hierarchy on mount
   useEffect(() => {
@@ -174,11 +175,19 @@ export function CategoryNavigation({ onCategorySelect }: CategoryNavigationProps
         setFeaturedProductsError(null)
 
         const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
-        const response = await fetch(`${backendUrl}/store/featured-products?limit=6&locale=${locale}`, {
+        const apiKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+        
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        }
+        
+        if (apiKey) {
+          headers['x-publishable-api-key'] = apiKey
+        }
+        
+        const response = await fetch(`${backendUrl}/store/products?limit=6`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
         })
 
         if (!response.ok) {
@@ -199,13 +208,30 @@ export function CategoryNavigation({ onCategorySelect }: CategoryNavigationProps
   }, [locale])
 
   const handleMenuOpen = () => {
+    // Clear any pending close timeout
+    if (closeTimeout) {
+      clearTimeout(closeTimeout)
+      setCloseTimeout(null)
+    }
     setIsMenuOpen(true)
   }
 
   const handleMenuClose = () => {
-    setIsMenuOpen(false)
-    setHoveredLevel1(null)
-    setHoveredLevel2(null)
+    // Add delay before closing to allow mouse to move to menu
+    const timeout = setTimeout(() => {
+      setIsMenuOpen(false)
+      setHoveredLevel1(null)
+      setHoveredLevel2(null)
+    }, 150)
+    setCloseTimeout(timeout)
+  }
+
+  const handleMenuEnter = () => {
+    // Cancel close when entering menu
+    if (closeTimeout) {
+      clearTimeout(closeTimeout)
+      setCloseTimeout(null)
+    }
   }
 
   const handleCategorySelect = (category: Category) => {
@@ -249,7 +275,7 @@ export function CategoryNavigation({ onCategorySelect }: CategoryNavigationProps
       onMouseLeave={handleMenuClose}
     >
       <button
-        className="nav-item__trigger flex items-center gap-1 text-white font-bold hover:text-secondary-700 transition-colors px-3 py-2 text-sm uppercase font-heading"
+        className="nav-item__trigger flex items-center gap-1 text-white font-bold hover:text-secondary-700 transition-colors px-3 py-6 text-sm uppercase font-heading"
       >
         PRODUKTY
       </button>
@@ -258,7 +284,11 @@ export function CategoryNavigation({ onCategorySelect }: CategoryNavigationProps
       {isMenuOpen && (
         <>
           {/* Invisible bridge to prevent hover gap */}
-          <div className="fixed left-0 right-0 h-1 z-40" style={{ top: '63px' }} />
+          <div 
+            className="fixed left-0 right-0 h-4 z-40" 
+            style={{ top: '60px' }}
+            onMouseEnter={handleMenuEnter}
+          />
           <div
             className="mega-menu fixed bg-secondary-800 shadow-2xl z-50 overflow-hidden rounded-b-lg"
             style={{ 
@@ -269,6 +299,8 @@ export function CategoryNavigation({ onCategorySelect }: CategoryNavigationProps
               width: 'calc(100% - 96px)',
               maxWidth: '1352px'
             }}
+            onMouseEnter={handleMenuEnter}
+            onMouseLeave={handleMenuClose}
           >
             <div className="flex" style={{ maxHeight: 'calc(100vh - 54px)' }}>
             {/* Left sidebar - Main Categories */}

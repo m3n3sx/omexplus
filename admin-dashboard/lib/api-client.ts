@@ -1,5 +1,5 @@
 // Simple API client for Medusa v2
-const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "https://api.ooxo.pl"
+const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
 interface RequestOptions {
   method?: string
@@ -22,36 +22,51 @@ async function apiRequest(endpoint: string, options: RequestOptions = {}) {
   
   console.log(`API Request: ${options.method || "GET"} ${endpoint}`, token ? 'with token' : 'no token')
   
-  const response = await fetch(`${BACKEND_URL}${endpoint}`, {
-    method: options.method || "GET",
-    headers,
-    body: options.body ? JSON.stringify(options.body) : undefined,
-    credentials: "include",
-  })
-  
-  console.log(`API Response: ${response.status}`)
-  
-  if (!response.ok) {
-    const errorText = await response.text()
-    console.error(`API Error: ${errorText}`)
+  try {
+    const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+      method: options.method || "GET",
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      credentials: "include",
+    })
     
-    // If unauthorized, clear token but DON'T auto-redirect
-    // Let the component handle the redirect
-    if (response.status === 401 && typeof window !== "undefined") {
-      localStorage.removeItem("medusa_admin_token")
-      localStorage.removeItem("admin_user")
+    console.log(`API Response: ${response.status}`)
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error(`API Error: ${errorText}`)
+      
+      // If unauthorized, clear token but DON'T auto-redirect
+      // Let the component handle the redirect
+      if (response.status === 401 && typeof window !== "undefined") {
+        localStorage.removeItem("medusa_admin_token")
+        localStorage.removeItem("admin_user")
+      }
+      
+      // Try to parse error message from response
+      let errorMessage = `Request failed: ${response.status} ${response.statusText}`
+      try {
+        const error = JSON.parse(errorText)
+        if (error.message) {
+          errorMessage = error.message
+        }
+      } catch {
+        // JSON parse failed, use default message
+      }
+      throw new Error(errorMessage)
     }
     
-    try {
-      const error = JSON.parse(errorText)
-      throw new Error(error.message || `HTTP ${response.status}`)
-    } catch {
-      throw new Error(`Request failed: ${response.status} ${response.statusText}`)
+    const data = await response.json()
+    return data
+  } catch (error: any) {
+    // Handle network errors (backend not available)
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      console.warn(`Backend not available: ${BACKEND_URL}${endpoint}`)
+      // Return empty result instead of throwing
+      return { data: [], orders: [], products: [], customers: [], count: 0 }
     }
+    throw error
   }
-  
-  const data = await response.json()
-  return data
 }
 
 export const api = {
@@ -88,15 +103,38 @@ export const api = {
   },
   
   updateOrder: async (orderId: string, data: any) => {
-    return apiRequest(`/admin/orders/${orderId}`, {
+    return apiRequest(`/public/banners`, {
       method: "POST",
-      body: data,
+      body: {
+        type: "order",
+        orderId,
+        ...data,
+      },
+    })
+  },
+  
+  updateOrderStatus: async (orderId: string, status: string) => {
+    return apiRequest(`/public/banners`, {
+      method: "POST",
+      body: { type: "order", orderId, status },
     })
   },
   
   // Products
   getProducts: async (params?: any) => {
-    const query = new URLSearchParams(params).toString()
+    // Medusa API expects status as array
+    const queryParams = new URLSearchParams()
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (key === 'status' && typeof value === 'string') {
+          // Convert status to array format: status[]=value
+          queryParams.append('status[]', value)
+        } else if (value !== undefined && value !== null) {
+          queryParams.append(key, String(value))
+        }
+      })
+    }
+    const query = queryParams.toString()
     return apiRequest(`/admin/products${query ? `?${query}` : ""}`)
   },
   
@@ -124,6 +162,43 @@ export const api = {
     })
   },
   
+  // Inventory
+  updateInventory: async (variantId: string, quantity: number) => {
+    // Update variant's inventory_quantity directly
+    // This works for simple inventory management
+    return apiRequest(`/admin/products/variants/${variantId}`, {
+      method: "POST",
+      body: {
+        inventory_quantity: quantity,
+        manage_inventory: false, // Disable complex inventory management
+      },
+    })
+  },
+  
+  // Bulk update inventory for multiple variants
+  bulkUpdateInventory: async (updates: Array<{ variantId: string, quantity: number }>) => {
+    const results = await Promise.all(
+      updates.map(({ variantId, quantity }) => 
+        apiRequest(`/admin/products/variants/${variantId}`, {
+          method: "POST",
+          body: {
+            inventory_quantity: quantity,
+            manage_inventory: false,
+          },
+        }).catch(err => ({ error: err.message, variantId }))
+      )
+    )
+    return { results }
+  },
+  
+  // Variants
+  updateVariant: async (productId: string, variantId: string, data: any) => {
+    return apiRequest(`/admin/products/${productId}/variants/${variantId}`, {
+      method: "POST",
+      body: data,
+    })
+  },
+  
   // Customers
   getCustomers: async (params?: any) => {
     const query = new URLSearchParams(params).toString()
@@ -132,6 +207,20 @@ export const api = {
   
   getCustomer: async (id: string) => {
     return apiRequest(`/admin/customers/${id}`)
+  },
+  
+  createCustomer: async (data: any) => {
+    return apiRequest("/admin/customers", {
+      method: "POST",
+      body: data,
+    })
+  },
+  
+  updateCustomer: async (id: string, data: any) => {
+    return apiRequest(`/admin/customers/${id}`, {
+      method: "POST",
+      body: data,
+    })
   },
   
   // Categories

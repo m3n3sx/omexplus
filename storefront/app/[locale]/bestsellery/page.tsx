@@ -62,7 +62,7 @@ export default function BestselleryPage() {
             </div>
           </div>
           <span className="text-primary-500 uppercase tracking-widest font-bold text-sm">Najpopularniejsze</span>
-          <h1 className="text-4xl lg:text-5xl font-bold mt-4 mb-6 font-heading">
+          <h1 className="text-4xl lg:text-5xl font-bold mt-4 mb-6 font-heading text-white">
             Bestsellery <span className="text-primary-500">OMEX</span>
           </h1>
           <p className="text-neutral-300 text-lg max-w-2xl">

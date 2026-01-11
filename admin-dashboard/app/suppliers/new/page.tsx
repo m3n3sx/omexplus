@@ -57,9 +57,15 @@ export default function NewSupplierPage() {
     try {
       setSaving(true)
       
+      const token = localStorage.getItem("medusa_admin_token")
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`
+      }
+      
       const res = await fetch(`${BACKEND_URL}/admin/suppliers`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           ...formData,
           commission_rate: parseFloat(formData.commission_rate.toString()) || 0,

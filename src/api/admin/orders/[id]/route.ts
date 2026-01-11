@@ -86,33 +86,93 @@ export const POST = async (
   res: MedusaResponse
 ) => {
   const orderId = req.params.id
-  const body = req.body as { email?: string; metadata?: Record<string, any> }
-  const { email, metadata } = body
+  const body = req.body as { email?: string; metadata?: Record<string, any>; status?: string }
+  const { email, metadata, status } = body
+
+  console.log("[orders/[id]/POST] Received:", JSON.stringify(body, null, 2))
 
   try {
-    const orderModuleService: any = req.scope.resolve("orderModuleService")
+    const knex = req.scope.resolve("__pg_connection__")
     
-    // Przygotuj dane do aktualizacji
-    // UWAGA: W Medusa v2 nie można bezpośrednio aktualizować statusu
-    // Status jest zarządzany przez workflows (cancel, complete, etc.)
-    const updateData: any = {}
-    
+    // Buduj zapytanie UPDATE
+    const updates: string[] = []
+    const values: any[] = []
+    let paramIndex = 1
+
     if (email !== undefined) {
-      updateData.email = email
+      updates.push(`email = $${paramIndex}`)
+      values.push(email)
+      paramIndex++
     }
     
     if (metadata !== undefined) {
-      updateData.metadata = metadata
+      // Merge metadata zamiast nadpisywania
+      updates.push(`metadata = COALESCE(metadata, '{}'::jsonb) || $${paramIndex}::jsonb`)
+      values.push(JSON.stringify(metadata))
+      paramIndex++
     }
 
-    // Aktualizuj zamówienie
-    const updatedOrder = await orderModuleService.updateOrders(orderId, updateData)
+    // Status można aktualizować tylko na określone wartości
+    if (status !== undefined) {
+      const allowedStatuses = ['pending', 'completed', 'canceled', 'archived', 'requires_action']
+      if (allowedStatuses.includes(status)) {
+        updates.push(`status = $${paramIndex}`)
+        values.push(status)
+        paramIndex++
+      }
+    }
+
+    if (updates.length === 0) {
+      // Pobierz aktualne zamówienie jeśli nie ma co aktualizować
+      const query = req.scope.resolve("query")
+      const { data: orders } = await query.graph({
+        entity: "order",
+        fields: ["id", "display_id", "status", "email", "metadata"],
+        filters: { id: orderId }
+      })
+      
+      return res.json({
+        order: orders?.[0] || null,
+        message: "Brak danych do aktualizacji"
+      })
+    }
+
+    // Dodaj updated_at
+    updates.push(`updated_at = NOW()`)
+    
+    // Dodaj orderId jako ostatni parametr
+    values.push(orderId)
+
+    const updateQuery = `
+      UPDATE "order"
+      SET ${updates.join(', ')}
+      WHERE id = $${paramIndex}
+      RETURNING id, display_id, status, email, metadata, created_at, updated_at
+    `
+
+    console.log("[orders/[id]/POST] SQL:", updateQuery)
+    console.log("[orders/[id]/POST] Values:", values)
+
+    const result = await knex.raw(updateQuery, values)
+    
+    console.log("[orders/[id]/POST] Result:", JSON.stringify(result.rows, null, 2))
+    
+    if (!result.rows || result.rows.length === 0) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `Zamówienie o ID ${orderId} nie zostało znalezione`
+      )
+    }
 
     res.json({
-      order: updatedOrder,
+      order: result.rows[0],
       message: "Zamówienie zaktualizowane pomyślnie"
     })
   } catch (error: any) {
+    console.error("[orders/[id]/POST] Error:", error)
+    if (error instanceof MedusaError) {
+      throw error
+    }
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
       `Nie udało się zaktualizować zamówienia: ${error.message}`

@@ -157,8 +157,8 @@ export default function UsersPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Użytkownicy</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold text-theme-primary">Użytkownicy</h1>
+            <p className="text-theme-secondary mt-1">
               Zarządzaj dostępem do panelu administracyjnego
             </p>
           </div>
@@ -171,15 +171,15 @@ export default function UsersPage() {
         </div>
 
         {/* Role Legend */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <h3 className="font-semibold text-gray-900 mb-3">Role i uprawnienia</h3>
+        <div className="bg-theme-secondary rounded-lg border border-theme p-4">
+          <h3 className="font-semibold text-theme-primary mb-3">Role i uprawnienia</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {(Object.keys(ROLE_LABELS) as Role[]).map(role => (
               <div key={role} className="text-center">
                 <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${ROLE_COLORS[role]}`}>
                   {ROLE_LABELS[role]}
                 </span>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-theme-muted mt-1">
                   {ROLE_PERMISSIONS[role].length} uprawnień
                 </p>
               </div>
@@ -188,33 +188,33 @@ export default function UsersPage() {
         </div>
 
         {/* Users Table */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-theme-secondary rounded-lg border border-theme overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-theme-tertiary border-b border-theme">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Użytkownik</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Rola</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Ostatnie logowanie</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Utworzony</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Akcje</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-theme-secondary">Użytkownik</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-theme-secondary">Rola</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-theme-secondary">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-theme-secondary">Ostatnie logowanie</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-theme-secondary">Utworzony</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-theme-secondary">Akcje</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="border-b hover:bg-gray-50">
+                <tr key={user.id} className="border-b border-theme hover:bg-theme-hover">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="font-medium text-gray-600">
+                      <div className="w-10 h-10 rounded-full bg-theme-tertiary flex items-center justify-center">
+                        <span className="font-medium text-theme-secondary">
                           {user.first_name[0]}{user.last_name[0]}
                         </span>
                       </div>
                       <div>
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-theme-primary">
                           {user.first_name} {user.last_name}
                         </div>
-                        <div className="text-sm text-gray-500 flex items-center gap-1">
+                        <div className="text-sm text-theme-muted flex items-center gap-1">
                           <Mail className="w-3 h-3" />
                           {user.email}
                         </div>
@@ -230,8 +230,8 @@ export default function UsersPage() {
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
                       user.is_active 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                     }`}>
                       {user.is_active ? (
                         <><Check className="w-3 h-3 mr-1" /> Aktywny</>
@@ -240,17 +240,17 @@ export default function UsersPage() {
                       )}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
+                  <td className="px-4 py-3 text-sm text-theme-secondary">
                     {user.last_login ? (
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {formatDate(user.last_login)}
                       </span>
                     ) : (
-                      <span className="text-gray-400">Nigdy</span>
+                      <span className="text-theme-muted">Nigdy</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
+                  <td className="px-4 py-3 text-sm text-theme-secondary">
                     {formatDate(user.created_at)}
                   </td>
                   <td className="px-4 py-3">
@@ -269,9 +269,9 @@ export default function UsersPage() {
                           onClick={() => toggleUserStatus(user.id)}
                         >
                           {user.is_active ? (
-                            <X className="w-4 h-4 text-red-600" />
+                            <X className="w-4 h-4 text-red-600 dark:text-red-400" />
                           ) : (
-                            <Check className="w-4 h-4 text-green-600" />
+                            <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
                           )}
                         </Button>
                       </div>
@@ -286,8 +286,8 @@ export default function UsersPage() {
         {/* Change Role Modal */}
         {showRoleModal && selectedUser && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-              <h2 className="text-xl font-bold mb-4">
+            <div className="bg-theme-secondary rounded-lg p-6 max-w-md w-full mx-4">
+              <h2 className="text-xl font-bold mb-4 text-theme-primary">
                 Zmień rolę: {selectedUser.first_name} {selectedUser.last_name}
               </h2>
               
@@ -303,8 +303,8 @@ export default function UsersPage() {
                       key={role}
                       className={`flex items-start p-3 border rounded-lg cursor-pointer transition-colors ${
                         selectedRole === role 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:bg-gray-50'
+                          ? 'border-accent bg-accent/10' 
+                          : 'border-theme hover:bg-theme-hover'
                       }`}
                     >
                       <input
@@ -319,10 +319,10 @@ export default function UsersPage() {
                         <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${ROLE_COLORS[role]}`}>
                           {ROLE_LABELS[role]}
                         </span>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-sm text-theme-secondary mt-1">
                           {ROLE_DESCRIPTIONS[role]}
                         </p>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-theme-muted mt-1">
                           {ROLE_PERMISSIONS[role].length} uprawnień
                         </p>
                       </div>
@@ -342,7 +342,165 @@ export default function UsersPage() {
             </div>
           </div>
         )}
+
+        {/* Add User Modal */}
+        {showAddModal && (
+          <AddUserModal 
+            onClose={() => setShowAddModal(false)}
+            onAdd={(newUser) => {
+              setUsers(prev => [...prev, newUser])
+              setShowAddModal(false)
+            }}
+            currentUserRole={currentUser?.role}
+          />
+        )}
       </div>
     </DashboardLayout>
+  )
+}
+
+// Add User Modal Component
+function AddUserModal({ 
+  onClose, 
+  onAdd, 
+  currentUserRole 
+}: { 
+  onClose: () => void
+  onAdd: (user: AdminUser) => void
+  currentUserRole?: string
+}) {
+  const [formData, setFormData] = useState({
+    email: '',
+    first_name: '',
+    last_name: '',
+    password: '',
+    role: 'sales' as Role,
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    
+    if (!formData.email || !formData.first_name || !formData.last_name || !formData.password) {
+      setError('Wypełnij wszystkie pola')
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError('Hasło musi mieć minimum 6 znaków')
+      return
+    }
+
+    setLoading(true)
+    
+    try {
+      // Tutaj można dodać wywołanie API do tworzenia użytkownika w Medusa
+      // Na razie tworzymy lokalnie
+      const newUser: AdminUser = {
+        id: Date.now().toString(),
+        email: formData.email,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        role: formData.role,
+        is_active: true,
+        created_at: new Date().toISOString(),
+      }
+      
+      onAdd(newUser)
+    } catch (err) {
+      setError('Błąd podczas tworzenia użytkownika')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-theme-secondary rounded-lg p-6 max-w-md w-full mx-4">
+        <h2 className="text-xl font-bold mb-4 text-theme-primary">Dodaj nowego użytkownika</h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-theme-secondary mb-1">Imię</label>
+              <input
+                type="text"
+                value={formData.first_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
+                className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                placeholder="Jan"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-theme-secondary mb-1">Nazwisko</label>
+              <input
+                type="text"
+                value={formData.last_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
+                className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                placeholder="Kowalski"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-theme-secondary mb-1">Email</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+              placeholder="jan@omex.pl"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-theme-secondary mb-1">Hasło</label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+              className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+              placeholder="Minimum 6 znaków"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-theme-secondary mb-1">Rola</label>
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as Role }))}
+              className="w-full px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+            >
+              {(Object.keys(ROLE_LABELS) as Role[]).map(role => {
+                if (currentUserRole === 'manager' && role === 'super_admin') return null
+                return (
+                  <option key={role} value={role}>
+                    {ROLE_LABELS[role]} - {ROLE_DESCRIPTIONS[role]}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
+          
+          {error && (
+            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+          
+          <div className="flex justify-end gap-3 pt-4">
+            <Button type="button" variant="ghost" onClick={onClose}>
+              Anuluj
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Tworzenie...' : 'Dodaj użytkownika'}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
   )
 }

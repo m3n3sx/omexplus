@@ -79,11 +79,11 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
   return (
     <div className="space-y-2">
       {/* Toolbar */}
-      <div className="flex items-center space-x-1 p-2 bg-gray-50 border border-gray-300 rounded-t-lg">
+      <div className="flex items-center space-x-1 p-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-t-lg">
         <button
           type="button"
           onClick={formatBold}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors text-gray-700 dark:text-gray-300"
           title="Bold (Ctrl+B)"
         >
           <Bold className="w-4 h-4" />
@@ -91,7 +91,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         <button
           type="button"
           onClick={formatItalic}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors text-gray-700 dark:text-gray-300"
           title="Italic (Ctrl+I)"
         >
           <Italic className="w-4 h-4" />
@@ -99,16 +99,16 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         <button
           type="button"
           onClick={formatCode}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors text-gray-700 dark:text-gray-300"
           title="Code"
         >
           <Code className="w-4 h-4" />
         </button>
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
         <button
           type="button"
           onClick={formatList}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors text-gray-700 dark:text-gray-300"
           title="Bullet List"
         >
           <List className="w-4 h-4" />
@@ -116,7 +116,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         <button
           type="button"
           onClick={formatOrderedList}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors text-gray-700 dark:text-gray-300"
           title="Numbered List"
         >
           <ListOrdered className="w-4 h-4" />
@@ -124,7 +124,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         <button
           type="button"
           onClick={formatLink}
-          className="p-2 hover:bg-gray-200 rounded transition-colors"
+          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors text-gray-700 dark:text-gray-300"
           title="Insert Link"
         >
           <LinkIcon className="w-4 h-4" />
@@ -136,7 +136,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           className={`px-3 py-1 text-sm rounded transition-colors ${
             showPreview 
               ? 'bg-primary-600 text-white' 
-              : 'bg-white text-gray-700 hover:bg-gray-100'
+              : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
           }`}
         >
           {showPreview ? 'Edit' : 'Preview'}
@@ -146,7 +146,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
       {/* Editor / Preview */}
       {showPreview ? (
         <div 
-          className="min-h-[200px] p-4 border border-gray-300 border-t-0 rounded-b-lg bg-white prose prose-sm max-w-none"
+          className="min-h-[200px] p-4 border border-gray-300 dark:border-gray-600 border-t-0 rounded-b-lg bg-white dark:bg-gray-800 prose prose-sm dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: renderPreview(value) }}
         />
       ) : (
@@ -156,20 +156,20 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={10}
-          className="w-full px-4 py-3 border border-gray-300 border-t-0 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono text-sm"
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 border-t-0 rounded-b-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
         />
       )}
 
       {/* Help Text */}
-      <div className="text-xs text-gray-500 space-y-1">
+      <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
         <p className="font-medium">Markdown formatting:</p>
         <div className="grid grid-cols-2 gap-2">
-          <div><code className="bg-gray-100 px-1 rounded">**bold**</code> for <strong>bold</strong></div>
-          <div><code className="bg-gray-100 px-1 rounded">*italic*</code> for <em>italic</em></div>
-          <div><code className="bg-gray-100 px-1 rounded">`code`</code> for code</div>
-          <div><code className="bg-gray-100 px-1 rounded">[text](url)</code> for links</div>
-          <div><code className="bg-gray-100 px-1 rounded">- item</code> for bullet list</div>
-          <div><code className="bg-gray-100 px-1 rounded">1. item</code> for numbered list</div>
+          <div><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">**bold**</code> for <strong>bold</strong></div>
+          <div><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">*italic*</code> for <em>italic</em></div>
+          <div><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">`code`</code> for code</div>
+          <div><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">[text](url)</code> for links</div>
+          <div><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">- item</code> for bullet list</div>
+          <div><code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">1. item</code> for numbered list</div>
         </div>
       </div>
     </div>

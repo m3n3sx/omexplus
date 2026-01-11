@@ -10,11 +10,12 @@ export default function CartPage() {
   const locale = useLocale()
   const { cart, loading, updateItem, removeItem, itemCount } = useCartContext()
 
-  const formatPrice = (amount: number, currencyCode: string = 'PLN') => {
+  const formatPrice = (amount: number | undefined | null, currencyCode: string = 'PLN') => {
+    const safeAmount = typeof amount === 'number' && !isNaN(amount) ? amount : 0
     return new Intl.NumberFormat('pl-PL', {
       style: 'currency',
-      currency: currencyCode,
-    }).format(amount / 100)
+      currency: currencyCode || 'PLN',
+    }).format(safeAmount / 100)
   }
 
   if (loading && !cart) {
@@ -151,10 +152,10 @@ export default function CartPage() {
                     {/* Price */}
                     <div className="text-right flex-shrink-0">
                       <div className="text-[16px] md:text-lg font-bold text-neutral-900">
-                        {formatPrice(item.total, cart.region?.currency_code)}
+                        {formatPrice(item.total || (item.unit_price * item.quantity), cart.region?.currency_code)}
                       </div>
                       <div className="text-[12px] text-neutral-500 mt-1">
-                        {formatPrice(item.unit_price, cart.region?.currency_code)} / szt.
+                        {formatPrice(item.unit_price || 0, cart.region?.currency_code)} / szt.
                       </div>
                     </div>
                   </div>

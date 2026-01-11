@@ -71,7 +71,7 @@ export default function PromocjePage() {
               </svg>
               Gorące promocje
             </span>
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4 font-heading">
+            <h1 className="text-4xl lg:text-5xl font-bold mb-4 font-heading text-white">
               Promocje i Wyprzedaże
             </h1>
             <p className="text-white/90 text-lg mb-6 max-w-2xl">

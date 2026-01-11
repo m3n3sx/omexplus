@@ -72,9 +72,9 @@ export default function InventoryPage() {
   })
 
   const getStockBadge = (quantity: number) => {
-    if (quantity === 0) return <Badge className="bg-red-100 text-red-800">Brak</Badge>
-    if (quantity <= 10) return <Badge className="bg-yellow-100 text-yellow-800">Niski</Badge>
-    return <Badge className="bg-green-100 text-green-800">OK</Badge>
+    if (quantity === 0) return <Badge className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Brak</Badge>
+    if (quantity <= 10) return <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">Niski</Badge>
+    return <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">OK</Badge>
   }
 
   const stats = {
@@ -99,8 +99,8 @@ export default function InventoryPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Stany magazynowe</h1>
-            <p className="text-gray-600 mt-1">Produkty w magazynie Medusa</p>
+            <h1 className="text-2xl font-bold text-theme-primary">Stany magazynowe</h1>
+            <p className="text-theme-secondary mt-1">Produkty w magazynie Medusa</p>
           </div>
           <Button onClick={() => {
             const csv = ["SKU,Nazwa,Stan", ...filteredInventory.map(i => 
@@ -118,8 +118,8 @@ export default function InventoryPage() {
         </div>
 
         {stockLocations.length > 0 && (
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <div className="bg-theme-secondary rounded-lg border border-theme p-6">
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-theme-primary">
               <Warehouse className="w-5 h-5" />
               Lokalizacje ({stockLocations.length})
             </h2>
@@ -128,10 +128,10 @@ export default function InventoryPage() {
                 <button
                   key={loc.id}
                   onClick={() => setSelectedLocation(selectedLocation === loc.id ? null : loc.id)}
-                  className={`px-4 py-2 rounded-lg border-2 transition ${
+                  className={`px-4 py-2 rounded-lg border-2 transition text-theme-primary ${
                     selectedLocation === loc.id
-                      ? "border-orange-500 bg-orange-50"
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-accent bg-accent/10"
+                      : "border-theme hover:border-theme-hover"
                   }`}
                 >
                   {loc.name}
@@ -142,33 +142,33 @@ export default function InventoryPage() {
         )}
 
         <div className="grid grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg border p-6">
-            <p className="text-sm text-gray-600">Wszystkie</p>
-            <p className="text-2xl font-bold">{stats.total}</p>
+          <div className="bg-theme-secondary rounded-lg border border-theme p-6">
+            <p className="text-sm text-theme-secondary">Wszystkie</p>
+            <p className="text-2xl font-bold text-theme-primary">{stats.total}</p>
           </div>
-          <div className="bg-white rounded-lg border p-6">
-            <p className="text-sm text-gray-600">Dostępne</p>
-            <p className="text-2xl font-bold text-green-600">{stats.available}</p>
+          <div className="bg-theme-secondary rounded-lg border border-theme p-6">
+            <p className="text-sm text-theme-secondary">Dostępne</p>
+            <p className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.available}</p>
           </div>
-          <div className="bg-white rounded-lg border p-6">
-            <p className="text-sm text-gray-600">Niski stan</p>
-            <p className="text-2xl font-bold text-yellow-600">{stats.low}</p>
+          <div className="bg-theme-secondary rounded-lg border border-theme p-6">
+            <p className="text-sm text-theme-secondary">Niski stan</p>
+            <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.low}</p>
           </div>
-          <div className="bg-white rounded-lg border p-6">
-            <p className="text-sm text-gray-600">Brak</p>
-            <p className="text-2xl font-bold text-red-600">{stats.out}</p>
+          <div className="bg-theme-secondary rounded-lg border border-theme p-6">
+            <p className="text-sm text-theme-secondary">Brak</p>
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.out}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border p-4 flex gap-4">
+        <div className="bg-theme-secondary rounded-lg border border-theme p-4 flex gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-muted w-5 h-5" />
             <input
               type="text"
               placeholder="Szukaj SKU..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border rounded-lg"
+              className="w-full pl-10 pr-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
           <div className="flex gap-2">
@@ -184,30 +184,30 @@ export default function InventoryPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border overflow-hidden">
+        <div className="bg-theme-secondary rounded-lg border border-theme overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-theme-tertiary border-b border-theme">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nazwa</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stan</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-theme-muted uppercase">SKU</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-theme-muted uppercase">Nazwa</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-theme-muted uppercase">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-theme-muted uppercase">Stan</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-theme">
               {filteredInventory.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={4} className="px-6 py-12 text-center text-theme-muted">
                     Brak produktów
                   </td>
                 </tr>
               ) : (
                 filteredInventory.slice(0, 100).map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-mono text-sm">{item.sku || "-"}</td>
-                    <td className="px-6 py-4">{item.title || "Bez nazwy"}</td>
+                  <tr key={item.id} className="hover:bg-theme-hover">
+                    <td className="px-6 py-4 font-mono text-sm text-theme-primary">{item.sku || "-"}</td>
+                    <td className="px-6 py-4 text-theme-primary">{item.title || "Bez nazwy"}</td>
                     <td className="px-6 py-4">{getStockBadge(item.stocked_quantity || 0)}</td>
-                    <td className="px-6 py-4 font-medium">{item.stocked_quantity || 0} szt.</td>
+                    <td className="px-6 py-4 font-medium text-theme-primary">{item.stocked_quantity || 0} szt.</td>
                   </tr>
                 ))
               )}

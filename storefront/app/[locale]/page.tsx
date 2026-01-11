@@ -151,7 +151,7 @@ export default function HomePage() {
                 <span className="w-10 h-1 bg-primary-500 rounded-sm"></span>
               </div>
             </div>
-            <Link href={`/${locale}/products`} className="bg-primary-500 text-white hover:bg-secondary-700 px-8 py-3 rounded-full font-bold text-sm flex items-center gap-2 group transition-all">
+            <Link href={`/${locale}/categories`} className="bg-primary-500 text-white hover:bg-secondary-700 px-8 py-3 rounded-full font-bold text-sm flex items-center gap-2 group transition-all">
               <span>Zobacz wszystkie</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />

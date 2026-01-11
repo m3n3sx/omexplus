@@ -86,13 +86,13 @@ export default function BulkEditPage() {
 
       // Bulk update basic fields
       if (Object.keys(updates).length > 0) {
-        await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/admin/products/bulk/update`, {
+        await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/public/banners`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('medusa_admin_token')}`,
           },
           body: JSON.stringify({
+            type: 'products',
             productIds: Array.from(selectedIds),
             updates,
           }),
@@ -120,13 +120,12 @@ export default function BulkEditPage() {
         }
 
         if (priceUpdates.length > 0) {
-          await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/admin/products/bulk-price/update`, {
+          await fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/public/banners`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('medusa_admin_token')}`,
             },
-            body: JSON.stringify({ updates: priceUpdates }),
+            body: JSON.stringify({ type: 'prices', updates: priceUpdates }),
           })
         }
       }
@@ -158,16 +157,16 @@ export default function BulkEditPage() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Bulk Edit Products</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Bulk Edit Products</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Edytuj wiele produktów jednocześnie - oszczędź czas!
           </p>
         </div>
 
         {/* Bulk Actions Panel */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               Wybrano: {selectedIds.size} / {products.length}
             </h2>
             <Button variant="secondary" size="sm" onClick={selectAll}>
@@ -176,19 +175,19 @@ export default function BulkEditPage() {
           </div>
 
           {selectedIds.size > 0 && (
-            <div className="space-y-4 border-t pt-4">
-              <h3 className="font-medium">Zastosuj zmiany do zaznaczonych:</h3>
+            <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <h3 className="font-medium text-gray-900 dark:text-white">Zastosuj zmiany do zaznaczonych:</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Status
                   </label>
                   <select
                     value={bulkUpdates.status}
                     onChange={(e) => setBulkUpdates({ ...bulkUpdates, status: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg"
                   >
                     <option value="">Bez zmian</option>
                     <option value="published">Published</option>
@@ -198,7 +197,7 @@ export default function BulkEditPage() {
 
                 {/* Discount */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Rabat (%)
                   </label>
                   <input
@@ -206,13 +205,13 @@ export default function BulkEditPage() {
                     placeholder="np. 15"
                     value={bulkUpdates.discount_percent}
                     onChange={(e) => setBulkUpdates({ ...bulkUpdates, discount_percent: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   />
                 </div>
 
                 {/* Collection */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Kolekcja
                   </label>
                   <input
@@ -220,7 +219,7 @@ export default function BulkEditPage() {
                     placeholder="Collection ID"
                     value={bulkUpdates.collection_id}
                     onChange={(e) => setBulkUpdates({ ...bulkUpdates, collection_id: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   />
                 </div>
               </div>
@@ -238,9 +237,9 @@ export default function BulkEditPage() {
         </div>
 
         {/* Products Table */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
               <tr>
                 <th className="px-4 py-3 text-left">
                   <input
@@ -250,10 +249,10 @@ export default function BulkEditPage() {
                     className="rounded"
                   />
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Product</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Price</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Stock</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Product</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Price</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Stock</th>
               </tr>
             </thead>
             <tbody>
@@ -265,7 +264,7 @@ export default function BulkEditPage() {
                 return (
                   <tr
                     key={product.id}
-                    className={`border-b hover:bg-gray-50 ${isSelected ? 'bg-blue-50' : ''}`}
+                    className={`border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
                   >
                     <td className="px-4 py-3">
                       <input
@@ -285,22 +284,22 @@ export default function BulkEditPage() {
                           />
                         )}
                         <div>
-                          <div className="font-medium">{product.title}</div>
-                          <div className="text-sm text-gray-600">{product.handle}</div>
+                          <div className="font-medium text-gray-900 dark:text-white">{product.title}</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">{product.handle}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 text-xs rounded ${
-                        product.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        product.status === 'published' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                       }`}>
                         {product.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-gray-900 dark:text-white">
                       {price ? `${(price.amount / 100).toFixed(2)} PLN` : 'N/A'}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 text-gray-900 dark:text-white">
                       {variant?.inventory_quantity || 0}
                     </td>
                   </tr>

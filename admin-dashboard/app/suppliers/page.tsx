@@ -182,8 +182,8 @@ export default function SuppliersPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dostawcy Dropship</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold text-theme-primary">Dostawcy Dropship</h1>
+            <p className="text-theme-secondary mt-1">
               Zarządzaj dostawcami i produktami dropshipping
             </p>
           </div>
@@ -198,56 +198,56 @@ export default function SuppliersPage() {
         {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className="bg-theme-secondary rounded-xl border border-theme p-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Aktywni dostawcy</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">Aktywni dostawcy</p>
+                  <p className="text-2xl font-bold text-theme-primary">
                     {stats.active_suppliers} / {stats.total_suppliers}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className="bg-theme-secondary rounded-xl border border-theme p-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Package className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <Package className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Produkty dropship</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">Produkty dropship</p>
+                  <p className="text-2xl font-bold text-theme-primary">
                     {stats.total_dropship_products}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className="bg-theme-secondary rounded-xl border border-theme p-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <Truck className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                  <Truck className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Oczekujące zamówienia</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">Oczekujące zamówienia</p>
+                  <p className="text-2xl font-bold text-theme-primary">
                     {stats.pending_supplier_orders}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <div className="bg-theme-secondary rounded-xl border border-theme p-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Marża (30 dni)</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-theme-secondary">Marża (30 dni)</p>
+                  <p className="text-2xl font-bold text-theme-primary">
                     {formatCurrency(stats.monthly_dropship_margin / 100)}
                   </p>
                 </div>
@@ -257,23 +257,23 @@ export default function SuppliersPage() {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-theme-secondary rounded-lg border border-theme p-4">
           <div className="flex flex-wrap items-center gap-4">
             <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-muted" />
               <input
                 type="text"
                 placeholder="Szukaj dostawcy..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                className="w-full pl-10 pr-4 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
               />
             </div>
 
             <select
               value={filterActive === null ? "" : filterActive.toString()}
               onChange={(e) => setFilterActive(e.target.value === "" ? null : e.target.value === "true")}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="">Wszystkie statusy</option>
               <option value="true">Aktywni</option>
@@ -283,7 +283,7 @@ export default function SuppliersPage() {
             <select
               value={filterDropship === null ? "" : filterDropship.toString()}
               onChange={(e) => setFilterDropship(e.target.value === "" ? null : e.target.value === "true")}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="px-3 py-2 border border-theme bg-theme-primary text-theme-primary rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <option value="">Wszystkie typy</option>
               <option value="true">Dropship</option>
@@ -293,7 +293,7 @@ export default function SuppliersPage() {
         </div>
 
         {/* Suppliers Table */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-theme-secondary rounded-lg border border-theme overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
@@ -310,7 +310,7 @@ export default function SuppliersPage() {
             <TableBody>
               {filteredSuppliers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={8} className="text-center py-8 text-theme-muted">
                     Nie znaleziono dostawców
                   </TableCell>
                 </TableRow>
@@ -319,65 +319,65 @@ export default function SuppliersPage() {
                   <TableRow key={supplier.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <Building2 className="w-5 h-5 text-gray-600" />
+                        <div className="w-10 h-10 bg-theme-tertiary rounded-lg flex items-center justify-center">
+                          <Building2 className="w-5 h-5 text-theme-secondary" />
                         </div>
                         <div>
                           <Link 
                             href={`/suppliers/${supplier.id}`}
-                            className="font-medium text-gray-900 hover:text-primary-600"
+                            className="font-medium text-theme-primary hover:text-accent"
                           >
                             {supplier.name}
                           </Link>
                           {supplier.is_dropship && (
-                            <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded">
+                            <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded">
                               Dropship
                             </span>
                           )}
                           {supplier.city && (
-                            <p className="text-sm text-gray-500">{supplier.city}</p>
+                            <p className="text-sm text-theme-muted">{supplier.city}</p>
                           )}
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+                      <span className="font-mono text-sm bg-theme-tertiary px-2 py-1 rounded text-theme-primary">
                         {supplier.code}
                       </span>
                     </TableCell>
                     <TableCell>
                       {supplier.contact_email ? (
                         <div className="text-sm">
-                          <p className="text-gray-900">{supplier.contact_email}</p>
+                          <p className="text-theme-primary">{supplier.contact_email}</p>
                           {supplier.contact_phone && (
-                            <p className="text-gray-500">{supplier.contact_phone}</p>
+                            <p className="text-theme-muted">{supplier.contact_phone}</p>
                           )}
                         </div>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-theme-muted">-</span>
                       )}
                     </TableCell>
                     <TableCell>
-                      <span className="font-medium">{supplier.products_count}</span>
+                      <span className="font-medium text-theme-primary">{supplier.products_count}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="font-medium">{supplier.orders_count}</span>
+                      <span className="font-medium text-theme-primary">{supplier.orders_count}</span>
                     </TableCell>
                     <TableCell>
                       {supplier.sync_enabled ? (
                         <div className="flex items-center gap-2">
                           <CheckCircle className="w-4 h-4 text-green-500" />
                           <div className="text-sm">
-                            <p className="text-gray-900">{supplier.sync_frequency}</p>
+                            <p className="text-theme-primary">{supplier.sync_frequency}</p>
                             {supplier.last_sync_at && (
-                              <p className="text-gray-500 text-xs">
+                              <p className="text-theme-muted text-xs">
                                 {formatDate(supplier.last_sync_at)}
                               </p>
                             )}
                           </div>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2 text-theme-muted">
                           <XCircle className="w-4 h-4" />
                           <span className="text-sm">Wyłączony</span>
                         </div>
@@ -385,11 +385,11 @@ export default function SuppliersPage() {
                     </TableCell>
                     <TableCell>
                       {supplier.is_active ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
                           Aktywny
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-theme-tertiary text-theme-secondary">
                           Nieaktywny
                         </span>
                       )}
@@ -415,7 +415,7 @@ export default function SuppliersPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(supplier.id)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-600 dark:text-red-400 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

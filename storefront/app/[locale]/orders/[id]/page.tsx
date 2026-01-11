@@ -153,6 +153,7 @@ export default function OrderDetailPage() {
             >
               {getStatusLabel(order.status)}
             </div>
+            {/* Invoice button - temporarily disabled
             <button style={{
               padding: '0.75rem 1.5rem',
               backgroundColor: '#3b82f6',
@@ -165,6 +166,7 @@ export default function OrderDetailPage() {
             }}>
               {t('order.downloadInvoice')} 📄
             </button>
+            */}
           </div>
         </div>
 

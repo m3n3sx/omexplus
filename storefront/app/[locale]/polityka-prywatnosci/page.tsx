@@ -94,7 +94,7 @@ export default function PolitykaPrywatnosciPage() {
         <div className="bg-secondary-700 rounded-lg p-8 lg:p-16 mb-12 text-white relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-primary-500"></div>
           <span className="text-primary-500 uppercase tracking-widest font-bold text-sm">RODO</span>
-          <h1 className="text-4xl lg:text-5xl font-bold mt-4 mb-6 font-heading">
+          <h1 className="text-4xl lg:text-5xl font-bold mt-4 mb-6 font-heading text-white">
             Polityka <span className="text-primary-500">Prywatności</span>
           </h1>
           <p className="text-neutral-300 text-lg max-w-2xl">

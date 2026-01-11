@@ -120,6 +120,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
   const FilterSection = ({ title, section, children }: { title: string; section: string; children: React.ReactNode }) => (
     <div className="border-b-2 border-neutral-200 pb-4 mb-4">
       <button
+        type="button"
         onClick={() => toggleSection(section)}
         className="w-full flex justify-between items-center py-3 border-none bg-transparent cursor-pointer text-base font-semibold text-secondary-700"
       >
@@ -145,6 +146,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
         </h2>
         {getActiveFiltersCount() > 0 && (
           <button
+            type="button"
             onClick={clearAllFilters}
             className="px-3 py-1 border-none rounded-lg bg-red-500 text-white cursor-pointer text-xs font-semibold hover:bg-red-600 transition-colors"
           >
@@ -358,6 +360,7 @@ export default function AdvancedFilters({ onFilterChange, categories = [], onApp
       {/* Apply Button */}
       {onApply && (
         <button
+          type="button"
           onClick={onApply}
           className="w-full py-3 border-none rounded-xl bg-primary-500 text-white cursor-pointer text-base font-semibold mt-4 hover:bg-primary-600 transition-colors shadow-md"
         >

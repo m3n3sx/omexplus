@@ -160,10 +160,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setSettings(defaultSettings)
   }
 
-  if (!mounted) {
-    return null
-  }
-
   return (
     <ThemeContext.Provider value={{ 
       ...settings,

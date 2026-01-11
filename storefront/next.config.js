@@ -27,6 +27,30 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.komatsu.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.kolaiwalki.pl',
+      },
+      {
+        protocol: 'https',
+        hostname: 'kolaiwalki.pl',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.kolaiwalki.pl',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.ooxo.pl',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ooxo.pl',
+      },
     ],
   },
   trailingSlash: false,

@@ -286,7 +286,7 @@ export default function ChatWidget() {
   return (
     <>
       {!isOpen && (
-        <button onClick={handleOpen} className="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-all z-50" aria-label="Otwórz chat">
+        <button onClick={handleOpen} className="fixed bottom-6 right-6 bg-primary-500 text-white rounded-full p-4 shadow-lg hover:bg-primary-600 transition-all z-50" aria-label="Otwórz chat">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
           {unreadCount > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{unreadCount > 9 ? "9+" : unreadCount}</span>}
         </button>
@@ -302,40 +302,40 @@ export default function ChatWidget() {
         </div>
       )}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white rounded-lg shadow-2xl flex flex-col z-50">
-          <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
-            <div><h3 className="font-semibold">Czat OMEX</h3><p className="text-xs opacity-90">{conversation?.status === "bot" ? "Bot AI" : "Konsultant"}</p></div>
+        <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-neutral-200">
+          <div className="bg-secondary-800 text-white p-4 rounded-t-2xl flex justify-between items-center">
+            <div><h3 className="font-bold text-lg text-white">Czat OMEX</h3><p className="text-xs text-primary-400 font-medium">{conversation?.status === "bot" ? "Asystent AI" : "Konsultant"}</p></div>
             <div className="flex items-center gap-2">
-              <button onClick={toggleSound} className="text-white hover:bg-blue-700 rounded p-1" title={soundEnabled ? "Wyłącz dźwięk" : "Włącz dźwięk"}>
+              <button onClick={toggleSound} className="text-white hover:bg-secondary-700 rounded p-1" title={soundEnabled ? "Wyłącz dźwięk" : "Włącz dźwięk"}>
                 {soundEnabled ? <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
                 : <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>}
               </button>
-              <button onClick={() => setShowRating(true)} className="text-white hover:bg-blue-700 rounded p-1" title="Zakończ rozmowę"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></button>
-              <button onClick={handleClose} className="text-white hover:bg-blue-700 rounded p-1"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+              <button onClick={() => setShowRating(true)} className="text-white hover:bg-secondary-700 rounded p-1" title="Zakończ rozmowę"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg></button>
+              <button onClick={handleClose} className="text-white hover:bg-secondary-700 rounded p-1"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-neutral-50">
             {messages.map(m => (
               <div key={m.id} className={`flex ${m.sender_type === "customer" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] rounded-lg p-3 ${m.sender_type === "customer" ? "bg-blue-600 text-white" : m.sender_type === "bot" ? "bg-gray-200 text-gray-800" : "bg-green-100 text-gray-800 border border-green-200"}`}>
+                <div className={`max-w-[80%] rounded-2xl p-3 ${m.sender_type === "customer" ? "bg-primary-500 text-white" : m.sender_type === "bot" ? "bg-white text-secondary-800 border border-neutral-200 shadow-sm" : "bg-green-50 text-secondary-800 border border-green-200"}`}>
                   {m.sender_type === "agent" && <p className="text-xs text-green-600 font-medium mb-1">Konsultant</p>}
-                  <p className="text-sm whitespace-pre-wrap">{m.content}</p>
+                  <p className={`text-sm whitespace-pre-wrap ${m.sender_type === "customer" ? "text-white" : "text-secondary-800"}`}>{m.content}</p>
                   {m.attachment_url && <a href={m.attachment_url} target="_blank" rel="noopener noreferrer" className="text-xs underline mt-1 block">📎 {m.attachment_name || "Załącznik"}</a>}
-                  <p className="text-xs opacity-70 mt-1">{new Date(m.created_at).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })}</p>
+                  <p className={`text-xs mt-1 ${m.sender_type === "customer" ? "text-primary-100" : "text-secondary-400"}`}>{new Date(m.created_at).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })}</p>
                 </div>
               </div>
             ))}
-            {isLoading && <div className="flex justify-start"><div className="bg-gray-200 rounded-lg p-3"><div className="flex gap-1"><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:"150ms"}}></span><span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay:"300ms"}}></span></div></div></div>}
+            {isLoading && <div className="flex justify-start"><div className="bg-white border border-neutral-200 rounded-2xl p-3 shadow-sm"><div className="flex gap-1"><span className="w-2 h-2 bg-primary-400 rounded-full animate-bounce"></span><span className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{animationDelay:"150ms"}}></span><span className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{animationDelay:"300ms"}}></span></div></div></div>}
             <div ref={messagesEndRef} />
           </div>
           {/* Product Results */}
           {searchResults.length > 0 && (
-            <div className="px-4 py-2 border-t bg-white">
+            <div className="px-4 py-2 border-t border-neutral-200 bg-white">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-gray-600">Znalezione produkty ({searchResults.length})</span>
+                <span className="text-xs font-medium text-secondary-600">Znalezione produkty ({searchResults.length})</span>
                 <button 
                   onClick={() => setSearchResults([])} 
-                  className="text-xs text-gray-400 hover:text-gray-600"
+                  className="text-xs text-secondary-400 hover:text-secondary-600"
                 >
                   ✕
                 </button>
@@ -346,18 +346,18 @@ export default function ChatWidget() {
                     key={product.id}
                     href={`/products/${product.handle}`}
                     target="_blank"
-                    className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-2 p-2 bg-neutral-50 rounded-xl hover:bg-primary-50 transition-colors border border-neutral-100"
                   >
                     {product.thumbnail && (
-                      <img src={product.thumbnail} alt="" className="w-10 h-10 object-cover rounded" />
+                      <img src={product.thumbnail} alt="" className="w-10 h-10 object-cover rounded-lg" />
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-gray-800 truncate">{product.title}</p>
+                      <p className="text-xs font-medium text-secondary-800 truncate">{product.title}</p>
                       {product.variants?.[0]?.sku && (
-                        <p className="text-xs text-gray-500">SKU: {product.variants[0].sku}</p>
+                        <p className="text-xs text-secondary-500">SKU: {product.variants[0].sku}</p>
                       )}
                     </div>
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </Link>
@@ -367,7 +367,7 @@ export default function ChatWidget() {
                 <Link
                   href={`/search?q=${encodeURIComponent(searchContext.brand || '')} ${encodeURIComponent(searchContext.model || '')}`}
                   target="_blank"
-                  className="block mt-2 text-center text-xs text-blue-600 hover:text-blue-800"
+                  className="block mt-2 text-center text-xs text-primary-600 hover:text-primary-700 font-medium"
                 >
                   Zobacz wszystkie ({searchResults.length}) →
                 </Link>
@@ -376,7 +376,7 @@ export default function ChatWidget() {
           )}
           {/* Quick Replies */}
           {quickReplies.length > 0 && (
-            <div className="px-4 py-2 border-t bg-gray-50 flex flex-wrap gap-2">
+            <div className="px-4 py-2 border-t border-neutral-200 bg-neutral-50 flex flex-wrap gap-2">
               {quickReplies.map((reply, index) => {
                 // Handle special actions
                 if (reply.includes('wyszukiwark')) {
@@ -384,7 +384,7 @@ export default function ChatWidget() {
                     <button
                       key={index}
                       onClick={openSearchWithResults}
-                      className="px-3 py-1.5 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition-all flex items-center gap-1"
+                      className="px-3 py-1.5 bg-primary-500 text-white rounded-full text-sm hover:bg-primary-600 transition-all flex items-center gap-1 font-medium"
                     >
                       🔍 Otwórz wyszukiwarkę
                     </button>
@@ -394,7 +394,7 @@ export default function ChatWidget() {
                   <button
                     key={index}
                     onClick={() => { setQuickReplies([]); sendMessage(reply); }}
-                    className="px-3 py-1.5 bg-white border border-blue-300 text-blue-700 rounded-full text-sm hover:bg-blue-50 hover:border-blue-500 transition-all"
+                    className="px-3 py-1.5 bg-white border border-primary-300 text-primary-600 rounded-full text-sm hover:bg-primary-50 hover:border-primary-500 transition-all font-medium"
                   >
                     {reply}
                   </button>
@@ -402,15 +402,15 @@ export default function ChatWidget() {
               })}
             </div>
           )}
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-neutral-200">
             <div className="flex gap-2">
               <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*,.pdf,.doc,.docx,.txt" />
-              <button onClick={() => fileInputRef.current?.click()} disabled={isUploading || isLoading} className="text-gray-500 hover:text-blue-600 disabled:opacity-50 p-2" title="Załącz plik">
+              <button onClick={() => fileInputRef.current?.click()} disabled={isUploading || isLoading} className="text-secondary-500 hover:text-primary-500 disabled:opacity-50 p-2" title="Załącz plik">
                 {isUploading ? <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 : <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>}
               </button>
-              <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()} placeholder="Wpisz wiadomość..." className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" disabled={isLoading} />
-              <button onClick={() => sendMessage()} disabled={isLoading || !inputValue.trim()} className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+              <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendMessage()} placeholder="Wpisz wiadomość..." className="flex-1 border border-neutral-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-secondary-800" disabled={isLoading} />
+              <button onClick={() => sendMessage()} disabled={isLoading || !inputValue.trim()} className="bg-primary-500 text-white rounded-xl px-4 py-2 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
               </button>
             </div>

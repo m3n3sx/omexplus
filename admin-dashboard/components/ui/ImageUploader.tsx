@@ -108,7 +108,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
     <div className="space-y-4">
       {/* Upload Area */}
       <div
-        className="border-2 border-dashed rounded-lg p-8 text-center border-gray-300 bg-gray-50"
+        className="border-2 border-dashed rounded-lg p-8 text-center border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800"
       >
         <input
           ref={fileInputRef}
@@ -121,10 +121,10 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
         
         <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         
-        <p className="text-gray-700 font-medium mb-2">
+        <p className="text-gray-700 dark:text-gray-300 font-medium mb-2">
           Add Product Images
         </p>
-        <p className="text-gray-500 text-sm mb-4">
+        <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
           Upload images to a CDN first, then add URLs here
         </p>
         
@@ -150,7 +150,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
           </Button>
         </div>
         
-        <p className="text-xs text-gray-500 mt-3">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
           {images.length} / {maxImages} images
         </p>
       </div>
@@ -161,7 +161,7 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
           {images.map((image, index) => (
             <div
               key={index}
-              className="relative group border border-gray-200 rounded-lg overflow-hidden aspect-square"
+              className="relative group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden aspect-square"
             >
               <img
                 src={image}
@@ -215,9 +215,9 @@ export default function ImageUploader({ images, onChange, maxImages = 10 }: Imag
       )}
 
       {images.length === 0 && (
-        <div className="text-center py-8 border border-gray-200 rounded-lg bg-gray-50">
+        <div className="text-center py-8 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
           <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-          <p className="text-gray-600 text-sm">No images uploaded yet</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">No images uploaded yet</p>
         </div>
       )}
     </div>

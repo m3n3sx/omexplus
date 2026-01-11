@@ -316,7 +316,7 @@ export default function AppearanceSettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <div>
+              <div className="flex-1 min-w-0 mr-4">
                 <p className="font-medium text-gray-900 dark:text-white">Włącz animacje</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Płynne przejścia i efekty wizualne
@@ -324,13 +324,15 @@ export default function AppearanceSettingsPage() {
               </div>
               <button
                 onClick={() => theme.setAnimations(!theme.animations)}
-                className={`relative w-14 h-8 rounded-full transition-colors ${
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 ${
                   theme.animations ? 'bg-primary-500' : 'bg-gray-300 dark:bg-gray-600'
                 }`}
+                role="switch"
+                aria-checked={theme.animations}
               >
                 <span 
-                  className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow transition-transform ${
-                    theme.animations ? 'translate-x-7' : 'translate-x-1'
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    theme.animations ? 'translate-x-5' : 'translate-x-0'
                   }`}
                 />
               </button>

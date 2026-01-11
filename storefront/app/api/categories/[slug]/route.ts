@@ -133,6 +133,34 @@ export async function GET(
     const productCountResult = await pool.query(productCountQuery, [category.id])
     const productCount = parseInt(productCountResult.rows[0]?.count || '0')
     
+    // Find root category (top-level parent) for sidebar navigation
+    let rootCategoryId = category.id
+    let rootCategory = category
+    
+    if (category.parent_category_id) {
+      // Walk up the tree to find root
+      let currentParentId = category.parent_category_id
+      while (currentParentId) {
+        const parentQuery = `
+          SELECT id, name, handle, description, parent_category_id, rank
+          FROM product_category
+          WHERE id = $1 AND deleted_at IS NULL AND is_active = true
+        `
+        const parentResult = await pool.query(parentQuery, [currentParentId])
+        if (parentResult.rows.length > 0) {
+          rootCategory = parentResult.rows[0]
+          rootCategoryId = rootCategory.id
+          currentParentId = rootCategory.parent_category_id
+        } else {
+          break
+        }
+      }
+    }
+    
+    // Get all subcategories from root category for complete sidebar
+    const rootSubcategories = await getAllSubcategories(rootCategoryId)
+    const flatRootSubcategories = flattenSubcategories(rootSubcategories)
+    
     return NextResponse.json({
       category: {
         id: category.id,
@@ -140,10 +168,29 @@ export async function GET(
         slug: category.handle,
         description: category.description || '',
         priority: category.rank || 0,
-        productCount
+        productCount,
+        parent_category_id: category.parent_category_id
+      },
+      // Root category info for sidebar
+      rootCategory: {
+        id: rootCategory.id,
+        name: rootCategory.name,
+        slug: rootCategory.handle,
+        description: rootCategory.description || '',
+        priority: rootCategory.rank || 0
       },
       subcategories: allSubcategories,
       allSubcategories: flatSubcategories.map((sub: any) => ({
+        id: sub.id,
+        name: sub.name,
+        slug: sub.handle,
+        description: sub.description || '',
+        priority: sub.rank || 0,
+        parent_category_id: sub.parent_category_id,
+        product_count: parseInt(sub.product_count || '0')
+      })),
+      // All subcategories from root for complete sidebar navigation
+      rootSubcategories: flatRootSubcategories.map((sub: any) => ({
         id: sub.id,
         name: sub.name,
         slug: sub.handle,

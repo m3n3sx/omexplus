@@ -37,6 +37,7 @@
     "csv-parse": "^6.1.0",
     "dotenv": "^16.3.1",
     "matrix-js-sdk": "^39.4.0-rc.0",
+    "mysql2": "^3.16.0",
     "pg": "^8.13.1"
   },
   "devDependencies": {

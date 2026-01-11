@@ -97,8 +97,8 @@ export const storeAPI = {
       params.category_id.forEach(id => query.append('category_id', id))
     }
     
-    // Use omex-products endpoint which supports category filtering
-    return fetchFromBackend(`/store/omex-products?${query}`)
+    // Use standard Medusa products endpoint
+    return fetchFromBackend(`/store/products?${query}`)
   },
 
   getProductById: async (id: string) => {

@@ -30,6 +30,7 @@ interface Product {
   variants?: Array<{
     id: string
     sku?: string
+    inventory_quantity?: number
     prices?: Array<{
       amount: number
       currency_code: string
@@ -46,6 +47,12 @@ interface ProductCardProps {
 
 // Helper to determine availability status
 function getAvailabilityStatus(product: Product): AvailabilityStatus {
+  // Check if product has no price - then it's enquiry-only
+  const hasPrice = product.variants?.[0]?.prices?.[0]?.amount && product.variants[0].prices[0].amount > 0
+  if (!hasPrice) {
+    return 'enquiry-only'
+  }
+  
   // Check metadata first
   if (product.metadata?.availability) {
     return product.metadata.availability
@@ -54,8 +61,9 @@ function getAvailabilityStatus(product: Product): AvailabilityStatus {
     return product.availability
   }
   
-  // Fallback to inventory quantity
-  const qty = product.inventory_quantity ?? 0
+  // Fallback to inventory quantity - check variant first, then product level
+  const variantQty = product.variants?.[0]?.inventory_quantity
+  const qty = product.inventory_quantity ?? variantQty ?? 10 // Default to 10 if not set
   if (qty > 10) return 'in-stock'
   if (qty > 0) return 'low-stock'
   return 'on-order'
@@ -249,6 +257,7 @@ export function ProductCard({ product, locale = 'pl', onAddToCart, className = '
       {/* Enquiry Modal */}
       <EnquiryModal
         product={product}
+        selectedVariant={product.variants?.[0]}
         isOpen={showEnquiryModal}
         onClose={() => setShowEnquiryModal(false)}
       />

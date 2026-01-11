@@ -39,14 +39,14 @@ export class DPDShippingProvider extends ShippingProviderBase {
     const rates: ShippingRate[] = [];
     const weightSurcharge = this.calculateWeightSurcharge(parcel.weight);
 
-    // DPD Economy
-    if (!serviceType || serviceType === "economy") {
+    // DPD Standard
+    if (!serviceType || serviceType === "standard") {
       rates.push({
         provider: "dpd",
-        method: "economy",
-        price: 6.99 + weightSurcharge,
-        delivery_days: 3,
-        currency: "USD",
+        method: "standard",
+        price: 16.99 + weightSurcharge,
+        delivery_days: 2,
+        currency: "PLN",
       });
     }
 
@@ -55,9 +55,20 @@ export class DPDShippingProvider extends ShippingProviderBase {
       rates.push({
         provider: "dpd",
         method: "express",
-        price: 12.99 + weightSurcharge,
+        price: 24.99 + weightSurcharge,
         delivery_days: 1,
-        currency: "USD",
+        currency: "PLN",
+      });
+    }
+
+    // DPD Pickup
+    if (!serviceType || serviceType === "pickup") {
+      rates.push({
+        provider: "dpd",
+        method: "pickup",
+        price: 14.99 + weightSurcharge,
+        delivery_days: 3,
+        currency: "PLN",
       });
     }
 

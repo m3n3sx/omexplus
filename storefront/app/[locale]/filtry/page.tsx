@@ -55,7 +55,7 @@ export default function FiltersPage() {
           <div className="absolute top-0 left-0 right-0 h-1 bg-primary-500"></div>
           <div className="relative z-10">
             <span className="text-primary-500 uppercase tracking-widest font-bold text-sm">Do każdej maszyny</span>
-            <h1 className="text-4xl lg:text-5xl font-bold mt-4 mb-6 font-heading">
+            <h1 className="text-4xl lg:text-5xl font-bold mt-4 mb-6 font-heading text-white">
               Filtry do Maszyn <span className="text-primary-500">Budowlanych</span>
             </h1>
             <p className="text-neutral-300 text-lg max-w-3xl leading-relaxed">
